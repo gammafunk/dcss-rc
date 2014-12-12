@@ -39,8 +39,8 @@ A minimal `ready()` function would be
 ```
 
 You can copy this code directly into your rc anywhere *after* the
-includes/copies of **PlayerTiles.rc** and **RandomTiles.rc**. Make sure the *{*
-at the beginning and the *}* at the end the first characters on their lines.
+includes/copies of **PlayerTiles.rc** and **RandomTiles.rc**. Make sure the `{`
+at the beginning and the `}` at the end the first characters on their lines.
 
 If you have an existing `ready()` defined, add `random_tile()` to any line of
 this function.
