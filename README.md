@@ -7,25 +7,27 @@ changes the player's display tile using the *tile_player_tile* configuration
 option.
 
 To use this code, you need 1) to include it in your rc file and 2) add or edit
-the ready() function in your rc file.
+the `ready()` function in your rc file.
 
 ## 1. Including RandomTiles in your rc
 
 If you play on the server [CSZO](http://crawl.s-z.org/), you can add the
 following to your rc
 
-   include += RandomTiles.rc
-   include += PlayerTiles.rc
+```
+include += RandomTiles.rc
+include += PlayerTiles.rc
+```
 
-If you don't play on CSZO or you'd like to change either RandomTiles.rc (to set
-options) or PlayerTiles.rc (to add/change the tiles used), copy these files
-into your rc directly. They need to be included before the ready() function
-described below. These files have some basic comments that show how to modify
-them.
+If you don't play on CSZO or you'd like to change either **RandomTiles.rc** (to
+set options) or **PlayerTiles.rc** (to add/change the tiles used), copy these
+files into your rc directly. They need to be included before the ready()
+function described below. These files have some basic comments that show how to
+modify them.
 
 ## 2. Updating the `ready()` function in your rc
 
-A minimal ready() function would be
+A minimal `ready()` function would be
 
 ```lua
 {
