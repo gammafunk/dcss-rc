@@ -1,0 +1,235 @@
+{
+------------------------------------------------
+--------------- BEGIN CONFIGURATION ------------
+------------------------------------------------
+
+-- RandomTile options
+
+randtile_options = {
+  -- Change the tile every N turns
+  turns_change = 100,
+
+  -- If true, print the what tile we're changing to as if it were a
+  -- god message from our current god or the default_god below when we
+  -- have no god. If false, print a more generic message.
+  god_message = true,
+  default_god = "You",
+
+  -- Cute speech string templates.  In these %g is replaced with the
+  -- god name, %am with the monster's name with an article, and %m
+  -- with the monster's name without an article.
+  god_speech = {["You"] = "%g become %am!",
+                -- Used when the god has no entry
+                ["default"] = "%g says: Become %am!",
+                ["Sif Muna"] = "%g whispers: Become %am.",
+                ["Trog"] = "%g roars: Now %m!!!",
+                ["Xom"] = "%g titters: I'd like %am!"},
+
+  -- Colour of tile change message.
+  message_colour = "lightblue"}
+
+------------------------------------------------
+--------------- END CONFIGURATION --------------
+------------------------------------------------
+
+-- state data and functions that shouldn't need modification
+
+-- will be populated the list of tiles that are valid and compatible with our version.
+local valid_tiles = {}
+
+-- state data
+local randtile_state = {index = 0,
+                        last_index_change = -1,
+                        last_variant = -1,
+                        last_xl = -1}
+
+-- populate valid_tiles 
+function init_player_tiles(tiles)
+  -- earliest version with tile_player_tile crawl.version() didn't exist.
+  version = 0.15
+  if crawl.version then
+    version = tonumber(crawl.version("major"))
+  end
+
+  for i,v in ipairs(tiles) do
+    if v.mons
+      and (not v.min_version or version >= tonumber(v.min_version))
+      and (not v.max_version or version <= tonumber(v.max_version)) then
+      valid_tiles[#valid_tiles + 1] = v
+    end
+  end
+end
+
+-- Change the current tile using the tileset entry with the given
+-- index in valid_tiles. This will update the randtile state as necessary.
+  function change_tile(index)
+
+  tileopt = ""
+  index_change = index ~= randtile_state.index
+  if valid_tiles[index].numvar then
+    var_type = valid_tiles[index].var_type
+    if not var_type then
+      var_type = "random"
+    end
+    variant = 1
+    if var_type == "random" 
+      or (var_type == "fixed" and index_change) then
+      variant = crawl.random2(valid_tiles[index].numvar) + 1
+    elseif var_type == "sequence"
+           and not index_change
+           and randtile_state.last_variant >= 1 
+           and randtile_state.last_variant < valid_tiles[index].numvar then
+      variant = randtile_state.last_variant + 1
+    end
+    randtile_state.last_variant = variant
+    -- custom-defined tilesets or an variant set defined by crawl itself.
+    if valid_tiles[index].tileset then
+      tileopt = valid_tiles[index].tileset[variant]
+    elseif valid_tiles[index].tile then
+      if variant == 1 then
+        var_suf = ""
+      else
+        var_suf = "_" .. variant - 1
+      end
+      tileopt = valid_tiles[index].tile .. var_suf
+    end
+    tileopt = "tile:" .. tileopt
+  elseif valid_tiles[index].tile then
+    tileopt = "tile:" .. valid_tiles[index].tile
+  elseif valid_tiles[index].mons then
+    tileopt = "mons:" .. valid_tiles[index].mons
+  end
+
+  if tileopt == "" then
+    return
+  end
+
+  if index_change then
+    randtile_state.index = index
+    randtile_state.last_index_change = you.turns()
+  end
+
+  crawl.setopt("tile_player_tile = " .. tileopt)
+  if valid_tiles[index].weapon_offsets then
+    crawl.setopt("tile_weapon_offsets = "
+      .. valid_tiles[index].weapon_offsets)
+  else
+    crawl.setopt("tile_weapon_offsets = reset")
+  end
+  if valid_tiles[index].shield_offsets then
+    crawl.setopt("tile_shield_offsets = "
+      .. valid_tiles[index].shield_offsets)
+  else
+    crawl.setopt("tile_shield_offsets = reset")
+  end
+
+  if index_change then
+    tile_change_message()
+  end
+end
+
+-- Change the tile by partial match of name to the mons entries in
+-- valid_tiles. Reads name from input if it's not given as an argument.
+function set_tile_by_name(name)
+  if name == nil then
+    crawl.mpr("Enter a tile name search string: ")
+    name = crawl.c_input_line()
+    if not name then
+      return
+    end
+  end
+  first_match = nil
+  name = name:lower()
+  for i,v in ipairs(valid_tiles) do
+    mname = v.mons:lower()
+    if mname == name then
+      first_match = i
+      break
+    elseif mname:find(name) and not first_match then
+      first_match = i
+    end
+  end
+  if first_match then
+    change_tile(first_match)
+  else
+    crawl.mpr("Unable to match a player_tile mons value with " .. name,
+              "error")
+  end
+end
+
+-- Force a tile change
+function new_random_tile()
+  random_tile(true)
+end
+
+-- Checks the randtile state, changing the tile when necessary. A
+-- change of the tile index will cause a tile change message to be
+-- displayed. The tile may be changed to a new tileset variant even if
+-- the index is unchanged, depending on the definition of the current
+-- tileset. If force_change is true, the tile index will always be
+-- changed.
+function random_tile(force_change)
+
+  if not valid_tiles then
+     return
+  end
+  num_tiles = #valid_tiles
+
+  session_start = randtile_state.last_xl < 0
+                  or randtile_state.last_index_change < 0
+  xl_changed = tonumber(you.xl()) ~= randtile_state.last_xl
+  if session_start or xl_changed then
+    randtile_state.last_xl = tonumber(you.xl())
+  end
+
+  turns_passed = tonumber(you.turns()) - randtile_options.turns_change
+  index_changed = force_change or session_start or xl_changed
+                  or turns_passed >= randtile_state.last_index_change
+  if index_changed then
+    index = 1 + crawl.random2(num_tiles)
+   else
+    index = randtile_state.index
+  end
+
+  var_type = "fixed"
+  if valid_tiles[index].numvar
+     and (valid_tiles[index].tile or valid_tiles[index].tileset) then
+    var_type = valid_tiles[index].var_type
+  end
+  if not index_changed and var_type == "fixed" then
+    return
+  end
+
+  -- We are changing the player tile because of an index change or because we
+  -- are using a variant tileset that changes with every UI input.
+  change_tile(index)
+end
+
+-- Print a message about a tile set change
+function tile_change_message()
+  god = you.god()
+  if god == "No God" then
+    god = randtile_options.default_god
+  end
+  if not randtile_options.god_message then
+    god = "You"
+  end
+  if randtile_options.god_speech[god] then
+    msg_template = randtile_options.god_speech[god]
+  else
+    msg_template = randtile_options.god_speech["default"]
+  end
+  msg = msg_template:gsub("%%g", god)
+  amons = crawl.grammar(valid_tiles[randtile_state.index].mons, "A")
+  msg = msg:gsub("%%am", amons)
+  mons = valid_tiles[randtile_state.index].mons
+  mons = mons:gsub("^[tT][hH][eE] ", "")
+  mons = mons:gsub("^[aA][nN]? ", "")
+  msg = msg:gsub("%%m", mons)
+  crawl.mpr("<" .. randtile_options.message_colour .. ">"
+            .. msg .. "</" .. randtile_options.message_colour .. ">")
+end
+
+init_player_tiles(player_tiles)
+
+}

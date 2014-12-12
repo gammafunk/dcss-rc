@@ -1,0 +1,153 @@
+{
+-- An arry of tile entries from wich to randomly choose for random_tile().
+-- New tiles can be added anywhere in this list to be randomly chosen.
+-- Each entry must have a `mons' field with the monster name at a minimum.
+-- The actual tile to use can be come from the fields `mons', `tile',
+-- or `tileset'
+--
+-- If the `mons' to a string like "monster name" but neither `tile' nor
+-- `tileset' fields exist, then the tile is changed equivalent to the command:
+--   tile_player_tile = mons:monster name
+-- If there's a `tile' field with a string like "mons_monster_name",
+-- the tile is changed equivalent to the command:
+--   tile_player_tile = tile:mons_monstername
+-- If there's a `tileset' field with an array of tile strings
+--    {mons = "monster name",
+--     tileset = {"mons_first_tile_name",
+--                "mons_second_tile_name",
+--                "mons_third_tile_name"}}
+-- then one of these is chosen
+-- the tile is changed equivalent to the command:
+--   tile_player_tile = tile:mons_monstername
+
+
+-- If a tile field exists, that tile will be used and mons will be printed as a
+-- descriptive name upon tile change.
+
+
+player_tiles = {
+      {mons = "deep elf demonologist"},
+      {mons = "deep elf blademaster"},
+      {mons = "octopode crusher"},
+-- Beasts
+      {mons = "butterfly", tile = "mons_butterfly", numvar=11},
+      {mons = "torpor snail"},
+      {mons = "shambling mangrove"},
+      {mons = "wandering mushroom"},
+-- Horrible things
+      {mons = "unseen horror"},
+      {mons = "ugly thing", tile = "mons_ugly_thing", numvar = 6},
+      {mons = "very ugly thing", tile = "mons_very_ugly_thing", numvar = 6},
+      {mons = "an X", tile = "mons_abomination_large", numvar = 7,
+       var_type = "fixed"},
+      {mons = "eldritch tentacle", tile = "mons_eldritch_tentacle_portal_9"},
+      {mons = "horrible X", tile = "mons_cigotuvis_monster"},
+      {mons = "demonic plant", tile = "mons_demonic_plant"},
+-- Jellies and eyes
+      {mons = "great orb of eyes"},
+      {mons = "giant orange brain"},
+      {mons = "giant eyeball"},
+      {mons = "golden eye"},
+      {mons = "eye of devastation"},
+      {mons = "shining eye"},
+      {mons = "ooze"},
+      {mons = "jelly"},
+      {mons = "acid blob"},
+      {mons = "azure jelly"},
+      {mons = "death ooze"},
+      {mons = "slime creature", tile = "mons_slime_creature_4"},
+-- Demons
+      {mons = "crimson imp"},
+      {mons = "white imp"},
+      {mons = "chaos spawn", tile = "mons_chaos_spawn", numvar = 5},
+      {mons = "sun demon"},
+      {mons = "sixfirhy"},
+      {mons = "neqoxec"},
+      {mons = "lorocyproca"},
+      {mons = "green death"},
+      {mons = "hellion"},
+      {mons = "cacodemon"},
+      {mons = "executioner"},
+      {mons = "ice fiend"},
+      {mons = "hell sentinel"},
+-- Statues
+      {mons = "orange crystal statue"},
+      {mons = "ice statue"},
+      {mons = "silver statue", max_version = 0.15},
+      {mons = "obsidian statue", min_version = 0.16},
+      {mons = "a Zot statue", tile = "mons_zot_statue"},
+      {mons = "strange machine", tile = "mons_statue_guardian", numvar = 8,
+       var_type = "sequence"},
+-- Abyss
+      {mons = "spatial maelstrom", tile = "mons_spatial_maelstrom", numvar = 4,
+       var_type = "sequence"},
+      {mons = "lurking horror"},
+      {mons = "apocalypse crab"},
+      {mons = "tentacled starspawn"},
+      {mons = "starcursed mass"},
+      {mons = "wretched star"},
+-- Uniques
+      {mons = "Snorg"},
+      {mons = "XTAHUA"},
+      {mons = "Prince Ribbit", weapon_offsets = "5,-3", shield_offsets = "0,0"},
+      {mons = "Asterion"},
+      {mons = "Roxanne"},
+      {mons = "Wiglaf"},
+      {mons = "Dissolution"},
+      {mons = "Jory"},
+      {mons = "the Royal Jelly"},
+      {mons = "Tiamat", tile = "mons_tiamat", numvar = 9},
+      {mons = "The Serpent of Hell",
+       tileset = {"mons_serpent_of_hell_tartarus",
+                  "mons_serpent_of_hell_cocytus",
+                  "mons_serpent_of_hell_dis", 
+                  "mons_serpent_of_hell_gehenna"},
+       numvar = 4},
+      {mons = "Jörmungandr", tile = "mons_jormungandr", min_version=0.16},
+-- Hugetile uniques
+      {mons = "Lernaean Hydra", tile = "mons_lernaean_hydra_9"},
+      {mons = "Ereshkigal", weapon_offsets = "0,-20", shield_offsets = "2,-8"},
+      {mons = "Antaeus"},
+      {mons = "Lom Lobon"},
+      {mons = "Mnoleg"},
+      {mons = "Gloorx Vloq"},
+-- Holies
+      {mons = "seraph"},
+-- Undead
+      {mons = "hungry ghost"},
+      {mons = "ghoul"},
+      {mons = "revenant"},
+      {mons = "shadow"},
+      {mons = "jiangshi", weapon_offsets = "1,3", shield_offsets = "2,2"},
+      {mons = "deathcap"},
+      {mons = "curse skull"},
+      {mons = "curse toe"},
+      {mons = "profane servitor"},
+      {mons = "silent spectre"},
+-- Zot, nonliving
+      {mons = "burning bush"},
+      {mons = "orb of fire"},
+      {mons = "ophan"},
+      {mons = "orb guardian"},
+      {mons = "orb guardian fetus", tile = "mons_orb_guardian_fetus"},
+      {mons = "electric golem"},
+      {mons = "toenail golem"},
+      {mons = "spellforged servitor"},
+      {mons = "flesh golem", tile = "mons_flesh_golem"},
+      {mons = "crystal guardian"},
+      {mons = "elemental wellspring"},
+      {mons = "killer klown", tile = "mons_killer_klown", numvar = 5},
+-- Projectiles and stuff
+      {mons = "orb of destruction", tile = "mons_orb_of_destruction",
+       numvar = 3, var_type = "sequence"},
+      {mons = "fulminant prism", tile = "mons_fulminant_prism", numvar = 4,
+       var_type = "sequence"},
+      {mons = "twister", tile = "mons_twister", numvar = 4,
+       var_type = "sequence"},
+      {mons = "fire vortex", tile = "mons_fire_vortex", numvar = 4,
+       var_type = "sequence"},
+      {mons = "spatial vortex", tile = "mons_spatial_vortex", numvar = 4,
+       var_type = "sequence"},
+      {mons = "block of ice", tile = "mons_block_of_ice", numvar = 2,
+       var_type="fixed"}}
+}
