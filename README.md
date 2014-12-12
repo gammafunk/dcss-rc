@@ -21,9 +21,9 @@ include += PlayerTiles.rc
 
 If you don't play on CSZO or you'd like to change either **RandomTiles.rc** (to
 set options) or **PlayerTiles.rc** (to add/change the tiles used), copy these
-files into your rc directly. They need to be included before the ready()
-function described below. These files have some basic comments that show how to
-modify them.
+files into your rc directly. They need to be included before the `ready()`
+function described below. These two files have some basic comments showing how
+to modify them.
 
 ## 2. Updating the `ready()` function in your rc
 
@@ -38,8 +38,12 @@ A minimal `ready()` function would be
 }
 ```
 
-If you have a `ready()` function defined already, add `random_tile()` to any line
-of the function
+You can copy this code directly into your rc anywhere *after* the
+includes/copies of **PlayerTiles.rc** and **RandomTiles.rc**. Make sure the *{*
+at the beginning and the *}* at the end the first characters on their lines.
+
+If you have an existing `ready()` defined, add `random_tile()` to any line of
+this function.
 
 ## Some helpful macro functions
 
