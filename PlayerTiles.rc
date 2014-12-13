@@ -1,30 +1,63 @@
+## PlayerTiles.rc
+## Defines the set of usable tiles for RandomTiles
+
 {
--- An arry of tile entries from wich to randomly choose for random_tile().
--- New tiles can be added anywhere in this list to be randomly chosen.
--- Each entry must have a `mons' field with the monster name at a minimum.
--- The actual tile to use can be come from the fields `mons', `tile',
--- or `tileset'
---
--- If the `mons' to a string like "monster name" but neither `tile' nor
--- `tileset' fields exist, then the tile is changed equivalent to the command:
+
+-----
+-- player_tiles defines the array of player tiles that RandomTiles chooses
+-- from. New tiles can be added anywhere in this array. Each entry must have a
+-- `mons' field with the monster name at a minimum. The actual tile to use can
+-- be come from the fields `mons', `tile', or `tileset'.
+
+-- The `mons' field should be a string that describes the player tile if `tile'
+-- or `tileset' is used, or the corresponding monster's name if not. If neither
+-- `tile' nor `tileset' are defined, and `mons' has value of e.g. "monster
+-- name", then the tile is changed equivalent to the command:
+
 --   tile_player_tile = mons:monster name
--- If there's a `tile' field with a string like "mons_monster_name",
--- the tile is changed equivalent to the command:
---   tile_player_tile = tile:mons_monstername
--- If there's a `tileset' field with an array of tile strings
---    {mons = "monster name",
---     tileset = {"mons_first_tile_name",
---                "mons_second_tile_name",
---                "mons_third_tile_name"}}
--- then one of these is chosen
--- the tile is changed equivalent to the command:
---   tile_player_tile = tile:mons_monstername
 
+-- If the `mons' value isn't the monster's name or the tile doesn't have a
+-- corresponding monster, the `tile' field must exist and give the tile's
+-- name. The player_name_pairs[] array in the source file
+-- rltiles/tiledef-player.cc defines the names for all player tiles, and only
+-- tiles defined in this file can be used. These are the tiles you see in
+-- crawl's tilesheet file player.png.
 
--- If a tile field exists, that tile will be used and mons will be printed as a
--- descriptive name upon tile change.
+-- When `tile' is defined with a string like "mons_monster_name", the tile is
+-- changed equivalent to the command:
 
+--   tile_player_tile = tile:mons_monster_name
 
+-- For tiles like butterflies with variant tiles, you can set the field
+-- `numvar' to the number of variants. The array _tile_player_count[] in
+-- rltiles/tiledef-player.cc defines how many variants exist for each tile, but
+-- it's easier to look in files/subfolders e.g. rltiles/mon where the
+-- individual tile images and see how many variants a tile has. Since
+-- rltiles/mon/animals has butterfly.png through butterfly10.png, which means
+-- 11 variants, the entry is:
+
+--   {mons = "butterfly", tile = "mons_butterfly", numvar=11},
+
+-- By default RandomTiles chooses a new variant with each UI action (e.g. any
+-- keystroke, even if the player's turn didn't change). Set the field
+-- `var_type' to either "fixed" or "sequence" to change this behaviour. With
+-- "fixed" a single variant is chosen with each tile index change, and with
+-- "sequence" variants are progressed through in order with each UI action.
+
+-- You can define a custom set of variants using the `tileset' field. For
+-- example, here's an entry for the Serpent of Hell:
+
+--   {mons = "The Serpent of Hell",
+--    tileset = {"mons_serpent_of_hell_tartarus",
+--               "mons_serpent_of_hell_cocytus",
+--               "mons_serpent_of_hell_dis", 
+--               "mons_serpent_of_hell_gehenna"},
+--    numvar = 4},
+
+-- These variants are used will be chosen according to the same rules above.
+-----
+
+-- begin player_tiles array
 player_tiles = {
       {mons = "deep elf demonologist"},
       {mons = "deep elf blademaster"},
@@ -150,4 +183,5 @@ player_tiles = {
        var_type = "sequence"},
       {mons = "block of ice", tile = "mons_block_of_ice", numvar = 2,
        var_type="fixed"}}
+
 }
