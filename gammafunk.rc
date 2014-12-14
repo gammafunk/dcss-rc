@@ -281,7 +281,7 @@ item += scroll.*(enchant armour|brand weapon|enchant weapon III):lightgreen
 item += scroll.*(fog|teleport):magenta
 item += scroll.*(fear|blink):lightmagenta
 : if you.race() == "Vampire" or you.race() == "Mummy"
-  or you.race() == "Ghoul" then
+:  or you.race() == "Ghoul" then
   item += scroll.*(holy word):red
   item += scroll.*(torment):lightred
 : else
