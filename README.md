@@ -15,13 +15,14 @@ If you play on the server [CSZO](http://crawl.s-z.org/), you can add the
 following to your rc
 
 ```
-include += RandomTiles.rc
 include += PlayerTiles.rc
+include += RandomTiles.rc
 ```
 
 If you don't play on CSZO or you'd like to change either **RandomTiles.rc** (to
 set options) or **PlayerTiles.rc** (to add/change the tiles used), copy these
-files into your rc directly. They need to be included before the `ready()`
+files into your rc directly. They need to be copied so the PlayerTiles.rc code
+is before the RandomTiles.rc code, and both must come before the `ready()`
 function described below. These two files have some basic comments showing how
 to modify them.
 
@@ -59,4 +60,3 @@ chosen one.
 To bind either of these functions to a key, use *~* or *Ctrl-d* followed by
 *m*, and then enter `===set_tile_by_name` or `===new_random_tile` depending on
 which function you want.
-   
