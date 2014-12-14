@@ -62,11 +62,11 @@ end
 
 -- Change the current tile using the tileset entry with the given
 -- index in valid_tiles. This will update the randtile state as necessary.
-  function change_tile(index)
+function change_tile(index, force)
 
   tileopt = ""
-  index_change = index ~= randtile_state.index
-  if valid_tiles[index].numvar then
+  index_change = force or index ~= randtile_state.index
+  if valid_tiles[index].num_var then
     var_type = valid_tiles[index].var_type
     if not var_type then
       var_type = "random"
@@ -74,11 +74,11 @@ end
     variant = 1
     if var_type == "random" 
       or (var_type == "fixed" and index_change) then
-      variant = crawl.random2(valid_tiles[index].numvar) + 1
+      variant = crawl.random2(valid_tiles[index].num_var) + 1
     elseif var_type == "sequence"
            and not index_change
            and randtile_state.last_variant >= 1 
-           and randtile_state.last_variant < valid_tiles[index].numvar then
+           and randtile_state.last_variant < valid_tiles[index].num_var then
       variant = randtile_state.last_variant + 1
     end
     randtile_state.last_variant = variant
@@ -150,7 +150,7 @@ function set_tile_by_name(name)
     end
   end
   if first_match then
-    change_tile(first_match)
+    change_tile(first_match, true)
   else
     crawl.mpr("Unable to match a player_tile mons value with " .. name,
               "error")
@@ -192,7 +192,7 @@ function random_tile(force_change)
   end
 
   var_type = "fixed"
-  if valid_tiles[index].numvar
+  if valid_tiles[index].num_var
      and (valid_tiles[index].tile or valid_tiles[index].tileset) then
     var_type = valid_tiles[index].var_type
   end
