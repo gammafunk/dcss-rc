@@ -339,15 +339,15 @@ item += evil_item:red
 ## Some ideas take from rchandra/simmarine
 mons := mon_glyph
 
-## ## Can assume 0.15 or below, which is last version with mimic enemies
-## : if not crawl.version then
-## mons ^= item mimic : lightblue x
-## mons ^= feature mimic : lightblue x
-## mons ^= inept item mimic : lightgreen x
-## mons ^= inept feature mimic : lightgreen x
-## mons ^= ravenous item mimic : lightred x
-## mons ^= ravenous feature mimic : lightred x
-## : end
+## mimic enemies were removed in 0.16
+: if not crawl.version then
+mons ^= item mimic : lightblue x
+mons ^= feature mimic : lightblue x
+mons ^= inept item mimic : lightgreen x
+mons ^= inept feature mimic : lightgreen x
+mons ^= ravenous item mimic : lightred x
+mons ^= ravenous feature mimic : lightred x
+: end
 
 mons ^= dancing weapon : cyan {
 mons ^= dancing weapon : cyan {
