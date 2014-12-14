@@ -1,0 +1,868 @@
+# Crawl Init file
+
+###################
+### RandomTiles ###
+###################
+
+## To set up RandomTiles, you need (1) the includes below and (2) to add/modify
+## the ready() function in your rc. See my ready() section below and the
+## project page: https://github.com/gammafunk/RandomTiles
+
+include += PlayerTiles.rc
+include += RandomTiles.rc
+
+##############################
+### Tiles and view options ###
+##############################
+
+tile_window_width = 1300
+tile_window_height = 700
+tile_full_screen = false
+#tile_player_tile = playermons
+show_player_species = true
+view_delay = 0
+bindkey = [~] CMD_LUA_CONSOLE
+
+######################
+### Morgue options ###
+######################
+
+dump_message_count = 30
+dump_order  = header,hiscore,stats,misc,mutations,skills,spells,inventory
+dump_order += screenshot,monlist,messages,action_counts,vaults,notes,kills
+note_hp_percent = 10
+note_all_skill_levels = true
+note_chat_messages = false
+user_note_prefix = >>
+
+##############################
+### Travel-related options ###
+##############################
+
+travel_delay = -1
+explore_delay = -1
+rest_delay = -1
+auto_exclude += oklob,statue,curse skull,roxanne,hyperactive,lightning spire,mimic
+explore_stop = items,greedy_items,greedy_pickup,greedy_pickup_gold
+explore_stop += greedy_visited_item_stack,stairs,shops,altars,gates
+explore_stop += greedy_sacrificeable
+
+runrest_ignore_poison  = 2:30
+runrest_ignore_monster += ^butterfly$:1
+show_travel_trail = true
+trapwalk_safe_hp = dart:20,needle:15,arrow:35,bolt:45,spear:40,blade:95
+
+: if you.god() ~= "Nemelex Xobeh" and you.god() ~= "Elyvilon"
+:   and you.god() ~= "No God"  then
+auto_sacrifice = before_explore
+: else
+auto_sacrifice = true
+: end
+
+## runrest messages
+stop := runrest_stop_message
+stop =
+ignore := runrest_ignore_message
+ignore =
+
+# Annoyances
+ignore += Jiyva gurgles merrily
+ignore += Jiyva appreciates your sacrifice
+ignore += Jiyva says: Divide and consume
+ignore += You hear.*splatter
+ignore += You feel.*sick
+ignore += disappears in a puff of smoke
+ignore += engulfed in a cloud of smoke
+ignore += standing in the rain
+ignore += safely over a trap
+ignore += A.*toadstool withers and dies
+ignore += toadstools? grow
+ignore += You walk carefully through the
+ignore += grinding sound
+ignore += contamination has completely
+ignore += chunks of flesh in your inventory.*rotted away
+ignore += lightning rod has recharged
+ignore += your breath back
+
+# Bad things
+stop += found.*trap
+stop += You fall through a shaft
+stop += An alarm trap emits a blaring wail
+stop += (blundered into a|invokes the power of) Zot
+stop += A huge blade swings out and slices into you
+stop += sense of stasis
+stop += flesh start
+stop += (starving|devoid of blood)
+stop += wrath finds you
+stop += lose consciousness
+
+# Expiring effects
+stop += You feel yourself slow down
+stop += less insulated
+stop += You are starting to lose your buoyancy
+stop += You lose control over your flight
+stop += Your hearing returns
+stop += Your transformation is almost over
+stop += back to life
+stop += uncertain
+stop += time is quickly running out
+stop += life is in your own hands
+stop += is no longer charmed
+
+: if you.race() == "Ghoul" then
+stop += smell.*(rott(ing|en)|decay)
+stop += something tasty in your inventory
+: end
+
+:if you.god() == "Xom" then
+stop += god:
+:else
+ignore += god:
+:end
+
+ignore += pray:
+ignore += talk:
+ignore += talk_visual:
+ignore += friend_spell:
+ignore += friend_enchant:
+ignore += friend_action:
+ignore += sound:
+
+
+####################
+### Menu options ###
+####################
+
+drop_filter += useless_item
+
+### Menu colorings ###
+## These should match the item_glyph colours exactly when possible.
+menu := menu_colour
+menu =
+
+### General colorings ###
+
+## These two need to come first to override any entries below.
+menu += darkgrey:.*useless.*
+menu += red:.*evil_item.*
+menu += pickup:lightcyan:god gift
+menu += inventory:white:\w \#\s
+menu += notes:white:Reached XP level
+menu += inventory:white:\w \+\s
+menu += inventory:white:\w \#\s
+menu += darkgrey:(melded)
+menu += lightred: cursed
+menu += inventory:lightgreen:.*equipped.*
+menu += white:.*artefact.*
+
+## Not needed in 0.16+
+menu += lightblue:^unidentified .*(potion|scroll|wand|jewellery|book|rod|magical staff).*
+menu += lightblue:^unidentified .*weapon.*(runed|glowing)
+menu += lightblue:^unidentified .*armour.*(runed|glowing|embroidered|shiny|dyed)
+
+### Food ###
+menu += red:evil_eating.*chunk
+menu += magenta:mutagenic.*chunk
+menu += green:poisonous.*chunk
+menu += darkgrey:(rotting.*chunk|inedible|rot-inducing)
+menu += brown:contaminated.*chunk
+menu += lightgrey: +(chunks?$|chunks? +)
+menu += green:(strawberr|grape|sultana)
+## The entries for pears/oranges cover items on the ground as well as in-menu.
+menu += brown:( +pears?$| +pears?  +|apple|apricot|choko|lychee|rambutan|fruit)
+menu += yellow:( +oranges?$| +oranges?  +|banana|lemon|pizza|sausage|snozz|jerky|jerkies|cheese|honeycomb|royal jell)
+
+## ambrosia was food in <= 0.14 iirc
+: if not crawl.version then
+menu += lightcyan:ambrosia
+: end
+menu += lightcyan:(meat ration|bread ration)
+
+### Potions ###
+menu += darkgrey:potions? of.*(poison)
+## buffs
+menu += green:potions? of.*(berserk|agility|brilliance|might|flight)
+menu += lightgreen:potions? of.*(resistance|invisibility|haste)
+## healing
+menu += brown:potions? of.*curing
+menu += yellow:potions? of.*heal wounds
+## "magic"
+menu += magenta:potions? of.*(cancellation|ambrosia)
+menu += lightmagenta:potions? of.*magic
+## "really good" or restorative
+menu += cyan:potions? of.*(restore abilities|cure mutation)
+menu += lightcyan:potions? of.*(beneficial mutation|experience)
+## food potions
+: if you.race() == "Vampire" then
+  menu += lightred:potions? of blood
+  menu += lightgrey:potions? of coagulated blood
+: else
+  menu += darkgrey:potions? of.*blood
+  menu += lightred:potions? of.*porridge
+: end
+
+### Scrolls ###
+## "equipment/spells"
+menu += brown:scroll.*(amnesia|curse)
+menu += yellow:scroll.*(identify)
+## Enchant
+menu += green:scroll.*enchant weapon
+menu += lightgreen:scroll.*(enchant armour|brand weapon|enchant weapon III)
+## Escape
+menu += magenta:scroll.*(fog|teleport)
+menu += lightmagenta:scroll.*(fear|blink)
+## Damaging scrolls
+: if you.race() == "Vampire" or you.race() == "Mummy"
+:   or you.race() == "Ghoul" then
+  menu += blue:scroll.*(holy word)
+  menu += lightred:scroll.*(torment)
+: else
+  menu += lightred:scroll.*(holy word)
+  menu += blue:scroll.*(torment)
+: end
+menu += lightred:scroll.*summoning
+## tactical and the really good stuff (mmap for speedruns)
+menu += cyan:scroll.*(silence|noise|vulnerability|immolation)
+menu += lightcyan:scroll.*(acquire|recharging|magic map)
+
+### Wands ###
+menu += lightcyan:wand of.*heal wounds
+## hexes
+menu += green:wand of.*(slowing|confusion|random effects)
+menu += lightgreen:wand of.*(polymorph|paralysis|enslavement)
+## escape
+menu += magenta:wand of.*(digging|disintegration|teleportation)
+menu += lightmagenta:wand of.*(hasting|invisibility)
+## damage
+menu += brown:wand of.*(flame|frost|magic dart)
+menu += yellow:wand of.*(lightning|draining|cold|fire)
+menu += blue:.*dangerous_item.*
+
+prefer_safe_chunks     = true
+show_inventory_weights = true
+auto_drop_chunks       = yes
+sort_menus += inv: true : equipped, freshness, charged
+
+########################
+### Glyphs and colors ##
+########################
+
+item := item_glyph
+
+## Reasonable defaults
+item += potion:lightgrey
+item += scroll:lightgrey
+item += dangerous_item:blue
+
+### Potions ###
+item += potions? of.*(poison):darkgrey
+item += potions? of.*(berserk|agility|brilliance|might|flight):green
+item += potions? of.*(resistance|invisibility|haste):lightgreen
+item += potions? of.*(cancellation|ambrosia):magenta
+item += potions? of.*magic:lightmagenta
+item += potions? of.*heal wounds:yellow
+item += potions? of.*curing:brown
+item += potions? of.*(restore abilities|cure mutation):cyan
+item += potions? of.*(beneficial mutation|experience):lightcyan
+: if you.race() == "Vampire" then
+  item += potions? of blood:lightred
+  item += potions? of coagulated blood:lightgrey
+  item += potions? of.*porridge:darkgrey
+: else
+  item += potions? of.*porridge:lightred
+  item += potions? of.*blood:darkgrey
+: end
+
+### Scrolls ###
+item += scroll.*(amnesia|curse):brown
+item += scroll.*identify:yellow
+item += scroll.*enchant weapon:green
+item += scroll.*(enchant armour|brand weapon|enchant weapon III):lightgreen
+item += scroll.*(fog|teleport):magenta
+item += scroll.*(fear|blink):lightmagenta
+: if you.race() == "Vampire" or you.race() == "Mummy"
+  or you.race() == "Ghoul" then
+  item += scroll.*(holy word):red
+  item += scroll.*(torment):lightred
+: else
+  item += scroll.*(holy word):lightred
+  item += scroll.*(torment):red
+: end
+item += scroll.*(summoning):lightred
+item += scroll.*(vulnerability|noise|silence|immolation):cyan
+item += scroll.*(acquire|recharging|magic map):lightcyan
+item += (book|jewellery|magical staff).*:magenta
+item += .*tome of.*:blue
+item += ( rod ) :yellow
+## This mapping is 0.16+
+: if not crawl.version then
+item += ( rod ) : \
+:end
+item += useless.*(potion|scroll|missile|armour|weapon|jewellery|rod):darkgrey
+item += unidentified.*(potion|scroll|book|jewellery|wand|rod|magical staff).*:lightblue
+
+item += (a )?stones?$:lightgray
+
+### Food ###
+## These are 0.16+
+: if not crawl.version then
+item += skeleton: ÷
+item += corpse:   †
+:end
+
+item += chunks?.*flesh:lightgrey
+item += contaminated.*chunk:brown
+item += mutagenic.*chunk:magenta
+item += evil_eating.*chunk:red
+item += (inedible|rotting.*chunk):darkgrey
+item += poisonous.*chunk:green
+item += (strawberry|grape|sultana):brown
+item += ( +pears?$|apple|apricot|choko|lychee|rambutan|fruit):brown
+item += ( +oranges?$|banana|lemon|pizza|sausage|snozz|jerky|jerkies|cheese|honeycomb|royal jell):yellow
+item += (meat ration|bread ration):lightcyan
+: if not crawl.version then
+item += ambrosia:lightcyan
+:end
+
+### Wands ###
+item += wand of.*heal wounds:lightcyan
+item += wand of.*(slowing|confusion|random effects):green
+item += wand of.*(polymorph|paralysis|enslavement):lightgreen
+item += wand of.*(digging|disintegration|teleportation):magenta
+item += wand of.*(hasting|invisibility):lightmagenta
+item += wand of.*(flame|frost|magic dart):brown
+item += wand of.*(lightning|draining|cold|fire):yellow
+
+## Want this to override anything above, since using these can cause pennance.
+item += evil_item:red
+
+## Some ideas take from rchandra/simmarine
+mons := mon_glyph
+
+## ## Can assume 0.15 or below, which is last version with mimic enemies
+## : if not crawl.version then
+## mons ^= item mimic : lightblue x
+## mons ^= feature mimic : lightblue x
+## mons ^= inept item mimic : lightgreen x
+## mons ^= inept feature mimic : lightgreen x
+## mons ^= ravenous item mimic : lightred x
+## mons ^= ravenous feature mimic : lightred x
+## : end
+
+mons ^= dancing weapon : cyan {
+mons ^= dancing weapon : cyan {
+mons ^= spectral weapon : lightcyan {
+
+## Wall glyphs, requires a font and terminal that can render these.
+feature += green crystal {x2591}
+feature += stone wall {x2592}
+feature += metal wall {x2593}
+feature += unnaturally hard rock wall {x2588}
+
+#########################
+### Interface options ###
+#########################
+
+default_manual_training = true
+show_gold_turns = true
+show_game_turns = true
+allow_self_target = prompt
+
+# Spellcasting spam reduction by monqy
+{
+local function generic_cast_spell(cmd)
+  crawl.mpr('<cyan>Cast which spell?</cyan>')
+  crawl.flush_prev_message()
+  crawl.process_keys(cmd)
+end
+
+function cast_spell()
+  generic_cast_spell('z')
+end
+
+function force_cast_spell()
+  generic_cast_spell('Z')
+end
+}
+
+########################
+### Auotpick options ###
+########################
+
+autopickup = $?!+"/%|
+
+## From
+ae := autopickup_exceptions
+ae =
+
+ae += useless_item
+ae += evil_item
+ae += amulet of (inaccuracy|the gourmand|controlled flight|warding|stasis)
+ae += amulet of (resist .*|clarity|rage|conservation|guardian spirit|faith)
+ae += ring of (see invisible|flight|poison resistance|teleportation)
+ae += ring of (invisibility|teleport control)
+ae += ring of (sustain abilities|sustenance|wizardry|life protection)
+
+: if you.race() ~= "Vampire" then
+ae += potion of blood
+: end
+ae += staff of .*
+
+: if you.race() == "Vampire" or you.race() == "Mummy"
+:   or you.race() == "Ghoul" then
+  ae += scroll.*(holy word)
+: else
+  ae += scroll.*(torment)
+: end
+
+default_friendly_pickup = none
+autopickup_no_burden = true
+
+######################
+## ready() function ##
+######################
+
+{
+local need_skills_opened = true
+local dump_count = you.turns()
+
+function ready()
+  -- Enable RandomTiles.
+  random_tile()
+
+  -- Show skill screen at game start.
+  if you.turns() == 0 and need_skills_opened then
+    need_skills_opened = false
+    crawl.sendkeys("m")
+  end
+
+  -- Make a char dump every 1k turns.
+  if you.turns() >= dump_count then
+    dump_count = dump_count + 1000
+    crawl.dump_char()
+  end
+end
+
+}
+## ready()
+
+####################
+### Autoinscribe ###
+####################
+
+autoinscribe += (bad|dangerous)_item.*potion:!q
+autoinscribe += potion.*(berserk rage|strong poison):!q
+autoinscribe += (bad|dangerous)_item.*scroll:!r
+autoinscribe += of faith:!P
+autoinscribe += ( rod ):!a
+autoinscribe += manual of:!d
+autoinscribe += staff of (Wucad Mu|energy|channeling|wizardry|power):!a
+: if not crawl.version then
+autoinscribe += ambrosia:!e
+: end
+autoinscribe += (bread|meat) ration:!e
+autoinscribe += scroll.+of.*(acquirement|vulnerability|summoning|teleportation|silence|fear|magic mapping|holy word|torment):!r
+autoinscribe += potion.+of (might|brilliance|cancellation|cure mutation|restore abilities|magic|resistance|haste|invisibility|porridge):!q
+
+## No more chunk sublim in 0.16
+: if not crawl.version then
+: if you.race() == "Vampire" then
+autoinscribe += of blood:@*1
+autoinscribe += of coagulated blood:@*2
+autoinscribe += chunks? of:@*3
+: else
+autoinscribe += chunks? of:@*1
+: end
+: end
+
+: if you.god() == "Fedhas" then
+autoinscribe += fruit:!e
+: end
+
+
+###################
+# Message colours #
+###################
+
+### standard colours to be used for message highlighting
+$danger   := lightred
+$warning  := yellow
+$boring   := darkgrey
+$item_dmg := $danger
+
+msc := message_colour
+msc =
+
+# Multi-turn
+channel.multiturn = mute
+
+# Allies
+msc += mute:returns to your side
+msc += mute:a demon appears
+msc += mute:puff of smoke
+msc += mute:carefully avoids
+msc += mute:is recalled
+msc += mute:wall.*burn.*your
+msc += mute:dissolves? into (sparkling lights|shadows)
+msc += mute:you swap places
+msc += mute:your.*(looks stronger|shudders|resists)
+msc += mute:(stumbles backwards|holds.*ground)
+msc += mute:(something|your).*(misses|does no damage)
+msc += mute:your.*(blinks|safely over|gestures)
+msc += mute:(phases out.*|misses) (your|something).*
+msc += mute:your.*but does no damage
+msc += mute:your.*(picks up|drops)
+msc += mute:your.*basks in the mutagenic energy
+
+msc += mute:constricts?.*no damage
+
+# Prayer
+channel.pray += mute
+
+# Jiyva
+: if you.god() == "Jiyva" then
+msc += mute:slurping|squelching
+msc += mute:splits in two
+msc += mute:You feel.*(less hungry|power returning|better)
+: end
+
+# Interface
+msc += mute:Cast which spell\? \(
+msc += mute:^Casting.*
+msc += mute:Confirm with \. or Enter, or press \? or \* to list all spells\.
+msc += mute:Press\: \? - help, Shift-Dir - straight line, f - you
+msc += mute:for a list of commands and other information
+msc += mute:melds.*
+msc += mute:Switching to.*
+msc += mute:Switching back.*
+
+# Other
+msc += mute:This raw flesh tastes terrible
+msc += mute:melds into your body
+msc += mute:begins to bleed from.*wounds
+msc += mute:writhes in agony as.*flesh
+msc += mute:An air elemental.*itself.*the air
+msc += mute:You feel a.*surge of power
+msc += mute:Your legs become a tail as you enter the water
+msc += mute:You cannot train any new skill
+
+# Default colours
+msc += $danger:drains you
+msc += $danger:feel drained
+msc += $danger:strangely unstable
+msc += $danger:curare-tipped.*hits you
+msc += $danger:Space warps.* around you
+msc += $danger:Space bends around you
+msc += $danger:sense of stasis
+msc += $danger:clumsily bash
+msc += $danger:goes berserk
+msc += $danger:Forgetting.* will destroy the book
+msc += $danger:The blast of calcifying dust hits you
+msc += $danger:You are engulfed in calcifying dust
+msc += $danger:is moving more slowly
+msc += $danger:^It .* you
+msc += $danger:You block its attack
+msc += $danger:constricts you
+msc += $danger:you convulse
+msc += $danger:You feel a build-up of mutagenic energy
+
+msc += $item_dmg:acid corrodes
+msc += $item_dmg:catch(es)? fire
+msc += $item_dmg:freezes? and shatters?
+msc += $item_dmg:covered with spores
+msc += $item_dmg:devours some of your food
+msc += $item_dmg:rots? away
+
+msc += $warning:ticking.*clock
+msc += $warning:dying ticks
+msc += $warning:distant snort
+msc += $warning:odd grinding sound
+msc += $warning:creaking of ancient gears
+msc += $warning:floor suddenly vibrates
+msc += $warning:a sudden draft
+msc += $warning:coins.*counted
+msc += $warning:tolling.*bell
+msc += $warning:roar of battle
+msc += $warning:creaking.*oriflamme
+msc += $warning:oriflamme is probably
+msc += $warning:wave of frost
+msc += $warning:crackling.*melting
+msc += $warning:hiss.*sand
+msc += $warning:sound.*rushing water
+msc += $warning:rusting.*drain
+msc += $warning:drain falling apart
+msc += $warning:oppressive heat
+msc += $warning:rumble.*avalanche of rocks
+msc += $warning:crackle.*arcane power
+msc += $warning:crackle.*magical portal
+msc += $warning:fails to return
+msc += $warning:no longer ripe
+
+msc += $boring:You start (resting|waiting)
+msc += $boring:Unknown command
+msc += $boring:but (do no|doesn't do any) damage
+msc += $boring:(prevent|prevents) you from hitting
+
+#####################
+### More messages ###
+#####################
+
+more := force_more_message
+more =
+
+# Important features
+: if you.god() == "Ashenzari" then
+more += You have a vision of.*gates?
+: else
+more += interdimensional caravan
+more += distant snort
+more += Found a gateway leading out of the Abyss
+: end
+more += Found .* abyssal rune of Zot
+more += You feel a terrible weight on your shoulders
+
+# Interrupts
+more += You don't.* that spell
+more += You fail to use your ability
+more += You miscast
+more += You can't (read|drink|do) that
+more += That item cannot be evoked
+more += This wand has no charges
+more += You are held in a net
+more += You have disarmed
+more += You don't have any such object
+more += do not work when you're silenced
+more += You can't unwield
+more += enough magic points
+more += You feel your control is inadequate
+
+# Bad things
+more += Your surroundings flicker
+more += sense of stasis
+more += Your amulet of stasis
+more += You cannot teleport right now
+more += The writing blurs in front of your eyes
+more += You fall through a shaft
+more += A huge blade swings out and slices into you
+more += (blundered into a|invokes the power of) Zot
+more += Ouch! That really hurt!
+more += dispelling energy hits you
+more += You convulse
+more += You are blasted by holy energy!
+more += You are (blasted|electrocuted)!
+more += You are.*(confused|poisoned)
+more += flesh start
+more += (starving|devoid of blood)
+more += wrath finds you
+more += lose consciousness
+more += You are too injured to fight blindly
+more += Green shoots are pushing up through the earth
+more += calcifying dust hits
+more += Space warps horribly around you
+more += hits you.*distortion
+more += Space bends around you\.
+more += watched by something
+more += The dungeon rumbles around
+more += The air twists around and violently strikes you in flight
+
+# Hell effects
+more += You will not leave this place
+more += Die\, mortal
+more += We do not forgive those who trespass against us
+more += Trespassers are not welcome here
+more += You do not belong in this place
+more += Leave now\, before it is too late
+more += We have you now
+more += You smell brimstone
+more += Brimstone rains from above
+more += You feel lost and a long\, long way from home
+more += You shiver with fear
+more += You feel a terrible foreboding
+more += Something frightening happens
+more += You sense an ancient evil watching you
+more += You suddenly feel all small and vulnerable
+more += You sense a hostile presence
+more += A gut-wrenching scream fills the air
+more += You hear words spoken in a strange and terrible language
+more += You hear diabolical laughter
+
+# Expiring effects
+more += You feel yourself slow down
+more += less insulated
+more += You are starting to lose your buoyancy
+more += You lose control over your flight
+more += Your hearing returns
+more += Your transformation is almost over
+more += You have a feeling this form
+more += You feel yourself come back to life
+more += uncertain
+more += time is quickly running out
+more += life is in your own hands
+more += is no longer charmed
+more += shroud falls apart
+more += You start to feel a little slower
+
+# Others
+more += You have reached level
+more += You have finished your manual of
+more += Your scales start
+more += You feel monstrous
+more += Jiyva alters your body
+: if you.god() == "Xom" then
+more += god:
+: end
+
+more += Deactivating autopickup
+more += oklob.*come
+
+more += (Agnes|Aizul|Antaeus|Asmodeus|Asterion|Azrael|Blork the orc|Boris|Cerebov|Crazy Yiuf|Dispater|Dissolution|Donald|Dowan|Duvessa|Edmund|the Enchantress|Ereshkigal|Erica|Erolcha|Eustachio|Fannar|Frances|Frederick|Gastronok|Geryon|Gloorx Vloq|Grinder|Grum|Harold|Ignacio|Ijyb|Ilsuiw|Jessica|Jorgrun|Jory|Joseph|Josephine|Khufu|Kirke|Lamia|the Lernaean hydra|Lom Lobon|Louise|Mara|Margery|Maud|Maurice|Menkaure|Mennas|Mnoleg|Murray|Natasha|Nergalle|Nessos|Nikola|Norris|Pikel|Plog|Polyphemus|Prince Ribbit|Psyche|Purgy|Robin|Roxanne|the royal jelly|Rupert|Saint Roka|the Serpent of Hell|Sigmund|Snorg|Sonja|Terence|Tiamat|Urug|Vashnia|Wiglaf|Xtahua).*into view
+
+note_items    += rod of, acquirement, preservation, running, of Zot
+note_messages += You pass through the gate
+note_messages += cast .* Abyss
+note_messages += Your scales start
+note_messages += protects you from harm
+note_messages += You fall through a shaft
+note_monsters += orb of fire, ancient lich, Sigmund
+
+###################
+### Spell slots ###
+###################
+
+# Utility spells
+spell_slot += Abjuration:jJA
+spell_slot += Aura of abjuration:jJA
+spell_slot += Apportation:aAP
+spell_slot += Borgnjor's revivification:BNV
+spell_slot += Blink:KBI
+spell_slot += Cigotuvi's Embrace:gie
+spell_slot += Condensation shield:ieO
+spell_slot += Control teleport:ELP
+spell_slot += Controlled blink:iCB
+spell_slot += Cure poison:ieP
+spell_slot += Darkness:DES
+spell_slot += Death's door:DOT
+spell_slot += Deflect missiles:rRD
+spell_slot += Flight:lLF
+spell_slot += Haste:hHA
+spell_slot += Infusion:iIV
+spell_slot += Invisibility:iIV
+spell_slot += Mass abjuration:jJM
+spell_slot += Ozocubu's armour:zmO
+spell_slot += Passage of golubria:giG
+spell_slot += Passwall:sqP
+spell_slot += Phase shift:ieP
+spell_slot += Repel missiles:rRE
+spell_slot += Ring of flames:meF
+spell_slot += Recall:eER
+spell_slot += Regeneration:geG
+spell_slot += Silence:SIC
+spell_slot += Shroud of golubria:giG
+spell_slot += Song of slaying:igG
+spell_slot += Sublimation of blood:BMN
+spell_slot += Swiftness:sST
+spell_slot += Stoneskin:ieT
+spell_slot += Summon butterflies:UBT
+
+# Transformations
+spell_slot += Beastly appendage:btB
+spell_slot += Blade hands:bdB
+spell_slot += Dragon form:doD
+spell_slot += Ice form:ctF
+spell_slot += Necromutation:ntN
+spell_slot += Spider form:pdS
+spell_slot += Statue form:toS
+
+# Low-level offensive spells
+spell_slot += Animate dead:dnm
+spell_slot += Animate skeleton:knt
+spell_slot += Call canine familiar:fuc
+spell_slot += Call imp:dup
+spell_slot += Confusing touch:ctx
+spell_slot += Confuse:cof
+spell_slot += Conjure flame:foj
+spell_slot += Corpse rot:ont
+spell_slot += Ensorcelled hibernation:zbt
+spell_slot += Freeze:zcf
+spell_slot += Flame tongue:fto
+spell_slot += Magic dart:zdt
+spell_slot += Mephitic cloud:cpd
+spell_slot += Pain:znp
+spell_slot += Portal projectile:toj
+spell_slot += Sandblast:zbt
+spell_slot += Searing ray:ynG
+spell_slot += Shock:zok
+spell_slot += Slow:wox
+spell_slot += Spectral weapon:wtx
+spell_slot += Static discharge:tdc
+spell_slot += Sticks to snakes:tkc
+spell_slot += Sting:zpt
+spell_slot += Stone arrow:wto
+spell_slot += Summon small mammal:zuo
+spell_slot += Throw frost:tfo
+spell_slot += Throw flame:tfo
+spell_slot += Vampiric draining:vdn
+
+# Mid-level offensive
+spell_slot += Airstrike:ktT
+spell_slot += Agony:yno
+spell_slot += Bolt of magma:bfo
+spell_slot += Cause fear:fxc
+spell_slot += Control undead:ctn
+spell_slot += Dispel undead:dpn
+spell_slot += Fireball:fbF
+spell_slot += Gell's Gravitas:vtG
+spell_slot += Irradiate:tdI
+spell_slot += Iskenderun's mystic blast:byk
+spell_slot += Lee's rapid deconstruction:dtc
+spell_slot += Petrify:ytx
+spell_slot += Shadow creatures:wdu
+spell_slot += Sticky flame:yfk
+spell_slot += Summon scorpions:pou
+spell_slot += Summon ice:bcu
+spell_slot += Summon demon:don
+spell_slot += Summon forest:tou
+spell_slot += Summon guardian golem:dou
+spell_slot += Summon lightning spire:tpu
+spell_slot += Summon mana viper:vpu
+spell_slot += Throw icicle:ctw
+spell_slot += Venom bolt:btp
+
+# High-level offensive
+spell_slot += Alistair's intoxication:tpo
+spell_slot += Bolt of fire:bfo
+spell_slot += Bolt of cold:bco
+spell_slot += Bolt of draining:bdn
+spell_slot += Chain lightning:toc
+spell_slot += Cigutovi's embrace:vut
+spell_slot += Discord:dcx
+spell_slot += Dispersal:dpx
+spell_slot += Dragon's call:doc
+spell_slot += Fire storm:fto
+spell_slot += Forcefull dismissal:dou
+spell_slot += Freezing cloud:czd
+spell_slot += Glaciate:ctC
+spell_slot += Haunt:ntu
+spell_slot += Ice storm:cot
+spell_slot += Iron shot:ton
+spell_slot += Lehudib's crystal spear:cyt
+spell_slot += Lightning bolt:bto
+spell_slot += Malign gateway:wty
+spell_slot += Monstrous menagerie:uto
+spell_slot += Orb of destruction:odt
+spell_slot += Ozocubu's prefrigeration:ozc
+spell_slot += Poison arrow:pwo
+spell_slot += Poisonous cloud:pod
+spell_slot += Shatter:TSH
+spell_slot += Simulacrum:cun
+spell_slot += Singularity:yut
+spell_slot += Spellforged servitor:vto
+spell_slot += Summon dragon:duo
+spell_slot += Summon greater demon:dtu
+spell_slot += Summon horrible:xuo
+spell_slot += Summon hydra:ydu
+spell_slot += Summon ugly:uyo
+spell_slot += Tornado:TOD
+
+# Default letters
+spell_slot += .*:YXWZ
