@@ -47,7 +47,7 @@ respective lines.
 If you have an existing `ready()` defined, add `random_tile()` to any line of
 this function.
 
-## Some helpful macro functions
+## Macro functions to change tiles
 
 The function `set_tile_by_name()` will prompt for a monster name defined in
 PlayerTiles.rc and then change your tile to the matching monster. Note that
@@ -60,3 +60,15 @@ chosen one.
 To bind either of these functions to a key, use *~* or *Ctrl-d* followed by
 *m*, and then enter `===set_tile_by_name` or `===new_random_tile` depending on
 which function you want.
+
+## Macro functions for toggling RandomTiles
+
+The function `toggle_random_tiles()` will toggle RandomTiles between enabled
+and disabled states. When disabled, RandomTiles sets `tile_player_tile` to the
+value in `randtile_options.disabled_setting`, which is "normal" by default.
+
+The function `toggle_tile_timer()` will toggle the tile change timer between
+enabled and disabled states. When the timer is disabled, RandomTiles doesn't
+change tile as turns pass or your XL changes. Hence your tile is fixed to the
+current one, but you can still use `set_tile_by_name()` and `new_random_tile()`
+to modify it.

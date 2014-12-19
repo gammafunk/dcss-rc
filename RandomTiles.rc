@@ -1,33 +1,43 @@
 {
 
+-- RandomTiles.rc
+-- Automatic, random player tile changes for DCSS
+
 ------------------------------------------------
 --------------- BEGIN CONFIGURATION ------------
 ------------------------------------------------
 
 -- RandomTile options
+-- If you set randtile_options elsewhere in your rc,  we don't override it.
+if not randtile_options then
+   randtile_options = {
+      -- Change the tile every N turns
+      turns_change = 100,
 
-randtile_options = {
-   -- Change the tile every N turns
-   turns_change = 100,
-   
-   -- If true, print the what tile we're changing to as if it were a
-   -- god message from our current god or the default_god below when we
-   -- have no god. If false, print a more generic message.
-   god_message = true,
-   default_god = "You",
-   
-   -- Cute speech string templates.  In these %g is replaced with the
-   -- god name, %am with the monster's name with an article, and %m
-   -- with the monster's name without an article.
-   god_speech = {["You"] = "%g become %am!",
-      -- Used when the god has no entry
-      ["default"] = "%g says: Become %am!",
-      ["Sif Muna"] = "%g whispers: Become %am.",
-      ["Trog"] = "%g roars: Now %m!!!",
-      ["Xom"] = "%g titters: I'd like %am!"},
-   
-   -- Colour of tile change message.
-   message_colour = "lightblue" }
+      -- Which setting for tile_player_tile to use when disabling RandomTiles
+      -- with toggle_random_tiles().  Can set to e.g. "normal", "playermons",
+      -- or a fixed mons/tile.
+      disabled_setting = "normal",
+
+      -- If true, print the what tile we're changing to as if it were a
+      -- god message from our current god or the default_god below when we
+      -- have no god. If false, print a more generic message.
+      god_message = true,
+      default_god = "You",
+
+      -- Cute speech string templates.  In these %g is replaced with the
+      -- god name, %am with the monster's name with an article, and %m
+      -- with the monster's name without an article.
+      god_speech = {["You"] = "%g become %am!",
+         -- Used when the god has no entry
+         ["default"] = "%g says: Become %am!",
+         ["Sif Muna"] = "%g whispers: Become %am.",
+         ["Trog"] = "%g roars: Now %m!!!",
+         ["Xom"] = "%g titters: I'd like %am!"},
+      
+      -- Colour of tile change message.
+      message_colour = "lightblue" }
+end
 
 ------------------------------------------------
 --------------- END CONFIGURATION --------------
@@ -43,12 +53,13 @@ local randtile_state = { index = 0,
                          last_index_change = -1,
                          last_variant = -1,
                          last_xl = -1,
-                         disabled = false }
+                         enabled = true,
+                         timer_enabled = true }
 
 
--- populate valid_tiles 
+-- Populate valid_tiles
 function init_player_tiles(tiles)
-   -- earliest version with tile_player_tile crawl.version() didn't exist.
+   -- earliest version with tile_player_tile
    version = 0.15
    if crawl.version then
       version = tonumber(crawl.version("major"))
@@ -61,6 +72,31 @@ function init_player_tiles(tiles)
          valid_tiles[#valid_tiles + 1] = v
       end
    end
+end
+
+-- Print a message about a tile set change
+function tile_change_message()
+   god = you.god()
+   if god == "No God" then
+      god = randtile_options.default_god
+   end
+   if not randtile_options.god_message then
+      god = "You"
+   end
+   if randtile_options.god_speech[god] then
+      msg_template = randtile_options.god_speech[god]
+   else
+      msg_template = randtile_options.god_speech["default"]
+   end
+   msg = msg_template:gsub("%%g", god)
+   amons = crawl.grammar(valid_tiles[randtile_state.index].mons, "A")
+   msg = msg:gsub("%%am", amons)
+   mons = valid_tiles[randtile_state.index].mons
+   mons = mons:gsub("^[tT][hH][eE] ", "")
+   mons = mons:gsub("^[aA][nN]? ", "")
+   msg = msg:gsub("%%m", mons)
+   crawl.mpr("<" .. randtile_options.message_colour .. ">" .. msg .. "</"
+                .. randtile_options.message_colour .. ">")
 end
 
 -- Change the current tile using the tileset entry with the given
@@ -160,11 +196,6 @@ function set_tile_by_name(name)
    end
 end
 
--- Force a tile change
-function new_random_tile()
-   random_tile(true)
-end
-
 -- Checks the randtile state, changing the tile when necessary. A
 -- change of the tile index will cause a tile change message to be
 -- displayed. The tile may be changed to a new tileset variant even if
@@ -173,7 +204,7 @@ end
 -- changed.
 function random_tile(force_change)
 
-   if not valid_tiles then
+   if not valid_tiles or not randtile_state.enabled then
       return
    end
    num_tiles = #valid_tiles
@@ -181,15 +212,14 @@ function random_tile(force_change)
    session_start = randtile_state.last_xl < 0
       or randtile_state.last_index_change < 0
 
-   xl_changed = not randtile_state.disabled and tonumber(you.xl()) ~=
-      randtile_state.last_xl
+   xl_changed = tonumber(you.xl()) ~= randtile_state.last_xl
    if session_start or xl_changed then
       randtile_state.last_xl = tonumber(you.xl())
    end
    
    turns_passed = tonumber(you.turns()) - randtile_options.turns_change
-   index_changed = force_change or session_start or xl_changed
-      or turns_passed >= randtile_state.last_index_change
+   index_changed = force_change or session_start or randtile_state.timer_enabled
+      and (xl_changed or turns_passed >= randtile_state.last_index_change)
    if index_changed then
       index = 1 + crawl.random2(num_tiles)
    else
@@ -210,30 +240,37 @@ function random_tile(force_change)
    change_tile(index)
 end
 
--- Print a message about a tile set change
-function tile_change_message()
-   god = you.god()
-   if god == "No God" then
-      god = randtile_options.default_god
-   end
-   if not randtile_options.god_message then
-      god = "You"
-   end
-   if randtile_options.god_speech[god] then
-      msg_template = randtile_options.god_speech[god]
-   else
-      msg_template = randtile_options.god_speech["default"]
-   end
-   msg = msg_template:gsub("%%g", god)
-   amons = crawl.grammar(valid_tiles[randtile_state.index].mons, "A")
-   msg = msg:gsub("%%am", amons)
-   mons = valid_tiles[randtile_state.index].mons
-   mons = mons:gsub("^[tT][hH][eE] ", "")
-   mons = mons:gsub("^[aA][nN]? ", "")
-   msg = msg:gsub("%%m", mons)
-   crawl.mpr("<" .. randtile_options.message_colour .. ">" .. msg .. "</"
-                .. randtile_options.message_colour .. ">")
+-- Force a tile change
+function new_random_tile()
+   random_tile(true)
 end
+
+-- Toggle the turn/xl timer to disable/enable index changing.
+function toggle_tile_timer()
+   if randtile_state.timer_enabled then
+      crawl.mpr("<white>Disabling tile changes by turn or XL.</white>")
+   else
+      crawl.mpr("<white>Enabling tile changes by turn and XL.</white>")
+   end
+   randtile_state.timer_enabled = not randtile_state.timer_enabled
+end
+
+-- Toggle RandomTiles, setting it tile_player_tile to default setting if we're
+-- disabling.
+function toggle_random_tiles()
+   if randtile_state.enabled then
+      randtile_state.enabled = false
+      crawl.setopt("tile_player_tile = " .. randtile_options.disabled_setting)
+      crawl.setopt("tile_weapon_offsets = reset")
+      crawl.setopt("tile_shield_offsets = reset")
+      crawl.mpr("<white>Disabling RandomTiles.</white>")
+   else
+      crawl.mpr("<white>Enabling RandomTiles.</white>")
+      randtile_state.enabled = true
+      new_random_tile()
+   end
+end
+
 
 -- Initialize the tileset, removing any invalid tile entries.
 init_player_tiles(player_tiles)
