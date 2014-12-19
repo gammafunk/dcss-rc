@@ -866,3 +866,46 @@ spell_slot += Tornado:TOD
 
 # Default letters
 spell_slot += .*:YXWZ
+
+##################
+### Item slots ###
+##################
+
+## item_slot is 0.16+
+: if crawl.version then
+
+## rings ##
+item_slot += .*ring of (dexterity|evasion) : eE
+item_slot += ring of .*fire : Ff
+item_slot += ring of flight : L
+item_slot += ring of (ice|protection from cold) : Cc
+item_slot += .*ring of intelligence : iI
+item_slot += ring of invisibility : I
+item_slot += ring of magical power : Ww
+item_slot += ring of poison resistance : P
+item_slot += ring of positive energy : Nn
+item_slot += ring of protection from magic : Mm
+item_slot += ring of see invisible : V
+item_slot += .*ring of (slaying|strength) : Ss
+item_slot += ring of stealth : Qq
+item_slot += ring of sustain abilities : X
+item_slot += ring of teleportation : T
+item_slot += ring of teleport control : E
+item_slot += ring of wizardry : Zz
+
+## amulets ##
+item_slot += amulet of clarity : Y
+item_slot += amulet of gourmand : Dd
+item_slot += amulet of guardian spirit : Dd
+item_slot += amulet of regeneration : G
+item_slot += amulet of rage : B
+item_slot += amulet of resist corrosion : O
+item_slot += amulet of resist mutation : U
+item_slot += amulet of stasis : A
+item_slot += amulet of faith : H
+item_slot += amulet of warding : R
+
+item_slot += inaccuracy|loudness : Jj
+
+: end
+## item_slot
