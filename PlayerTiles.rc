@@ -281,6 +281,7 @@ player_tiles = {
                "mons_serpent_of_hell_gehenna"},
     num_var = 4},
    {mons = "Jörmungandr", tile = "mons_jormungandr", min_version=0.16},
+   {mons = "THE GIAGGOSTUONO", tile = "mons_giaggostuono", min_version=0.16},
    -- Hugetile uniques
    {mons = "Lernaean Hydra", tile = "mons_lernaean_hydra_9"},
    {mons = "Ereshkigal", weapon_offsets = "0,-20", shield_offsets = "2,-8"},
