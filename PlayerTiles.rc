@@ -226,6 +226,7 @@ player_tiles = {
    {mons = "Grinder"},
    {mons = "Sigmund"},
    {mons = "Edmund"},
+   {mons = "Eustachio"},
    {mons = "Menkaure"},
    {mons = "Pikel"},
    {mons = "Purgy"},
