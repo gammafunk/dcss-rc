@@ -113,8 +113,6 @@ player_tiles = {
    {mons = "death yak", weapon_offsets = "-4, 0", shield_offsets = "-2, 0"},
    {mons = "catoblepas"},
    {mons = "dire elephant", weapon_offsets = "-2, 3", shield_offsets = "0, 0"},
-   
-   
    {mons = "spiny frog", weapon_offsets = "5,-3", shield_offsets = "0,0"},
    {mons = "blink frog", weapon_offsets = "5,-3", shield_offsets = "0,0"},
    {mons = "anaconda", weapon_offsets = "0, 0", shield_offsets = "-2, 5"},
@@ -123,7 +121,6 @@ player_tiles = {
    {mons = "mana viper", weapon_offsets = "8, 0", shield_offsets = "-2, 2"},
    {mons = "shock serpent", weapon_offsets = "3, 0", shield_offsets = "-2, 3"},
    {mons = "lindwurm", weapon_offsets = "-3, -2", shield_offsets = "0, 0"},
-   
    {mons = "fire crab"},
    {mons = "lava snake", weapon_offsets = "0, 0", shield_offsets = "-10, 4"},
    {mons = "boulder beetle",
@@ -139,23 +136,28 @@ player_tiles = {
    {mons = "trapdoor spider"},
    {mons = "orb spider"},
    {mons = "emperor scorpion"},
-   
-   {mons = "shambling mangrove"},    
-   {mons = "thorn hunter"},
-   
-   {mons = "kraken"},
-   
+   {mons = "moth of wrath"},
+   {mons = "kraken"},   
+   {mons = "fire dragon"},
+   {mons = "ice dragon"},
+   {mons = "iron dragon"},
+   {mons = "shadow dragon"},
+   {mons = "storm dragon"},
+   {mons = "quicksilver dragon"},
    {mons = "fire bat"},
    {mons = "caustic shrike", weapon_offsets = "-3, 0", shield_offsets = "0, 0",
     min_version = 0.16},
    {mons = "shard shrike", weapon_offsets = "8, 0", shield_offsets = "0, 0",
     min_version = 0.16},
+
    {mons = "fungus", tile = "mons_fungus", num_var = 9, var_type = "fixed"},
    {mons = "wandering mushroom"},
    {mons = "tree", tile = "tran_tree"},
    {mons = "deathcap"},
    {mons = "demonic plant", tile = "mons_demonic_plant"},
    {mons = "oklob plant"},
+   {mons = "shambling mangrove"},    
+   {mons = "thorn hunter"},
    -- Horrible things
    {mons = "unseen horror"},
    {mons = "ugly thing", tile = "mons_ugly_thing", num_var = 6},
@@ -197,6 +199,7 @@ player_tiles = {
    {mons = "shadow fiend"},
    {mons = "hell sentinel"},
    {mons = "dimme", tile = "mons_dimme"},
+   {mons = "hell hog"},
    -- Statues
    {mons = "orange crystal statue"},
    {mons = "ice statue"},
@@ -300,6 +303,8 @@ player_tiles = {
    {mons = "cherub"},
    {mons = "ophan"},
    {mons = "seraph"},
+   {mons = "holy swine"},
+   {mons = "pearl dragon"},
    -- Undead
    {mons = "hungry ghost"},
    {mons = "spooky ghost", tile = "mons_ghost"},
@@ -320,6 +325,7 @@ player_tiles = {
    {mons = "curse skull"},
    {mons = "curse toe"},
    {mons = "profane servitor"},
+   {mons = "bone dragon"},
    {mons = "bennu", min_version = 0.16},
    {mons = "ushabti", min_version = 0.16},
    {mons = "anubis guard", min_version = 0.16},
