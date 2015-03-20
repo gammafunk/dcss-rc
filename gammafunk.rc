@@ -42,7 +42,9 @@ user_note_prefix = >>
 travel_delay = -1
 explore_delay = -1
 rest_delay = -1
-auto_exclude += oklob,statue,curse skull,roxanne,hyperactive,lightning spire,mimic
+auto_exclude += oklob,statue,curse skull,roxanne,hyperactive,lightning spire
+auto_exclude += mimic
+
 explore_stop = items,greedy_items,greedy_pickup,greedy_pickup_gold
 explore_stop += greedy_visited_item_stack,stairs,shops,altars,gates
 explore_stop += greedy_sacrificeable
@@ -331,7 +333,6 @@ item += wand of.*(lightning|draining|cold|fire):yellow
 item += useless.*(food|book|potion|scroll|missile|armour|weapon|jewellery|rod):darkgrey
 item += evil_item:red
 
-## Some ideas take from rchandra/simmarine
 mons := mon_glyph
 
 ## mimic enemies were removed in 0.16
@@ -344,7 +345,6 @@ mons ^= ravenous item mimic : lightred x
 mons ^= ravenous feature mimic : lightred x
 :end
 
-mons ^= dancing weapon : cyan {
 mons ^= dancing weapon : cyan {
 mons ^= spectral weapon : lightcyan {
 
@@ -1020,5 +1020,3 @@ item_slot += inaccuracy|loudness : Jj
 ###################
 
 fsim_rounds = 10000
-
-
