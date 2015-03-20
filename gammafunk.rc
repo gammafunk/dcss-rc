@@ -156,9 +156,12 @@ menu += inventory:lightgreen:.*equipped.*
 menu += white:.*artefact.*
 
 ## Not needed in 0.16+
+: if not crawl.version then
 menu += lightblue:^unidentified .*(potion|scroll|wand|jewellery|book|rod|magical staff).*
-menu += lightblue:^unidentified .*weapon.*(runed|glowing)
+: end
+menu += lightblue:^unidentified .*weapon.*(runed|glowing|enchanted)
 menu += lightblue:^unidentified .*armour.*(runed|glowing|embroidered|shiny|dyed)
+
 
 ### Food ###
 menu += red:evil_eating.*chunk
@@ -171,11 +174,6 @@ menu += green:(strawberr|grape|sultana)
 ## The entries for pears/oranges cover items on the ground as well as in-menu.
 menu += brown:( +pears?$| +pears?  +|apple|apricot|choko|lychee|rambutan|fruit)
 menu += yellow:( +oranges?$| +oranges?  +|banana|lemon|pizza|sausage|snozz|jerky|jerkies|cheese|honeycomb|royal jell)
-
-## ambrosia was food in <= 0.14 iirc
-: if not crawl.version then
-menu += lightcyan:ambrosia
-: end
 menu += lightcyan:(meat ration|bread ration)
 
 ### Potions ###
@@ -298,7 +296,6 @@ item += ( rod ) :yellow
 : if not crawl.version then
 item += ( rod ) : \
 :end
-item += useless.*(potion|scroll|missile|armour|weapon|jewellery|rod):darkgrey
 item += unidentified.*(potion|scroll|book|jewellery|wand|rod|magical staff).*:lightblue
 
 item += (a )?stones?$:lightgray
@@ -320,9 +317,6 @@ item += (strawberry|grape|sultana):brown
 item += ( +pears?$|apple|apricot|choko|lychee|rambutan|fruit):brown
 item += ( +oranges?$|banana|lemon|pizza|sausage|snozz|jerky|jerkies|cheese|honeycomb|royal jell):yellow
 item += (meat ration|bread ration):lightcyan
-: if not crawl.version then
-item += ambrosia:lightcyan
-:end
 
 ### Wands ###
 item += wand of.*heal wounds:lightcyan
@@ -333,21 +327,22 @@ item += wand of.*(hasting|invisibility):lightmagenta
 item += wand of.*(flame|frost|magic dart):brown
 item += wand of.*(lightning|draining|cold|fire):yellow
 
-## Want this to override anything above, since using these can cause pennance.
+## Want this to override anything above
+item += useless.*(food|book|potion|scroll|missile|armour|weapon|jewellery|rod):darkgrey
 item += evil_item:red
 
 ## Some ideas take from rchandra/simmarine
 mons := mon_glyph
 
 ## mimic enemies were removed in 0.16
-: if not crawl.version then
+:if not crawl.version then
 mons ^= item mimic : lightblue x
 mons ^= feature mimic : lightblue x
 mons ^= inept item mimic : lightgreen x
 mons ^= inept feature mimic : lightgreen x
 mons ^= ravenous item mimic : lightred x
 mons ^= ravenous feature mimic : lightred x
-: end
+:end
 
 mons ^= dancing weapon : cyan {
 mons ^= dancing weapon : cyan {
@@ -389,19 +384,18 @@ end
 ### Auotpick options ###
 ########################
 
-autopickup = $?!+"/%|
+autopickup = $?!+"/%|\
 
 ## From
 ae := autopickup_exceptions
-ae =
-
 ae += useless_item
 ae += evil_item
-ae += amulet of (inaccuracy|the gourmand|controlled flight|warding|stasis)
-ae += amulet of (resist .*|clarity|rage|conservation|guardian spirit|faith)
-ae += ring of (see invisible|flight|poison resistance|teleportation)
-ae += ring of (invisibility|teleport control)
-ae += ring of (sustain abilities|sustenance|wizardry|life protection)
+ae += amulet of (inacc|the gourmand|controlled flight|warding|stasis|faith)
+ae += amulet of (resist .*|clarity|rage|guardian spirit|conser|regeneration)
+ae += ring of (fire|ice|protection from|see invisible|flight|poison|magical pow)
+ae += ring of (teleport|invisibility|sustain|susten|wizardry|positive|stealth)
+ae += potion of (lignification|mutation)
+ae += potion of (lignification|mutation)
 
 : if you.race() ~= "Vampire" then
 ae += potion of blood
@@ -425,8 +419,101 @@ autopickup_no_burden = true
 {
 local need_skills_opened = true
 local dump_count = you.turns()
+local last_turn = you.turns()
+local force_mores = {
+                  -- General early game threats
+                  {pattern = "(adder|gnoll)", cond = "xl", cutoff = 2,
+                   name = "XL1"},
+                  {pattern = "orc wizard", cond = "hp", cutoff = 20},
+                  {pattern = "orc priest", cond = "hp", cutoff = 40},
+                  -- Problems early on in D
+                  {pattern = "(wizard|ogre mage)", cond = "br", value = "D",
+                   name = "banishers"},
+                  -- Problems for squishies
+                  {pattern = "(centaur|yaktaur|drake|dragon|death yak" ..
+                          "|elephant|blink frog|black mamba|hydra|spriggan" ..
+                          "|alligator|snapping turtle|manticore|harpy|satyr" ..
+                          "|faun|naga sharpshooter|merfolk|siren|water nymph" ..
+                          "|jumping spider|naga sharpshooter|anaconda" ..
+                          "|mana viper|shock serpent|guardian serpent" ..
+                          "|emperor scorpion|hill giant|stone giant|titan" ..
+                          "|fire giant|sphinx|frost giant|war gargoyle|vault" ..
+                          "|convoker|tentacled monstrosity|preserver" ..
+                          "|tengu reaver|deep elf|octopode crusher)",
+                   cond = "hp", cutoff = 90, name = "squishy"},      
+                  -- Problems anywhere
+                  {pattern = "(flayed ghost|greater mummy|mummy priest" ..
+                             "|hell sentinel|fiend|tormentor|hellion" ..
+                             "|yaktaur captain|lich|executioner|black sun" ..
+                             "|warmonger|chaos champion|blood saint" ..
+                             "|orb of fire|moth of wrath|ghost moth" ..
+                             "|curse toe|curse skull|draconian shifter)",
+                   name = "BigProblems" }}
+
+local active_fm = {}
+function init_force_mores()
+   for i,v in ipairs(force_mores) do
+       active_fm[#active_fm + 1] = false
+   end
+end
+
+function update_force_mores()
+   activated = {}
+   deactivated = {}
+   for i,v in ipairs(force_mores) do
+      msg = v.pattern .. ".*into view"
+      action = nil
+      fm_name = v.pattern
+      if v.name then
+         fm_name = v.name
+      end 
+      if not v.cond and not active_fm[i] then
+         action = "+"
+      elseif v.cond == "xl" then
+         if active_fm[i] and you.xl() >= v.cutoff then
+             action = "-"
+         elseif not active_fm[i] and you.xl() < v.cutoff then
+             action = "+"
+         end
+      elseif v.cond == "hp" then
+         if active_fm[i] and you.hp() >= v.cutoff then
+             action = "-"
+         elseif not active_fm[i] and you.hp() < v.cutoff then
+             action = "+"
+         end
+      elseif v.cond == "br" then
+         if active_fm[i] and you.branch():lower() ~= v.value:lower() then
+             action = "-"
+         elseif not active_fm[i] and you.branch():lower() == v.value:lower() then
+             action = "+"
+         end
+      end
+      if action == "+" then
+          activated[#activated + 1] = fm_name
+      elseif action == "-" then
+          deactivated[#deactivated + 1] = fm_name
+      end
+      if action ~= nil then
+         opt = "force_more_message " .. action .. "= " .. msg
+         crawl.setopt(opt)
+         active_fm[i] = not active_fm[i]
+      end
+   end
+   if #activated > 0 then
+      crawl.mpr("<white>Activating force_mores: " ..
+                table.concat(activated, ", ") .. "</white>")
+   end
+   if #deactivated > 0 then
+      crawl.mpr("<white>Deactivating force_mores: " ..
+                table.concat(deactivated, ", ") .. "</white>")
+   end
+end
+
+init_force_mores()
+update_force_mores()
 
 function ready()
+  new_turn = you.turns() ~= last_turn
   -- Enable RandomTiles.
   random_tile()
 
@@ -440,6 +527,12 @@ function ready()
   if you.turns() >= dump_count then
     dump_count = dump_count + 1000
     crawl.dump_char()
+  end
+  if new_turn then
+    update_force_mores()
+  end
+  if new_turn then
+      last_turn = you.turns()
   end
 end
 
@@ -608,7 +701,6 @@ msc += $boring:(prevent|prevents) you from hitting
 #####################
 
 more := force_more_message
-more =
 
 # Important features
 : if you.god() == "Ashenzari" then
@@ -639,7 +731,6 @@ more += You feel your control is inadequate
 # Bad things
 more += Your surroundings flicker
 more += sense of stasis
-more += Your amulet of stasis
 more += You cannot teleport right now
 more += The writing blurs in front of your eyes
 more += You fall through a shaft
@@ -717,6 +808,8 @@ more += oklob.*come
 
 more += (Agnes|Aizul|Antaeus|Asmodeus|Asterion|Azrael|Blork the orc|Boris|Cerebov|Crazy Yiuf|Dispater|Dissolution|Donald|Dowan|Duvessa|Edmund|the Enchantress|Ereshkigal|Erica|Erolcha|Eustachio|Fannar|Frances|Frederick|Gastronok|Geryon|Gloorx Vloq|Grinder|Grum|Harold|Ignacio|Ijyb|Ilsuiw|Jessica|Jorgrun|Jory|Joseph|Josephine|Khufu|Kirke|Lamia|the Lernaean hydra|Lom Lobon|Louise|Mara|Margery|Maud|Maurice|Menkaure|Mennas|Mnoleg|Murray|Natasha|Nergalle|Nessos|Nikola|Norris|Pikel|Plog|Polyphemus|Prince Ribbit|Psyche|Purgy|Robin|Roxanne|the royal jelly|Rupert|Saint Roka|the Serpent of Hell|Sigmund|Snorg|Sonja|Terence|Tiamat|Urug|Vashnia|Wiglaf|Xtahua).*into view
 
+
+
 note_items    += rod of, acquirement, preservation, running, of Zot
 note_messages += You pass through the gate
 note_messages += cast .* Abyss
@@ -736,8 +829,8 @@ spell_slot += Aura of abjuration:jJA
 spell_slot += Apportation:aAP
 spell_slot += Blink:KBI
 spell_slot += Borgnjor's revivification:BNV
-spell_slot += Cigotuvi's Embrace:gie
-spell_slot += Condensation shield:ieh
+spell_slot += Cigotuvi's Embrace:ige
+spell_slot += Condensation shield:ihe
 spell_slot += Control teleport:ECT
 spell_slot += Controlled blink:kiC
 spell_slot += Cure poison:ieP
@@ -745,18 +838,18 @@ spell_slot += Death's door:DOT
 spell_slot += Deflect missiles:rRM
 spell_slot += Flight:lLF
 spell_slot += Haste:hHA
-spell_slot += Invisibility:ivy
+spell_slot += Invisibility:ivI
 spell_slot += Phase shift:ieP
 spell_slot += Mass abjuration:jJA
-spell_slot += Ozocubu's armour:mzO
+spell_slot += Ozocubu's armour:mMO
 spell_slot += Passage of golubria:gei
 spell_slot += Recall:eER
 spell_slot += Regeneration:geG
 spell_slot += Repel missiles:rRM
 spell_slot += Ring of flames:meF
-spell_slot += Shroud of golubria:giG
+spell_slot += Shroud of golubria:ihg
 spell_slot += Silence:SIC
-spell_slot += Stoneskin:ieT
+spell_slot += Stoneskin:ieS
 spell_slot += Swiftness:sST
 spell_slot += Sublimation of blood:BMN
 spell_slot += Summon butterflies:UBT
@@ -766,7 +859,7 @@ spell_slot += Summon butterflies:UBT
 spell_slot += Alistair's intoxication:tpo
 spell_slot += Airstrike:ktT
 spell_slot += Agony:yno
-spell_slot += Animate dead:dnm
+spell_slot += Animate dead:dnt
 spell_slot += Animate skeleton:knt
 spell_slot += Beastly appendage:btB
 spell_slot += Blade hands:bdB
@@ -813,7 +906,8 @@ spell_slot += Iron shot:ton
 spell_slot += Infusion:iIV
 spell_slot += Inner flame:fnx
 spell_slot += Irradiate:tdI
-spell_slot += Iskenderun's mystic blast:byk
+spell_slot += Iskenderun's battlesphere:ktd
+spell_slot += Iskenderun's mystic blast:byt
 spell_slot += Leda's Liquefaction:qtf
 spell_slot += Lee's rapid deconstruction:dtc
 spell_slot += Lehudib's crystal spear:cyt
@@ -926,3 +1020,5 @@ item_slot += inaccuracy|loudness : Jj
 ###################
 
 fsim_rounds = 10000
+
+
