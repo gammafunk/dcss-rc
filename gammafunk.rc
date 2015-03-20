@@ -426,9 +426,6 @@ local force_mores = {
                    name = "XL1"},
                   {pattern = "orc wizard", cond = "hp", cutoff = 20},
                   {pattern = "orc priest", cond = "hp", cutoff = 40},
-                  -- Problems early on in D
-                  {pattern = "(wizard|ogre mage)", cond = "br", value = "D",
-                   name = "banishers"},
                   -- Problems for squishies
                   {pattern = "(centaur|yaktaur|drake|dragon|death yak" ..
                           "|elephant|blink frog|black mamba|hydra|spriggan" ..
@@ -438,8 +435,8 @@ local force_mores = {
                           "|mana viper|shock serpent|guardian serpent" ..
                           "|emperor scorpion|hill giant|stone giant|titan" ..
                           "|fire giant|sphinx|frost giant|war gargoyle|vault" ..
-                          "|convoker|tentacled monstrosity|preserver" ..
-                          "|tengu reaver|deep elf|octopode crusher)",
+                          "|a wizard|[0-9]+ wizards|convoker|tentacled monstrosity|preserver" ..
+                          "|ogre mage|tengu reaver|deep elf|octopode crusher)",
                    cond = "hp", cutoff = 90, name = "squishy"},      
                   -- Problems anywhere
                   {pattern = "(flayed ghost|greater mummy|mummy priest" ..
