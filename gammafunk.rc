@@ -160,10 +160,7 @@ menu += lightred: cursed
 menu += inventory:lightgreen:.*equipped.*
 menu += white:.*artefact.*
 
-## Not needed in 0.16+
-: if not crawl.version then
 menu += lightblue:^unidentified .*(potion|scroll|wand|jewellery|book|rod|magical staff).*
-: end
 menu += lightblue:^unidentified .*weapon.*(runed|glowing|enchanted)
 menu += lightblue:^unidentified .*armour.*(runed|glowing|embroidered|shiny|dyed)
 
