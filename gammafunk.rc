@@ -625,11 +625,6 @@ function ready()
   end
 
   check_skills()
-  if c_persist.set_target_skill == nil then
-      crawl.mpr("TS: nil")
-  else
-    crawl.mpr("TS: " .. c_persist.set_target_skill)
-  end
   if c_persist.set_target_skill == 0 then
     set_target_skill()
     c_persist.set_target_skill = nil
