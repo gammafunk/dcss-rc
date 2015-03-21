@@ -294,20 +294,20 @@ item += scroll.*(acquire|recharging|magic map):lightcyan
 item += (book|jewellery|magical staff).*:magenta
 item += .*tome of.*:blue
 item += ( rod ) :yellow
-## This mapping is 0.16+
-: if not crawl.version then
-item += ( rod ) : \
-:end
+# ## This mapping is 0.16+
+# : if not crawl.version then
+# item += ( rod ) : \
+# :end
 item += unidentified.*(potion|scroll|book|jewellery|wand|rod|magical staff).*:lightblue
 
 item += (a )?stones?$:lightgray
 
 ### Food ###
 ## These are 0.16+
-: if not crawl.version then
-item += skeleton: ÷
-item += corpse:   †
-:end
+# : if not crawl.version then
+# item += skeleton: ÷
+# item += corpse:   †
+# :end
 
 item += chunks?.*flesh:lightgrey
 item += contaminated.*chunk:brown
@@ -336,14 +336,14 @@ item += evil_item:red
 mons := mon_glyph
 
 ## mimic enemies were removed in 0.16
-:if not crawl.version then
-mons ^= item mimic : lightblue x
-mons ^= feature mimic : lightblue x
-mons ^= inept item mimic : lightgreen x
-mons ^= inept feature mimic : lightgreen x
-mons ^= ravenous item mimic : lightred x
-mons ^= ravenous feature mimic : lightred x
-:end
+# :if not crawl.version then
+# mons ^= item mimic : lightblue x
+# mons ^= feature mimic : lightblue x
+# mons ^= inept item mimic : lightgreen x
+# mons ^= inept feature mimic : lightgreen x
+# mons ^= ravenous item mimic : lightred x
+# mons ^= ravenous feature mimic : lightred x
+# :end
 
 mons ^= dancing weapon : cyan {
 mons ^= spectral weapon : lightcyan {
@@ -412,39 +412,42 @@ ae += staff of .*
 default_friendly_pickup = none
 autopickup_no_burden = true
 
-######################
-## ready() function ##
-######################
+##############################
+## Lua and ready() function ##
+##############################
 
 {
-local need_skills_opened = true
-local dump_count = you.turns()
-local last_turn = you.turns()
+-- Begin force_mores
 local force_mores = {
                   -- General early game threats
                   {pattern = "(adder|gnoll)", cond = "xl", cutoff = 2,
                    name = "XL1"},
-                  {pattern = "orc wizard", cond = "hp", cutoff = 20},
-                  {pattern = "orc priest", cond = "hp", cutoff = 40},
+                  {pattern = "orc wizard", cond = "maxhp", cutoff = 20},
+                  {pattern = "orc priest", cond = "maxhp", cutoff = 40},
                   -- Problems for squishies
-                  {pattern = "(centaur|yaktaur|drake|dragon|death yak" ..
-                          "|elephant|blink frog|black mamba|hydra|spriggan" ..
+                  {pattern = "(centaur|yaktaur|drake|dragon|blink frog" ..
+                          "|torpor|spiny frog|blink frog|black mamba|hydra|spriggan" ..
                           "|alligator|snapping turtle|manticore|harpy|satyr" ..
                           "|faun|naga sharpshooter|merfolk|siren|water nymph" ..
                           "|jumping spider|naga sharpshooter|anaconda" ..
                           "|mana viper|shock serpent|guardian serpent" ..
                           "|emperor scorpion|hill giant|stone giant|titan" ..
                           "|fire giant|sphinx|frost giant|war gargoyle|vault" ..
-                          "|a wizard|[0-9]+ wizards|convoker|tentacled monstrosity|preserver" ..
-                          "|ogre mage|tengu reaver|deep elf|octopode crusher)",
-                   cond = "hp", cutoff = 90, name = "squishy"},      
+                          "|a wizard|[0-9]+ wizards|convoker|monstrosity" ..
+                          "|preserver|ogre mage|tengu reaver|deep elf" ..
+                          "|octopode crusher|yaktaur captain)",
+                   cond = "maxhp", cutoff = 90, name = "squishy_90hp"},
+                  {pattern = "(centaur warrior|tengu reaver|octopode crusher" ..
+                          "|air mage|defender|yaktaur captain|warmonger" ..
+                          "|chaos champion|blood saint|black sun|balrug" ..
+                          "|blizzard demon|cacodemon)",
+                   cond = "maxhp", cutoff = 150, name = "squishy_150hp"},      
                   -- Problems anywhere
-                  {pattern = "(flayed ghost|greater mummy|mummy priest" ..
-                             "|hell sentinel|fiend|tormentor|hellion" ..
-                             "|yaktaur captain|lich|executioner|black sun" ..
-                             "|warmonger|chaos champion|blood saint" ..
-                             "|orb of fire|moth of wrath|ghost moth" ..
-                             "|curse toe|curse skull|draconian shifter)",
+                  {pattern = "(giant eyeball|flayed ghost|greater mummy" ..
+                             "|mummy priest|hell sentinel|fiend|tormentor" ..
+                             "|hellion|lich|executioner|orb of fire" .. 
+                             "|moth of wrath|ghost moth|curse toe" ..
+                             "|curse skull|draconian shifter)",
                    name = "BigProblems" }}
 
 local active_fm = {}
@@ -457,6 +460,7 @@ end
 function update_force_mores()
    activated = {}
    deactivated = {}
+   hp, maxhp = you.hp()
    for i,v in ipairs(force_mores) do
       msg = v.pattern .. ".*into view"
       action = nil
@@ -472,10 +476,10 @@ function update_force_mores()
          elseif not active_fm[i] and you.xl() < v.cutoff then
              action = "+"
          end
-      elseif v.cond == "hp" then
-         if active_fm[i] and you.hp() >= v.cutoff then
+      elseif v.cond == "maxhp" then
+         if active_fm[i] and maxhp >= v.cutoff then
              action = "-"
-         elseif not active_fm[i] and you.hp() < v.cutoff then
+         elseif not active_fm[i] and maxhp < v.cutoff then
              action = "+"
          end
       elseif v.cond == "br" then
@@ -508,23 +512,142 @@ end
 
 init_force_mores()
 update_force_mores()
+-- End force_mores
 
+--Skill list setting from elliptic.
+skill_list = {"Fighting","Short Blades","Long Blades","Axes","Maces & Flails",
+              "Polearms","Staves","Unarmed Combat","Bows","Crossbows",
+              "Throwing","Slings","Armour","Dodging","Shields","Spellcasting",
+              "Conjurations","Hexes","Charms","Summonings","Necromancy",
+              "Translocations","Transmutations","Fire Magic","Ice Magic",
+              "Air Magic","Earth Magic","Poison Magic","Invocations",
+              "Evocations","Stealth"}
+
+function record_current_skills(maxlev)
+  c_persist.skill_list = { }
+  for _,sk in ipairs(skill_list) do
+    if you.train_skill(sk) > 0 and you.base_skill(sk) < (maxlev or 27) then
+      table.insert(c_persist.skill_list, sk)
+    end
+  end
+end
+
+function check_skills()
+  if not c_persist.skill_list or not c_persist.target_skill then
+    return
+  end
+  for _,sk in ipairs(c_persist.skill_list) do
+    if you.base_skill(sk) >= c_persist.target_skill then
+      crawl.formatted_mpr(sk .. " reached " .. c_persist.target_skill
+                          .. ".", "prompt")
+      crawl.more()
+      c_persist.target_skill = nil
+      set_new_skill_training()
+      break
+    end
+  end
+end
+
+function set_new_skill_training()
+  c_persist.set_target_skill = 1
+  crawl.sendkeys("m")
+end
+
+function set_target_skill()
+  record_current_skills()
+  local str = "Currently training: "
+  local first_skill = true
+  for _,sk in ipairs(c_persist.skill_list) do
+    val = you.base_skill(sk)
+    if first_skill then
+      str = str .. sk .. "(" .. val .. ")"
+    else
+      str = str .. ", " .. sk .. "(" .. val .. ")"
+    end
+    first_skill = false
+  end
+  str = str .. "."
+  crawl.formatted_mpr(str, "prompt")
+  crawl.formatted_mpr("Choose a target skill level: ", "prompt")
+  c_persist.target_skill = tonumber(crawl.c_input_line())
+  record_current_skills(c_persist.target_skill)
+end
+
+function control(c)
+  return string.char(string.byte(c) - string.byte('a') + 1)
+end
+
+function first_turn_of_game()
+  for key,_ in pairs(c_persist) do
+    if key ~= "record" then
+      c_persist[key] = nil
+    end
+  end
+  set_new_skill_training()
+end
+
+local did_first_turn = false
+-- End skill training
+
+-- Leave message on save
+function save_with_message()
+  if you.turns() == 0 then
+    crawl.sendkeys("S")
+    return
+  end
+  crawl.formatted_mpr("Save game and exit?", "prompt")
+  local res = crawl.getch()
+  if not (string.char(res) == "y" or string.char(res) == "Y") then
+    crawl.formatted_mpr("Okay, then.", "prompt")
+    return
+  end
+  crawl.formatted_mpr("Leave a message: ", "prompt")
+  local res = crawl.c_input_line()
+  c_persist.message = res
+  crawl.sendkeys(control("s"))
+end
+
+local dump_count = you.turns()
+local last_turn = you.turns()
 function ready()
+
+  --For skill training
+  if not did_first_turn then
+    did_first_turn = true
+    if you.turns() == 0 then
+      first_turn_of_game()
+    end
+    if c_persist.message and c_persist.message ~= "nil"
+       and c_persist.message ~= "" then
+      crawl.mpr("Message: " .. c_persist.message)
+      c_persist.message = nil
+    end
+  end
+
+  check_skills()
+  if c_persist.set_target_skill == nil then
+      crawl.mpr("TS: nil")
+  else
+    crawl.mpr("TS: " .. c_persist.set_target_skill)
+  end
+  if c_persist.set_target_skill == 0 then
+    set_target_skill()
+    c_persist.set_target_skill = nil
+  elseif c_persist.set_target_skill then
+    c_persist.set_target_skill = c_persist.set_target_skill - 1
+  end
+
   new_turn = you.turns() ~= last_turn
   -- Enable RandomTiles.
   random_tile()
-
-  -- Show skill screen at game start.
-  if you.turns() == 0 and need_skills_opened then
-    need_skills_opened = false
-    crawl.sendkeys("m")
-  end
 
   -- Make a char dump every 1k turns.
   if you.turns() >= dump_count then
     dump_count = dump_count + 1000
     crawl.dump_char()
   end
+
+  -- Set up force_mores
   if new_turn then
     update_force_mores()
   end
@@ -547,23 +670,23 @@ autoinscribe += of faith:!P
 autoinscribe += ( rod ):!a
 autoinscribe += manual of:!d
 autoinscribe += staff of (Wucad Mu|energy|channeling|wizardry|power):!a
-: if not crawl.version then
-autoinscribe += ambrosia:!e
-: end
+# : if not crawl.version then
+# autoinscribe += ambrosia:!e
+# : end
 autoinscribe += (bread|meat) ration:!e
 autoinscribe += scroll.+of.*(acquirement|vulnerability|summoning|teleportation|silence|fear|magic mapping|holy word|torment):!r
 autoinscribe += potion.+of (might|brilliance|cancellation|cure mutation|restore abilities|magic|resistance|haste|invisibility|porridge):!q
 
 ## No more chunk sublim in 0.16
-: if not crawl.version then
-: if you.race() == "Vampire" then
-autoinscribe += of blood:@*1
-autoinscribe += of coagulated blood:@*2
-autoinscribe += chunks? of:@*3
-: else
-autoinscribe += chunks? of:@*1
-: end
-: end
+# : if not crawl.version then
+# : if you.race() == "Vampire" then
+# autoinscribe += of blood:@*1
+# autoinscribe += of coagulated blood:@*2
+# autoinscribe += chunks? of:@*3
+# : else
+# autoinscribe += chunks? of:@*1
+# : end
+# : end
 
 : if you.god() == "Fedhas" then
 autoinscribe += fruit:!e
@@ -973,9 +1096,6 @@ spell_slot += .*:YXWZ
 ### Item slots ###
 ##################
 
-## item_slot is 0.16+
-: if crawl.version then
-
 ## rings ##
 item_slot += .*ring of (dexterity|evasion) : eE
 item_slot += ring of .*fire : Ff
@@ -1009,7 +1129,6 @@ item_slot += amulet of warding : R
 
 item_slot += inaccuracy|loudness : Jj
 
-: end
 ## item_slot
 
 ###################
