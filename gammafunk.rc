@@ -425,7 +425,7 @@ local force_mores = {
                   {pattern = "orc wizard", cond = "maxhp", cutoff = 20},
                   {pattern = "orc priest", cond = "maxhp", cutoff = 40},
                   -- Problems for squishies
-                  {pattern = "(centaur|yaktaur|drake|dragon|blink frog" ..
+                  {pattern = "(centaur [^zs]|yaktaur|drake|dragon|blink frog" ..
                           "|torpor|spiny frog|blink frog|black mamba|hydra|spriggan" ..
                           "|alligator|snapping turtle|manticore|harpy|satyr" ..
                           "|faun|naga sharpshooter|merfolk|siren|water nymph" ..
@@ -619,7 +619,7 @@ function ready()
     end
     if c_persist.message and c_persist.message ~= "nil"
        and c_persist.message ~= "" then
-      crawl.mpr("Message: " .. c_persist.message)
+      crawl.mpr("<white>MESSAGE: " .. c_persist.message .. "</white>")
       c_persist.message = nil
     end
   end
