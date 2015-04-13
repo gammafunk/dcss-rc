@@ -1,6 +1,3 @@
-# TEAMNAME lootfeel
-# TEAMMEMBERS bh dpeg ontoclasm PleasingFungus wheals
-
 # Crawl Init file
 
 ###################
@@ -607,6 +604,34 @@ function save_with_message()
   crawl.sendkeys(control("s"))
 end
 
+function safe_eat()
+  tier_one_demons = {["executioner"] = true, ["shadow fiend"] = true,
+                     ["ice fiend"] = true, ["brimstone fiend"] = true,
+                     ["hell sentinel"] = true}
+  have_t1 = false
+  for x = -8,8 do
+    for y = -8,8 do
+      m = monster.get_monster_at(x, y)
+      if m and m:attitude() == 4
+         and tier_one_demons[m:desc():lower()] ~= nill then
+        have_t1 = true
+        t1_desc = m:desc()
+        break
+      end
+    end
+  end
+  if have_t1 then
+    crawl.formatted_mpr("Really eat with the " .. t1_desc .. " in view?",
+                        "prompt")
+    local res = crawl.getch()
+    if not (string.char(res) == "y" or string.char(res) == "Y") then
+      crawl.formatted_mpr("Okay, then.", "prompt")
+      return
+    end
+  end
+  crawl.sendkeys("e")
+end
+
 local dump_count = you.turns()
 local last_turn = you.turns()
 function ready()
@@ -687,6 +712,17 @@ autoinscribe += potion.+of (might|brilliance|cancellation|cure mutation|restore 
 autoinscribe += fruit:!e
 : end
 
+#########
+# Notes #
+#########
+
+note_items    += acquirement, of Zot
+note_messages += You pass through the gate
+note_messages += cast .* Abyss
+note_messages += Your scales start
+note_messages += protects you from harm
+note_messages += You fall through a shaft
+note_monsters += orb of fire, ancient lich, Sigmund
 
 ###################
 # Message colours #
@@ -854,16 +890,10 @@ more += (blundered into a|invokes the power of) Zot
 more += Ouch! That really hurt!
 more += dispelling energy hits you
 more += You convulse
-more += You are blasted by holy energy!
 more += You are (blasted|electrocuted)!
 more += You are.*(confused|poisoned)
-more += flesh start
-more += (starving|devoid of blood)
 more += wrath finds you
 more += lose consciousness
-more += You are too injured to fight blindly
-more += Green shoots are pushing up through the earth
-more += calcifying dust hits
 more += Space warps horribly around you
 more += hits you.*distortion
 more += Space bends around you\.
@@ -871,67 +901,21 @@ more += watched by something
 more += The dungeon rumbles around
 more += The air twists around and violently strikes you in flight
 
-# Hell effects
-more += You will not leave this place
-more += Die\, mortal
-more += We do not forgive those who trespass against us
-more += Trespassers are not welcome here
-more += You do not belong in this place
-more += Leave now\, before it is too late
-more += We have you now
-more += You smell brimstone
-more += Brimstone rains from above
-more += You feel lost and a long\, long way from home
-more += You shiver with fear
-more += You feel a terrible foreboding
-more += Something frightening happens
-more += You sense an ancient evil watching you
-more += You suddenly feel all small and vulnerable
-more += You sense a hostile presence
-more += A gut-wrenching scream fills the air
-more += You hear words spoken in a strange and terrible language
-more += You hear diabolical laughter
-
 # Expiring effects
 more += You feel yourself slow down
-more += less insulated
 more += You are starting to lose your buoyancy
-more += You lose control over your flight
 more += Your hearing returns
 more += Your transformation is almost over
-more += You have a feeling this form
 more += You feel yourself come back to life
 more += uncertain
-more += time is quickly running out
-more += life is in your own hands
-more += is no longer charmed
-more += shroud falls apart
-more += You start to feel a little slower
 
 # Others
 more += You have reached level
 more += You have finished your manual of
-more += Your scales start
-more += You feel monstrous
-more += Jiyva alters your body
-: if you.god() == "Xom" then
-more += god:
-: end
-
 more += Deactivating autopickup
 more += oklob.*come
 
 more += (Agnes|Aizul|Antaeus|Asmodeus|Asterion|Azrael|Blork the orc|Boris|Cerebov|Crazy Yiuf|Dispater|Dissolution|Donald|Dowan|Duvessa|Edmund|the Enchantress|Ereshkigal|Erica|Erolcha|Eustachio|Fannar|Frances|Frederick|Gastronok|Geryon|Gloorx Vloq|Grinder|Grum|Harold|Ignacio|Ijyb|Ilsuiw|Jessica|Jorgrun|Jory|Joseph|Josephine|Khufu|Kirke|Lamia|the Lernaean hydra|Lom Lobon|Louise|Mara|Margery|Maud|Maurice|Menkaure|Mennas|Mnoleg|Murray|Natasha|Nergalle|Nessos|Nikola|Norris|Pikel|Plog|Polyphemus|Prince Ribbit|Psyche|Purgy|Robin|Roxanne|the royal jelly|Rupert|Saint Roka|the Serpent of Hell|Sigmund|Snorg|Sonja|Terence|Tiamat|Urug|Vashnia|Wiglaf|Xtahua).*into view
-
-
-
-note_items    += rod of, acquirement, preservation, running, of Zot
-note_messages += You pass through the gate
-note_messages += cast .* Abyss
-note_messages += Your scales start
-note_messages += protects you from harm
-note_messages += You fall through a shaft
-note_monsters += orb of fire, ancient lich, Sigmund
 
 ###################
 ### Spell slots ###
