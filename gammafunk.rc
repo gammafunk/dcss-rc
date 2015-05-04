@@ -20,7 +20,7 @@ tile_window_height = 700
 tile_full_screen = false
 #tile_player_tile = playermons
 show_player_species = true
-view_delay = 0
+view_delay = 300
 bindkey = [~] CMD_LUA_CONSOLE
 
 ######################
