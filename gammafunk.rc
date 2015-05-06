@@ -609,10 +609,10 @@ function safe_eat()
                      ["ice fiend"] = true, ["brimstone fiend"] = true,
                      ["hell sentinel"] = true}
   have_t1 = false
-  for x = -8,8 do
-    for y = -8,8 do
+  for x = -7,7 do
+    for y = -7,7 do
       m = monster.get_monster_at(x, y)
-      if m and m:attitude() == 4
+      if m and m:status("in your thrall")
          and tier_one_demons[m:desc():lower()] ~= nill then
         have_t1 = true
         t1_desc = m:desc()
