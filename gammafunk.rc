@@ -151,16 +151,9 @@ menu += pickup:lightcyan:god gift
 menu += inventory:white:\w \#\s
 menu += notes:white:Reached XP level
 menu += inventory:white:\w \+\s
-menu += inventory:white:\w \#\s
 menu += darkgrey:(melded)
 menu += lightred: cursed
 menu += inventory:lightgreen:.*equipped.*
-menu += white:.*artefact.*
-
-menu += lightblue:^unidentified .*(potion|scroll|wand|jewellery|book|rod|magical staff).*
-menu += lightblue:^unidentified .*weapon.*(runed|glowing|enchanted)
-menu += lightblue:^unidentified .*armour.*(runed|glowing|embroidered|shiny|dyed)
-
 
 ### Food ###
 menu += red:evil_eating.*chunk
@@ -169,10 +162,8 @@ menu += green:poisonous.*chunk
 menu += darkgrey:(rotting.*chunk|inedible|rot-inducing)
 menu += brown:contaminated.*chunk
 menu += lightgrey: +(chunks?$|chunks? +)
-menu += green:(strawberr|grape|sultana)
-## The entries for pears/oranges cover items on the ground as well as in-menu.
-menu += brown:( +pears?$| +pears?  +|apple|apricot|choko|lychee|rambutan|fruit)
-menu += yellow:( +oranges?$| +oranges?  +|banana|lemon|pizza|sausage|snozz|jerky|jerkies|cheese|honeycomb|royal jell)
+menu += brown:fruit
+menu += yellow:(pizza|jerky|jerkies|royal jell)
 menu += lightcyan:(meat ration|bread ration)
 
 ### Potions ###
@@ -235,6 +226,16 @@ menu += brown:wand of.*(flame|frost|magic dart)
 menu += yellow:wand of.*(lightning|draining|cold|fire)
 menu += blue:.*dangerous_item.*
 
+## Identification
+menu += lightmagenta:unidentified.*artefact.*jewellery
+menu += white:.*artefact
+menu += lightblue:unidentified .*(potion|scroll|wand|jewellery|book|rod|magical staff)
+menu += magenta:.*known.*ring of (dexterity|strength|intelligence|slaying|evasion|protection(?! from))
+menu += inventory:lightgray:.*(book|jewellery|magical staff)
+
+menu += lightblue:unidentified .*weapon.*(runed|glowing|enchanted)
+menu += lightblue:unidentified .*armour.*(runed|glowing|embroidered|shiny|dyed)
+
 prefer_safe_chunks     = true
 show_inventory_weights = true
 auto_drop_chunks       = yes
@@ -288,33 +289,26 @@ item += scroll.*(fear|blink):lightmagenta
 item += scroll.*(summoning):lightred
 item += scroll.*(vulnerability|noise|silence|immolation):cyan
 item += scroll.*(acquire|recharging|magic map):lightcyan
-item += (book|jewellery|magical staff).*:magenta
-item += .*tome of.*:blue
-item += ( rod ) :yellow
-# ## This mapping is 0.16+
-# : if not crawl.version then
-# item += ( rod ) : \
-# :end
-item += unidentified.*(potion|scroll|book|jewellery|wand|rod|magical staff).*:lightblue
 
+item += ( rod ):yellow
+
+### Identification
+item += (book|jewellery|magical staff):brown
+item += unidentified.*(potion|scroll|jewellery|book|wand|rod|magical staff).*:lightblue
+item += known.*ring of (dexterity|strength|intelligence|slaying|evasion|protection(?! from)):magenta
+item += identified.*artefact.*jewellery:white
+item += unidentified.*artefact.*jewellery.*:lightmagenta
 item += (a )?stones?$:lightgray
 
 ### Food ###
-## These are 0.16+
-# : if not crawl.version then
-# item += skeleton: ÷
-# item += corpse:   †
-# :end
-
 item += chunks?.*flesh:lightgrey
 item += contaminated.*chunk:brown
 item += mutagenic.*chunk:magenta
 item += evil_eating.*chunk:red
 item += (inedible|rotting.*chunk):darkgrey
 item += poisonous.*chunk:green
-item += (strawberry|grape|sultana):brown
-item += ( +pears?$|apple|apricot|choko|lychee|rambutan|fruit):brown
-item += ( +oranges?$|banana|lemon|pizza|sausage|snozz|jerky|jerkies|cheese|honeycomb|royal jell):yellow
+item += fruit:brown
+item += (pizza|jerky|jerkies|royal jell):yellow
 item += (meat ration|bread ration):lightcyan
 
 ### Wands ###
