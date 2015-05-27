@@ -399,7 +399,7 @@ autopickup_no_burden = true
 ##############################
 
 {
--- Begin force_mores
+-- Begin conditional force_mores
 local force_mores = {
                   -- General early game threats
                   {pattern = "(adder|gnoll)", cond = "xl", cutoff = 2,
@@ -423,16 +423,11 @@ local force_mores = {
                           "|air mage|defender|yaktaur captain|warmonger" ..
                           "|chaos champion|blood saint|black sun|balrug" ..
                           "|blizzard demon|cacodemon)",
-                   cond = "maxhp", cutoff = 150, name = "squishy_150hp"},      
-                  -- Problems anywhere
-                  {pattern = "(giant eyeball|flayed ghost|greater mummy" ..
-                             "|mummy priest|hell sentinel|fiend|tormentor" ..
-                             "|hellion|lich|executioner|orb of fire" .. 
-                             "|moth of wrath|ghost moth|curse toe" ..
-                             "|curse skull|draconian shifter)",
-                   name = "BigProblems" }}
+                   cond = "maxhp", cutoff = 150, name = "squishy_150hp"}}
 
 local active_fm = {}
+-- Set to true to get a message when the fm change
+local notify_fm = false
 function init_force_mores()
    for i,v in ipairs(force_mores) do
        active_fm[#active_fm + 1] = false
@@ -482,11 +477,11 @@ function update_force_mores()
          active_fm[i] = not active_fm[i]
       end
    end
-   if #activated > 0 then
+   if #activated > 0 and notify_fm then
       crawl.mpr("<white>Activating force_mores: " ..
                 table.concat(activated, ", ") .. "</white>")
    end
-   if #deactivated > 0 then
+   if #deactivated > 0 and notify_fm then
       crawl.mpr("<white>Deactivating force_mores: " ..
                 table.concat(deactivated, ", ") .. "</white>")
    end
@@ -884,8 +879,11 @@ more += uncertain
 more += You have reached level
 more += You have finished your manual of
 more += Deactivating autopickup
-more += oklob.*come
 
+## Problematic monsters
+more += (giant eyeball|flayed ghost|greater mummy|mummy priest|hell sentinel|fiend|tormentor|hellion|lich|executioner|orb of fire|moth of wrath|ghost moth|curse toe|curse skull|draconian shifter).*into view
+
+## Uniques
 more += (Agnes|Aizul|Antaeus|Asmodeus|Asterion|Azrael|Blork the orc|Boris|Cerebov|Crazy Yiuf|Dispater|Dissolution|Donald|Dowan|Duvessa|Edmund|the Enchantress|Ereshkigal|Erica|Erolcha|Eustachio|Fannar|Frances|Frederick|Gastronok|Geryon|Gloorx Vloq|Grinder|Grum|Harold|Ignacio|Ijyb|Ilsuiw|Jessica|Jorgrun|Jory|Joseph|Josephine|Khufu|Kirke|Lamia|the Lernaean hydra|Lom Lobon|Louise|Mara|Margery|Maud|Maurice|Menkaure|Mennas|Mnoleg|Murray|Natasha|Nergalle|Nessos|Nikola|Norris|Pikel|Plog|Polyphemus|Prince Ribbit|Psyche|Purgy|Robin|Roxanne|the royal jelly|Rupert|Saint Roka|the Serpent of Hell|Sigmund|Snorg|Sonja|Terence|Tiamat|Urug|Vashnia|Wiglaf|Xtahua).*into view
 
 ###################
