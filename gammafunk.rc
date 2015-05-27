@@ -325,25 +325,16 @@ item += useless.*(food|book|potion|scroll|missile|armour|weapon|jewellery|rod):d
 item += evil_item:red
 
 mons := mon_glyph
-
-## mimic enemies were removed in 0.16
-# :if not crawl.version then
-# mons ^= item mimic : lightblue x
-# mons ^= feature mimic : lightblue x
-# mons ^= inept item mimic : lightgreen x
-# mons ^= inept feature mimic : lightgreen x
-# mons ^= ravenous item mimic : lightred x
-# mons ^= ravenous feature mimic : lightred x
-# :end
-
 mons ^= dancing weapon : cyan {
 mons ^= spectral weapon : lightcyan {
+mons ^= * : ✱
 
 ## Wall glyphs, requires a font and terminal that can render these.
 feature += green crystal {x2591}
 feature += stone wall {x2592}
 feature += metal wall {x2593}
 feature += unnaturally hard rock wall {x2588}
+feature += altar {⚑}
 
 #########################
 ### Interface options ###
@@ -684,23 +675,9 @@ autoinscribe += of faith:!P
 autoinscribe += ( rod ):!a
 autoinscribe += manual of:!d
 autoinscribe += staff of (Wucad Mu|energy|channeling|wizardry|power):!a
-# : if not crawl.version then
-# autoinscribe += ambrosia:!e
-# : end
 autoinscribe += (bread|meat) ration:!e
 autoinscribe += scroll.+of.*(acquirement|vulnerability|summoning|teleportation|silence|fear|magic mapping|holy word|torment):!r
 autoinscribe += potion.+of (might|brilliance|cancellation|cure mutation|restore abilities|magic|resistance|haste|invisibility|porridge):!q
-
-## No more chunk sublim in 0.16
-# : if not crawl.version then
-# : if you.race() == "Vampire" then
-# autoinscribe += of blood:@*1
-# autoinscribe += of coagulated blood:@*2
-# autoinscribe += chunks? of:@*3
-# : else
-# autoinscribe += chunks? of:@*1
-# : end
-# : end
 
 : if you.god() == "Fedhas" then
 autoinscribe += fruit:!e
