@@ -60,7 +60,7 @@
 player_tiles = {
    -- Humanoids
    {mons = "kobold demonologist"},
-   {mons = "death knight"},
+   {mons = "death knight", min_version = 0.17},
    {mons = "necromancer"},
    {mons = "wizard"},
    {mons = "boggart"},
@@ -287,8 +287,8 @@ player_tiles = {
                "mons_serpent_of_hell_dis", 
                "mons_serpent_of_hell_gehenna"},
     num_var = 4},
-   {mons = "Jörmungandr", tile = "mons_jormungandr", min_version=0.16},
-   {mons = "THE GIAGGOSTUONO", tile = "mons_giaggostuono", min_version=0.16},
+   {mons = "Jörmungandr", tile = "mons_jormungandr", min_version = 0.16},
+   {mons = "THE GIAGGOSTUONO", tile = "mons_giaggostuono", min_version = 0.16},
    -- Hugetile uniques
    {mons = "Lernaean Hydra", tile = "mons_lernaean_hydra_9"},
    {mons = "Ereshkigal", weapon_offsets = "0,-20", shield_offsets = "2,-8"},
@@ -356,7 +356,7 @@ player_tiles = {
    {mons = "diamond obelisk"},
    {mons = "test spawner"},
    {mons = "singularity", tile = "mons_singularity",
-    num_var = 4, var_type = "sequence", min_version = 0.16},
+    num_var = 4, var_type = "sequence", min_version = 0.16, max_version = 0.16},
    {mons = "orb of destruction", tile = "mons_orb_of_destruction",
     num_var = 3, var_type = "sequence"},
    {mons = "fulminant prism", tile = "mons_fulminant_prism", num_var = 4,
