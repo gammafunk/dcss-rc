@@ -331,6 +331,7 @@ mons ^= * : ✱
 
 ## Wall glyphs, requires a font and terminal that can render these.
 feature += crystal wall {░}
+feature += green crystal {░}
 feature += stone wall {▒}
 feature += metal wall {▓}
 feature += unnaturally hard rock wall {█}
