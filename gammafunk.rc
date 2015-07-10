@@ -330,10 +330,11 @@ mons ^= spectral weapon : lightcyan {
 mons ^= * : ✱
 
 ## Wall glyphs, requires a font and terminal that can render these.
-feature += green crystal {x2591}
-feature += stone wall {x2592}
-feature += metal wall {x2593}
-feature += unnaturally hard rock wall {x2588}
+feature += crystal wall {░}
+feature += stone wall {▒}
+feature += metal wall {▓}
+feature += unnaturally hard rock wall {█}
+
 feature += altar {⚑}
 
 #########################
