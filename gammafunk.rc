@@ -324,6 +324,7 @@ item += wand of.*(lightning|draining|cold|fire):yellow
 item += useless.*(food|book|potion|scroll|missile|armour|weapon|jewellery|rod):darkgrey
 item += evil_item:red
 
+## Monsters that can be easy to miss
 mons := mon_glyph
 mons ^= dancing weapon : cyan {
 mons ^= spectral weapon : lightcyan {
@@ -671,7 +672,7 @@ autoinscribe += (bad|dangerous)_item.*scroll:!r
 autoinscribe += of faith:!P
 autoinscribe += ( rod ):!a
 autoinscribe += manual of:!d
-autoinscribe += staff of (Wucad Mu|energy|channeling|wizardry|power):!a
+autoinscribe += staff of (Wucad Mu|energy|channeling|wizardry|power|conjuration|summoning):!a
 autoinscribe += (bread|meat) ration:!e
 autoinscribe += scroll.+of.*(acquirement|vulnerability|summoning|teleportation|silence|fear|magic mapping|holy word|torment):!r
 autoinscribe += potion.+of (might|brilliance|cancellation|cure mutation|restore abilities|magic|resistance|haste|invisibility|porridge):!q
@@ -690,7 +691,7 @@ note_messages += cast .* Abyss
 note_messages += Your scales start
 note_messages += protects you from harm
 note_messages += You fall through a shaft
-note_monsters += orb of fire, ancient lich, Sigmund
+note_monsters += orb of fire, ancient lich, caustic shrike, octopode crusher
 
 ###################
 # Message colours #
@@ -778,11 +779,6 @@ msc += $danger:constricts you
 msc += $danger:you convulse
 msc += $danger:You feel a build-up of mutagenic energy
 
-msc += $item_dmg:acid corrodes
-msc += $item_dmg:catch(es)? fire
-msc += $item_dmg:freezes? and shatters?
-msc += $item_dmg:covered with spores
-msc += $item_dmg:devours some of your food
 msc += $item_dmg:rots? away
 
 msc += $warning:ticking.*clock
@@ -892,8 +888,8 @@ more += (Agnes|Aizul|Antaeus|Asmodeus|Asterion|Azrael|Blork the orc|Boris|Cerebo
 ### Spell slots ###
 ###################
 
-# Buff/utility/escape spells we always try to put on specific letters,
-# or on i or e.
+# Buff/utility/escape spells we always try to put on specific letters.
+# Uses following letters: aeghijlmrsBEKU
 spell_slot += Abjuration:jJA
 spell_slot += Aura of abjuration:jJA
 spell_slot += Apportation:aAP
@@ -902,7 +898,7 @@ spell_slot += Borgnjor's revivification:BNV
 spell_slot += Cigotuvi's Embrace:ige
 spell_slot += Condensation shield:ihe
 spell_slot += Control teleport:ECT
-spell_slot += Controlled blink:kiC
+spell_slot += Controlled blink:ieC
 spell_slot += Cure poison:ieP
 spell_slot += Death's door:DOT
 spell_slot += Deflect missiles:rRM
@@ -926,84 +922,93 @@ spell_slot += Summon butterflies:UBT
 
 
 # All other spells
-spell_slot += Alistair's intoxication:tpo
+# Use z for L1 damage/buff spells
+# Generic: bodkqvwy
+# Uses the following for specific schools, preferably is spell name contains it
+# or as a fallback if it doesn't.
+# Fire: f; Cold: c; Necromancy: n; Earth: t; Poison: p; Summoning: u; Hexes: x
+spell_slot += Alistair's intoxication:tox
 spell_slot += Airstrike:ktT
 spell_slot += Agony:yno
-spell_slot += Animate dead:dnt
-spell_slot += Animate skeleton:knt
-spell_slot += Beastly appendage:btB
+spell_slot += Animate dead:ndt
+spell_slot += Animate skeleton:nkt
+spell_slot += Beastly appendage:zbt
 spell_slot += Blade hands:bdB
+# Try to put bolt spells on b
 spell_slot += Bolt of cold:bco
-spell_slot += Bolt of draining:bdn
+spell_slot += Bolt of draining:bnd
 spell_slot += Bolt of fire:bfo
-spell_slot += Bolt of magma:bfo
-spell_slot += Call canine familiar:fuc
+spell_slot += Bolt of magma:bof
+spell_slot += Call canine familiar:ucf
 spell_slot += Call imp:dup
-spell_slot += Cause fear:fxc
-spell_slot += Corona:zoc
-spell_slot += Chain lightning:toc
-spell_slot += Cigutovi's embrace:vut
-spell_slot += Confusing touch:ctx
-spell_slot += Confuse:cof
-spell_slot += Conjure flame:foj
-spell_slot += Control undead:ctn
-spell_slot += Corpse rot:ont
-spell_slot += Dazzling spray:dyz
-spell_slot += Darkness:DES
-spell_slot += Discord:dcx
-spell_slot += Disjunction:dto
-spell_slot += Dispel undead:dpn
-spell_slot += Dispersal:dpx
-spell_slot += Dragon form:doD
-spell_slot += Dragon's call:doc
-spell_slot += Enslavement:vnt
-spell_slot += Ensorcelled hibernation:zbt
-spell_slot += Fire storm:fto
-spell_slot += Fireball:fbF
-spell_slot += Flame tongue:zft
+spell_slot += Cause fear:xcf
+spell_slot += Corona:zox
+spell_slot += Chain lightning:tcn
+spell_slot += Cigutovi's embrace:vtn
+spell_slot += Confusing touch:oxc
+spell_slot += Confuse:ocf
+spell_slot += Conjure flame:ofu
+spell_slot += Control undead:not
+spell_slot += Corpse rot:otn
+spell_slot += Dazzling spray:ydz
+spell_slot += Darkness:DAR
+spell_slot += Discord:DOC
+spell_slot += Disjunction:dox
+spell_slot += Dispel undead:ndp
+spell_slot += Dispersal:dxp
+spell_slot += Dragon form:dof
+spell_slot += Dragon's call:dou
+## gone in 0.17
+spell_slot += Enslavement:vxt
+spell_slot += Ensorcelled hibernation:zbx
+spell_slot += Fire storm:fot
+spell_slot += Fireball:fbd
+spell_slot += Flame tongue:zfo
 spell_slot += Force lance:ofc
+## gone in 0.17
 spell_slot += Forcefull dismissal:dou
-spell_slot += Freezing cloud:czd
+spell_slot += Freezing cloud:cdo
 spell_slot += Freeze:zcf
-spell_slot += Fulminant prism:fpt
-spell_slot += Gell's Gravitas:vtG
-spell_slot += Glaciate:ctC
-spell_slot += Haunt:ntu
+spell_slot += Fulminant prism:ptf
+spell_slot += Gell's Gravitas:vxt
+spell_slot += Glaciate:ctb
+spell_slot += Haunt:unt
 spell_slot += Hydra form:ydo
-spell_slot += Ice form:ctF
+spell_slot += Ice form:cof
 spell_slot += Ice storm:cot
 spell_slot += Iron shot:ton
-spell_slot += Infusion:iIV
-spell_slot += Inner flame:fnx
+spell_slot += Infusion:ofn
+spell_slot += Inner flame:fxn
 spell_slot += Irradiate:tdI
-spell_slot += Iskenderun's battlesphere:ktd
-spell_slot += Iskenderun's mystic blast:byt
-spell_slot += Leda's Liquefaction:qtf
-spell_slot += Lee's rapid deconstruction:dtc
-spell_slot += Lehudib's crystal spear:cyt
-spell_slot += Lightning bolt:bto
+spell_slot += Iskenderun's battlesphere:kdb
+spell_slot += Iskenderun's mystic blast:byd
+spell_slot += Leda's Liquefaction:qtx
+spell_slot += Lee's rapid deconstruction:tdo
+spell_slot += Lehudib's crystal spear:bty
+spell_slot += Lightning bolt:bot
 spell_slot += Magic dart:zdt
-spell_slot += Malign gateway:wty
+spell_slot += Malign gateway:wyt
 spell_slot += Mass confusion:cof
 spell_slot += Mephitic cloud:pdc
 spell_slot += Metabolic englaciation:ctb
 spell_slot += Monstrous menagerie:uto
 spell_slot += Necromutation:ntN
-spell_slot += Orb of destruction:odt
-spell_slot += Ozocubu's refrigeration:zot
+spell_slot += Orb of destruction:odb
+spell_slot += Ozocubu's refrigeration:coz
 spell_slot += Pain:znp
 spell_slot += Passwall:wpP
-spell_slot += Petrify:ytx
+spell_slot += Petrify:yxt
 spell_slot += Poison arrow:pwo
 spell_slot += Poisonous cloud:pod
-spell_slot += Portal projectile:toj
+spell_slot += Portal projectile:otc
 spell_slot += Sandblast:zbt
-spell_slot += Searing ray:ynG
+spell_slot += Searing ray:ybn
 spell_slot += Shadow creatures:wdu
 spell_slot += Shatter:TSH
 spell_slot += Shock:zok
-spell_slot += Simulacrum:cun
-spell_slot += Singularity:yut
+spell_slot += Simulacrum:cnu
+## gone in 0.17
+spell_slot += Singularity:ytu
 spell_slot += Slow:wox
 spell_slot += Song of slaying:gon
 spell_slot += Spectral weapon:wtx
@@ -1015,29 +1020,27 @@ spell_slot += Sticks to snakes:tkc
 spell_slot += Sticky flame:yfk
 spell_slot += Sting:zpt
 spell_slot += Stone arrow:wto
-spell_slot += Summon demon:don
-spell_slot += Summon dragon:duo
-spell_slot += Summon forest:tou
-spell_slot += Summon greater demon:dtu
+spell_slot += Summon demon:dou
+spell_slot += Summon forest:ouf
+spell_slot += Summon greater demon:dou
 spell_slot += Summon guardian golem:dou
 spell_slot += Summon horrible things:xou
 spell_slot += Summon hydra:ydu
-spell_slot += Summon ice:bcu
+spell_slot += Summon ice beast:bcu
 spell_slot += Summon lightning spire:tpu
 spell_slot += Summon mana viper:vpu
-spell_slot += Summon scorpions:pou
-spell_slot += Summon small mammal:zuo
-spell_slot += Summon ugly:uyo
+spell_slot += Summon small mammal:zou
+## gone in 0.17
 spell_slot += Sure blade:bdu
-spell_slot += Teleport other:top
-spell_slot += Throw frost:tfo
-spell_slot += Throw flame:tfo
-spell_slot += Throw icicle:ctw
+spell_slot += Teleport other:opt
+spell_slot += Throw frost:cow
+spell_slot += Throw flame:fow
+spell_slot += Throw icicle:cwo
 spell_slot += Tornado:TOD
-spell_slot += Tukima's Dance:tdk
-spell_slot += Vampiric draining:vdn
-spell_slot += Venom bolt:btp
-spell_slot += Warp weapon:wpo
+spell_slot += Tukima's Dance:dkx
+spell_slot += Vampiric draining:vnd
+spell_slot += Venom bolt:bpo
+spell_slot += Warp weapon:wop
 
 # Default letters
 spell_slot += .*:YXWZ
