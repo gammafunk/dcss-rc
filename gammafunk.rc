@@ -723,8 +723,11 @@ function save_char_defaults(quiet)
         skill_msg = skill_msg .. ";"
       end
       skill_msg = skill_msg .. sk .. ":" .. glyph_map[you.train_skill(sk)]
+    else
+      c_persist.char_defaults[combo][sk] = nill
     end
   end
+  c_persist.char_defaults[combo]["target_skill"] = nill
   if not need_target_skill and c_persist.target_skill ~= nill then
     c_persist.char_defaults[combo]["target_skill"] = c_persist.target_skill
     skill_msg = skill_msg .. ";target:" .. c_persist.target_skill
@@ -746,17 +749,16 @@ function load_char_defaults(quiet)
   combo = you.race() .. you.class()
   skill_msg = ""
   glyph_map = { [1] = "+", [2] = "*" }
-  for sk,tv in pairs(c_persist.char_defaults[combo]) do
-    if sk ~= "target_skill" then
-      if c_persist.char_defaults[combo][sk] then
-        you.train_skill(sk, tv)
-        if skill_msg ~= "" then
-          skill_msg = skill_msg .. ";"
-        end
-        skill_msg = skill_msg .. sk .. ":" .. glyph_map[tv]
-      else
-        you.train_skill(sk, 0)
+  for _,sk in ipairs(skill_list) do
+    if c_persist.char_defaults[combo][sk] then
+      you.train_skill(sk, c_persist.char_defaults[combo][sk])
+      if skill_msg ~= "" then
+        skill_msg = skill_msg .. ";"
       end
+      skill_msg = skill_msg .. sk .. ":"
+                  .. glyph_map[c_persist.char_defaults[combo][sk]]
+    else
+      you.train_skill(sk, 0)
     end
   end
   if c_persist.char_defaults[combo]["target_skill"] then
