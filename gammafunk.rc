@@ -826,6 +826,9 @@ function ready()
   -- Dynamic force-mores.
   do_force_mores()
 
+  -- Char dumps every 1k turns.
+  char_dump()
+
   -- Enable RandomTiles.
   random_tile()
 end
