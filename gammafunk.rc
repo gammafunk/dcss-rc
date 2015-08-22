@@ -329,9 +329,11 @@ mons := mon_glyph
 mons ^= dancing weapon : cyan {
 mons ^= spectral weapon : lightcyan {
 mons ^= * : ✱
+mons ^= death cob : lightgreen z
 
 ## Wall glyphs, requires a font and terminal that can render these.
 feature += crystal wall {░}
+## For 0.16
 feature += green crystal {░}
 feature += stone wall {▒}
 feature += metal wall {▓}
