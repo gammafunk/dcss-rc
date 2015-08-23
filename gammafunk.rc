@@ -329,7 +329,11 @@ mons := mon_glyph
 mons ^= dancing weapon : cyan {
 mons ^= spectral weapon : lightcyan {
 mons ^= * : ✱
-mons ^= death cob : lightgreen z
+## For 0.16
+mons ^= death cob : yellow z
+mons ^= curse toe : lightgreen z
+mons ^= ancient champion : lightcyan z
+mons ^= curse skull : lightmagenta z
 
 ## Wall glyphs, requires a font and terminal that can render these.
 feature += crystal wall {░}
