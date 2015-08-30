@@ -1,16 +1,5 @@
 # Crawl Init file
 
-###################
-### RandomTiles ###
-###################
-
-## To set up RandomTiles, you need (1) the includes below and (2) to add/modify
-## the ready() function in your rc. See my ready() section below and the
-## project page: https://github.com/gammafunk/RandomTiles
-
-include += PlayerTiles.rc
-include += RandomTiles.rc
-
 ##############################
 ### Tiles and view options ###
 ##############################
@@ -22,6 +11,12 @@ tile_full_screen = false
 show_player_species = true
 view_delay = 300
 bindkey = [~] CMD_LUA_CONSOLE
+
+## To set up RandomTiles, you need (1) the include below and (2) to add/modify
+## the ready() function in your rc. See my ready() section below and the
+## project page: https://github.com/gammafunk/RandomTiles
+include += RandomTiles.rc
+
 
 ######################
 ### Morgue options ###
