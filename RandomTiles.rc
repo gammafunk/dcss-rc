@@ -1,11 +1,10 @@
 {
+---------------------------
+---- Begin RandomTiles ----
+---------------------------
 
--- RandomTiles.rc
--- Automatic, randomized player tile changes for DCSS
-
-------------------------------------------------
---------------- BEGIN CONFIGURATION ------------
-------------------------------------------------
+-- Automatically and randomly change the player tile to that of various
+-- monsters. See README.md for setup details.
 
 -- RandomTile options
 -- If you set randtile_options elsewhere in your rc,  we don't override it.
@@ -37,10 +36,6 @@ if not randtile_options then
       -- Colour of tile change message.
       message_colour = "lightblue" }
 end
-
-------------------------------------------------
---------------- END CONFIGURATION --------------
-------------------------------------------------
 
 -- player_tiles defines the default array of player tiles that RandomTiles
 -- chooses from. New tiles can be added anywhere in this array, and lines can
@@ -94,7 +89,6 @@ end
 --    num_var = 4},
 
 -- These variants are used will be chosen according to the same rules above.
------
 
 -- begin player_tiles array
 player_tiles = {
@@ -417,9 +411,9 @@ player_tiles = {
     var_type="fixed"}}
 -- end player_tiles array
 
--- state data and functions that shouldn't need modification
+-- Note: No further configuration past this point.
 
--- will be populated the list of tiles that are valid and compatible with our version.
+-- A list of tiles that are valid and compatible with our version.
 local valid_tiles = {}
 
 -- state data
@@ -473,8 +467,8 @@ function tile_change_message()
                 .. randtile_options.message_colour .. ">")
 end
 
--- Change the current tile using the tileset entry with the given
--- index in valid_tiles. This will update the randtile state as necessary.
+-- Change the current tile using the tileset entry with the given index in
+-- valid_tiles. This will update the randtile state as necessary.
 function change_tile(index, force)
    tileopt = nil
 
@@ -649,4 +643,7 @@ end
 -- Initialize the tileset, removing any invalid tile entries.
 init_player_tiles(player_tiles)
 
+-------------------------
+---- End RandomTiles ----
+-------------------------
 }

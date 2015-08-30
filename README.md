@@ -1,67 +1,80 @@
-RandomTiles
-===========
+DCSS RC
+=======
+This project has settings and lua code for use in configuration files for
+[DCSS](http://crawl.develz.org/wordpress/). To install any of the .lua files,
+you need to 1) add the contents to a lua code block in your rc and 2) add or
+edit the `ready()` function of your rc.
 
-This project has lua code for use in configuration files for
-[DCSS](http://crawl.develz.org/wordpress/) that automatically and randomly
-changes the player's display tile using the *tile_player_tile* configuration
-option.
+#### 1. Including any of the .lua files in your rc
 
-To use this code, you need 1) to include it in your rc file and 2) add or edit
-the `ready()` function in your rc file.
+Add a lua code block to your rc with the contents of the .lua file. To make a
+code block, add an opening brace followed by a closing brace to your rc with
+each on their own lines, then add the file contents on the lines in
+between. Each file has opening and closing comment lines, so your added code
+block will look something like:
 
-## 1. Including RandomTiles in your rc
+```
+{
+-------------------------
+---- Begin char_dump ----
+-------------------------
+<lua code>
+-----------------------
+---- End char_dump ----
+-----------------------
+}
+```
+
+#### 2. Updating the `ready()` function in your rc
+
+Each component has a function call that needs to be in your rc `ready()`
+function. You may already have a `ready()` function defined, in which case add
+the call on its own line. For char_dump, a minimal `ready()` would be:
+```lua
+{
+  function ready()
+    -- Enable char_dump
+    char_dump()
+  end
+}
+```
+
+See each component's help section for the function name you need to add and any
+additional macro definitions that are needed or helpful.
+
+## RandomTiles
+Automatically and randomly change the player tile to that of various monsters.
+
+#### Including and enabling RandomTiles in your rc
 
 If you play on the server [CSZO](http://crawl.s-z.org/), you can add the
 following to your rc
 
 ```
-include += PlayerTiles.rc
 include += RandomTiles.rc
 ```
 
-If you don't play on CSZO or you'd like to change either **RandomTiles.rc** (to
-set options) or **PlayerTiles.rc** (to add/change the tiles used), copy these
-files into your rc directly. They need to be copied so the PlayerTiles.rc code
-is before the RandomTiles.rc code, and both must come before the `ready()`
-function described below. These two files have some basic comments showing how
-to modify them.
+If you don't play on CSZO or you'd like to change **RandomTiles.rc** (to set
+options or to add/change the tiles used), copy this files into your rc
+directly. It has some comments on how to modify the default options and the
+tile sets used. To enable, add a call to `random_tile()` to your `ready()`
+function.
 
-## 2. Updating the `ready()` function in your rc
-
-A minimal `ready()` function would be
-
-```lua
-{
-  function ready()
-  -- Enable RandomTiles
-  random_tile()
-  end
-}
-```
-
-You can copy this code directly into your rc anywhere *after* the
-includes/copies of **PlayerTiles.rc** and **RandomTiles.rc**. Make sure the `{`
-at the beginning and the `}` at the end are the first characters on their
-respective lines.
-
-If you have an existing `ready()` defined, add `random_tile()` to any line of
-this function.
-
-## Macro functions to change tiles
+#### Macro functions to change tiles
 
 The function `set_tile_by_name()` will prompt for a monster name defined in
 PlayerTiles.rc and then change your tile to the matching monster. Note that
 only monster tiles defined in PlayerTiles.rc will work, and the match is
 case-insensitive with partial matches allowed.
 
-The function `new_random_tile()` will switch your current tile to a new, randomly
-chosen one.
+The function `new_random_tile()` will switch your current tile to a new,
+randomly chosen one.
 
 To bind either of these functions to a key, use *~* or *Ctrl-d* followed by
 *m*, and then enter `===set_tile_by_name` or `===new_random_tile` depending on
 which function you want.
 
-## Macro functions for toggling RandomTiles
+#### Macro functions for toggling RandomTiles
 
 The function `toggle_random_tiles()` will toggle RandomTiles between enabled
 and disabled states. When disabled, RandomTiles sets `tile_player_tile` to the
@@ -72,3 +85,54 @@ enabled and disabled states. When the timer is disabled, RandomTiles doesn't
 change tile as turns pass or your XL changes. Hence your tile is fixed to the
 current one, but you can still use `set_tile_by_name()` and `new_random_tile()`
 to modify it.
+
+## target_skill
+Opens the skill screen automaticaly when a skill reaches a target level set by
+the player. To enable in your rc, add a lua code block with the contents of
+*target_skill.lua* and a call to `target_skill()` in your `ready()`
+function. _Note: You must add `target_skill()` to `ready()` after the call to
+`char_defaults()` if you're also using char_defaults._
+
+Additionally you'll wand to assign a key to a macro with a target of
+`===set_target_skill` so can change the skill target on the fly. Original code
+by elliptic with some reorganization.
+
+## char_defaults
+
+Load default skill settings and a skill target (based on target_skill, if that
+code is also loaded in your rc) for a specific race+class combination when a
+game of that type loads. If you change your skills or skill target on turn 0,
+these are automatically saved as new defaults for that character. To enable in
+your rc, add a lua code block with the contents of *char_defaults.lua* and a
+call to `char_defaults()` in your `ready()` function. _Note: You must add
+`char_defaults()` to `ready()` before the call to `char_defaults()` if you're
+also using target_skill._
+
+Additionally, to save your defaults on the fly, you can assign a key to a macro
+with a target of `===save_char_defaults`.
+
+## force_mores
+Add and remove force-more messages based on hp/xl conditions. A force-more is
+triggered the first time it comes into view if it's of a certain kind and
+requires the player to hit e.g. space to continue. These messages can help to
+avoid killing your weaker characters under manual movement (e.g. in
+speedruns). To enable in your rc, add a lua code block with the contents of
+*force_mores.lua* and a call to `force_mores()` in your `ready()` function.
+
+## safe_eat
+Prompt when eating in LOS of charmed tier-one demon, such as those made by
+summon greater demon, since they can become hostile mid-meal.  To enable in
+your rc, add a lua code block with the contents of *force_mores.lua* and make a
+macro binding your 'e' key to `===safe_eat`.
+
+## load_message
+Leave a message on save that will be displayed next time the player loads the
+game. To enable in your rc, add a lua code block with the contents of
+*load_message.lua*, add a call to `load_message()` in your `ready()` function,
+and make a macro binding 'S' to `===save_with_message`. Original code by
+elliptic with some reorganization.
+
+## char_dump
+Make a character dump every N turns (default of 1000). To enable in your rc,
+add a lua code block with the contents of *char_dump.lua* and a call to
+`char_dump()` in your `ready()` function.
