@@ -16,7 +16,7 @@ skill_list = {"Fighting","Short Blades","Long Blades","Axes","Maces & Flails",
               "Translocations","Transmutations","Fire Magic","Ice Magic",
               "Air Magic","Earth Magic","Poison Magic","Invocations",
               "Evocations","Stealth"}
-local need_target_skill = nil
+need_target_skill = nil
 
 function record_current_skills(maxlev)
   c_persist.current_skills = { }

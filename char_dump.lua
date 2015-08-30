@@ -7,11 +7,11 @@
 -- to `char_defaults()` in your `ready()` function.
 
 local dump_count = you.turns()
-local _ = you.turns()
+local dump_period = 1000
 
 function char_dump()
   if you.turns() >= dump_count then
-    dump_count = dump_count + 1000
+    dump_count = dump_count + dump_period
     crawl.dump_char()
   end
 end
