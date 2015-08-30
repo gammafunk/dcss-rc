@@ -29,7 +29,6 @@ function save_default_target_skill(quiet)
            .. c_persist.target_skill)
     end
   end
-  
 end
 
 function save_char_defaults(quiet)
