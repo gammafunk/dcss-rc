@@ -119,6 +119,17 @@ avoid killing your weaker characters under manual movement (e.g. in
 speedruns). To enable in your rc, add a lua code block with the contents of
 *force_mores.lua* and a call to `force_mores()` in your `ready()` function.
 
+## bread_swing
+Automatic bread swinging for either a single or fixed number of turns. An item
+in a fixed inventory slot (default is 'c') is automatically wielded if it isn't
+already. This function prevents you from swinging if hostiles are in LOS and
+interrupts multi-turn swings if hostiles wander into LOS or any relevant
+message occurs.  To enable in your rc, add a lua code block with the contents
+of *bread_swing.lua* and a call to `bread_swing()` in your `ready()`
+function. Additionally assign two macro keys, one with a target of
+`===one_bread_swing` for the single-turn swing and one with a target of
+`===start_bread_swing` for the multiple turn swing.
+
 ## safe_eat
 Prompt when eating in LOS of charmed tier-one demon, such as those made by
 summon greater demon, since they can become hostile mid-meal.  To enable in

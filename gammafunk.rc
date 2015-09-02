@@ -17,7 +17,6 @@ bindkey = [~] CMD_LUA_CONSOLE
 ## project page: https://github.com/gammafunk/dcss-rc
 include += RandomTiles.rc
 
-
 ######################
 ### Morgue options ###
 ######################
@@ -334,6 +333,7 @@ mons ^= curse skull : lightmagenta z
 feature += crystal wall {░}
 ## For 0.16
 feature += green crystal {░}
+
 feature += stone wall {▒}
 feature += metal wall {▓}
 feature += unnaturally hard rock wall {█}
@@ -411,11 +411,14 @@ function ready()
   -- Enable char default skills; this must come before target_skill()
   char_defaults()
 
-  -- Enable persistant messages
-  load_message()
-
   -- Enable skill target settings
   target_skill()
+
+  -- Enable bread swinging
+  bread_swing()
+
+  -- Enable persistent messages
+  load_message()
 
   -- Dynamic force-mores.
   force_mores()
