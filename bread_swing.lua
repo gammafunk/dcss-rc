@@ -173,7 +173,7 @@ function reset_bread_swing()
   brdat.swinging = false
   brdat.num_swings = nil
   brdat.swing_start = nil
-  brdat.start_status = nil
+  brdat.start_status = { }
 end
 
 function abort_bread_swing(msg)

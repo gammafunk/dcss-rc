@@ -43,7 +43,7 @@ function check_skills()
 end
 
 function init_target_skill()
-  c_persist.target_skill = nill
+  c_persist.target_skill = nil
   c_persist.current_skills = { }
   need_target_skill = true
 end
@@ -72,8 +72,10 @@ function set_target_skill()
   crawl.formatted_mpr("Choose a target skill level: ", "prompt")
   c_persist.target_skill = tonumber(crawl.c_input_line())
   record_current_skills(c_persist.target_skill)
-  -- Update the target skill for char_defaults()
-  save_default_target_skill()
+  -- Update the target skill for char_defaults if necessary.
+  if save_default_target_skill and you.turns() == 0 then
+      save_default_target_skill()
+  end
 end
 
 function control(c)
@@ -83,10 +85,12 @@ end
 -- Moved this to its own function to clean up ready() -gammafunk
 function target_skill()
   prev_need_target = need_target_skill
-  -- Need to update target_skill at turn 0 no matter what, since it
-  -- might carry from a previous game.
-  if (prev_need_target == nil and you.turns() == 0)
-     or c_persist.target_skill == nil then
+
+  -- Need to look at skills and then set a target skill if our
+  -- need_target_skill variable is uninitialized and we're either at turn 0 or
+  -- c_persist.target_skill also uninitialized.
+  if prev_need_target == nil
+  and (you.turns() == 0 or c_persist.target_skill == nil) then
     set_new_skill_training()
   end
   if prev_need_target then

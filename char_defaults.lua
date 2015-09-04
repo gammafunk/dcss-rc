@@ -2,14 +2,30 @@
 ---- Begin char_defaults ----
 -----------------------------
 
--- Load default skill settings and a skill target (based on target_skill, if
--- that code is also loaded in your rc) for a specific race+class combination
--- when a game of that type loads. If you change your skills or skill target on
--- turn 0, these are automatically saved as new defaults for that character. To
--- enable in your rc, add a lua code block with the contents of
--- *char_defaults.lua* and a call to `char_defaults()` in your `ready()`
--- function. Additionally, to save your defaults on the fly, you can assign a
--- key to a macro with a target of `===save_char_defaults`.
+-- Load default skill settings for each race+class combination automatically on
+-- turn 0. Recommended that you also use *target_skill.lua* so that you can set
+-- skills (and a skill target) on turn 0 for chars without defaults and have
+-- this data automatically become the new default. To enable in your rc, add a
+-- lua code block with the contents of *char_defaults.lua* and a call to
+-- `char_defaults()` in your `ready()` function. If you are using
+-- *target_skill.lua*, this call must come before the call to `target_skill()`
+-- in `ready()`. Additionally, to save or load your defaults on the fly
+-- (e.g. if you forgotten to set something), you can assign a keys to macros
+-- with a targets of `===save_char_defaults` or `===load_char_defaults` or
+-- simply run these functions as needed in the lua console.
+
+weapon_skills = {"Unarmed Combat", "Short Blades", "Long Blades", "Axes",
+                 "Maces & Flails", "Polearms", "Staves"}
+ranged_skills = {"Throwing", "Bows", "Crossbows", "Slings"}
+other_skills = {"Fighting", "Armour", "Dodging",
+                "Shields", "Spellcasting", "Conjurations", "Hexes", "Charms",
+                "Summonings", "Necromancy", "Translocations", "Transmutations",
+                "Fire Magic", "Ice Magic", "Air Magic", "Earth Magic",
+                "Poison Magic", "Invocations", "Evocations","Stealth"}
+skill_glyphs = { [1] = "+", [2] = "*" }
+chdat = nil
+char_combo = you.race() .. you.class()
+loaded_attempted = false
 
 -- Wrapper of crawl.mpr() that prints text in white.
 if not mpr then
@@ -19,87 +35,149 @@ if not mpr then
 end
 
 function save_default_target_skill(quiet)
-  combo = you.race() .. you.class()
-  if c_persist.char_defaults
-     and c_persist.char_defaults[combo]
-     and c_persist.char_defaults[combo].target_skill == nill then
-      c_persist.char_defaults[combo].target_skill = c_persist.target_skill
-    if not quiet then
-       mpr("Set default target skill for " .. combo .. ": "
-           .. c_persist.target_skill)
-    end
+  if not c_persist.target_skill or not have_defaults() then
+    return
+  end
+  c_persist.char_defaults[char_combo].target_skill = c_persist.target_skill
+  if not quiet then
+    mpr("Set default target skill for " .. char_combo .. ": "
+          .. c_persist.target_skill)
   end
 end
 
+function skill_message(prefix, skill, skill_type, value)
+  local msg = ""
+  if prefix then
+    msg = prefix .. ";"
+  end
+  if skill_type then
+    msg = msg .. skill_type .. "(" .. skill .. "):" .. value
+  else
+    msg = msg .. skill .. ":" .. value
+  end
+  return msg
+end
+
 function save_char_defaults(quiet)
-  combo = you.race() .. you.class()
+  if you.class() == "Wanderer" then
+    return
+  end
   if not c_persist.char_defaults then
     c_persist.char_defaults = { }
   end
-  if not c_persist.char_defaults[combo] then
-    c_persist.char_defaults[combo] = { }
-  end
-  skill_msg = ""
-  glyph_map = { [1] = "+", [2] = "*" }
-  for _,sk in ipairs(skill_list) do
+  c_persist.char_defaults[char_combo] = { }
+  chdat = c_persist.char_defaults[char_combo]
+  local msg = nil
+  local have_weapon = false
+  for _,sk in ipairs(weapon_skills) do
     if you.train_skill(sk) > 0 then
-      c_persist.char_defaults[combo][sk] = you.train_skill(sk)
-      if skill_msg ~= "" then
-        skill_msg = skill_msg .. ";"
-      end
-      skill_msg = skill_msg .. sk .. ":" .. glyph_map[you.train_skill(sk)]
-    else
-      c_persist.char_defaults[combo][sk] = nill
+      chdat["Weapon"] = you.train_skill(sk)
+      msg = skill_message(nil, sk, "Weapon", skill_glyphs[chdat["Weapon"]])
+      have_weapon = true
+      break
     end
   end
-  c_persist.char_defaults[combo]["target_skill"] = nill
-  if not need_target_skill and c_persist.target_skill ~= nill then
-    c_persist.char_defaults[combo]["target_skill"] = c_persist.target_skill
-    skill_msg = skill_msg .. ";target:" .. c_persist.target_skill
+  if not have_weapon then
+    chdat["Weapon"] = nil
+  end
+  local have_ranged = false  
+  for _,sk in ipairs(ranged_skills) do
+    if you.train_skill(sk) > 0 then
+      chdat["Ranged"] = you.train_skill(sk)
+      msg = skill_message(msg, sk, "Ranged", skill_glyphs[chdat["Ranged"]])
+      have_ranged = true
+      break
+    end
+  end
+  if not have_ranged then
+    chdat["Ranged"] = nil
+  end
+  for _,sk in ipairs(other_skills) do
+    if you.train_skill(sk) > 0 then
+      chdat[sk] = you.train_skill(sk)
+      msg = skill_message(msg, sk, nil, skill_glyphs[chdat[sk]])
+    else
+      chdat[sk] = nil
+    end
+  end
+  if target_skill then
+    chdat["target_skill"] = nil
+    if not need_target_skill and c_persist.target_skill then
+      chdat["target_skill"] = c_persist.target_skill
+      msg = skill_message(msg, "Target", nil, c_persist.target_skill) 
+    end
   end
   if not quiet then
-    mpr("Saved default for " .. combo .. ": " .. skill_msg)
+    mpr("Saved default for " .. char_combo .. ": " .. msg)
   end
 end
 
 function have_defaults()
-  combo = you.race() .. you.class()
-  return c_persist.char_defaults and c_persist.char_defaults[combo]
+  return  you.class() ~= "Wanderer"
+    and c_persist.char_defaults
+    and c_persist.char_defaults[char_combo]
 end
 
 function load_char_defaults(quiet)
   if not have_defaults() then
     return
   end
-  combo = you.race() .. you.class()
-  skill_msg = ""
-  glyph_map = { [1] = "+", [2] = "*" }
-  for _,sk in ipairs(skill_list) do
-    if c_persist.char_defaults[combo][sk] then
-      you.train_skill(sk, c_persist.char_defaults[combo][sk])
-      if skill_msg ~= "" then
-        skill_msg = skill_msg .. ";"
-      end
-      skill_msg = skill_msg .. sk .. ":"
-                  .. glyph_map[c_persist.char_defaults[combo][sk]]
+  local msg = nil
+  local found_weapon = false
+  chdat = c_persist.char_defaults[char_combo]
+  for _,sk in ipairs(weapon_skills) do
+    if you.base_skill(sk) > 0 and chdat["Weapon"] then
+      you.train_skill(sk, chdat["Weapon"])
+      msg = skill_message(msg, sk, "Weapon", skill_glyphs[chdat["Weapon"]])
+      found_weapon = true
     else
       you.train_skill(sk, 0)
     end
   end
-  if c_persist.char_defaults[combo]["target_skill"] then
-    c_persist.target_skill = c_persist.char_defaults[combo]["target_skill"]
-    skill_msg = skill_msg .. ";Target:" .. c_persist.target_skill
-    need_target_skill = false
-    record_current_skills(c_persist.target_skill)
-  elseif init_target_skill then
-    -- Called by target_skill() trigger setting a skill target. We call it here
-    -- here since setting it skips the skills menu, which we don't want that.
-    -- This means the call to char_defaults() should come before target_skill()
-    -- in ready()
-    init_target_skill()
+  if chdat["Weapon"] and not found_weapon then
+    you.train_skill("Unarmed Combat", chdat["Weapon"])
+    msg = skill_message(msg, "Unarmed Combat", "Weapon",
+                        skill_glyphs[chdat["Weapon"]])
   end
-  if not quiet and skill_msg ~= "" then
-    mpr("Loaded default for " .. combo .. ": " .. skill_msg)
+  local found_ranged = false
+  for _,sk in ipairs(ranged_skills) do
+    if you.base_skill(sk) > 0 and chdat["Ranged"] then
+      you.train_skill(sk, chdat["Ranged"])
+      msg = skill_message(msg, sk, "Ranged", skill_glyphs[chdat["Ranged"]])
+      found_ranged = true
+    else
+      you.train_skill(sk, 0)
+    end
+  end
+  if chdat["Ranged"] and not found_ranged then
+    you.train_skill("Throwing", chdat["Ranged"])
+    msg = skill_message(msg, "Throwing", "Ranged",
+                        skill_glyphs[chdat["Ranged"]])
+  end
+  for _,sk in ipairs(other_skills) do
+    if chdat[sk] then
+      you.train_skill(sk, chdat[sk])
+      msg = skill_message(msg, sk, nil, skill_glyphs[chdat[sk]])
+    else
+      you.train_skill(sk, 0)
+    end
+  end
+  if target_skill then
+    if chdat["target_skill"] then
+      c_persist.target_skill = chdat["target_skill"]
+      msg = skill_message(msg, "Target", nil, c_persist.target_skill)
+      need_target_skill = false
+      record_current_skills(c_persist.target_skill)
+    else
+      -- Called by target_skill() trigger setting a skill target. We call it
+      -- here here since setting it skips the skills menu, which we don't want
+      -- that.  This means the call to char_defaults() should come before
+      -- target_skill() in ready()
+      init_target_skill()
+    end
+  end
+  if not quiet and msg ~= "" then
+    mpr("Loaded default for " .. char_combo .. ": " .. msg)
   end
 end
 
@@ -108,10 +186,14 @@ function char_defaults(quiet)
       return
   end
 
-  if need_target_skill == nill then
+  if not load_attempted then
     load_char_defaults(quiet)
+    load_attempted = true
   end
-  if need_target_skill ~= nill and not have_defaults() then
+  -- Save defaults if target_skill is loaded and has already been called
+  if need_target_skill ~= nil
+  and need_target_skill ~= true
+  and not have_defaults() then
     save_char_defaults(quiet)
   end
 end

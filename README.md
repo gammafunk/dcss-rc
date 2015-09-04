@@ -113,14 +113,17 @@ by elliptic with some reorganization.
 
 ## char_defaults
 
-Load default skill settings and a skill target (based on target_skill, if that
-code is also loaded in your rc) for a specific race+class combination when a
-game of that type loads. If you change your skills or skill target on turn 0,
-these are automatically saved as new defaults for that character. To enable in
-your rc, add a lua code block with the contents of *char_defaults.lua* and a
-call to `char_defaults()` in your `ready()` function. _Note: You must add
-`char_defaults()` to `ready()` before the call to `char_defaults()` if you're
-also using target_skill._
+Load default skill settings for each race+class combination automatically on
+turn 0. Recommended that you also use *target_skill.lua* so that you can set
+skills (and a skill target) on turn 0 for chars without defaults and have this
+data automatically become the new default. To enable in your rc, add a lua code
+block with the contents of *char_defaults.lua* and a call to `char_defaults()`
+in your `ready()` function. If you are using *target_skill.lua*, this call must
+come before the call to `target_skill()` in `ready()`. Additionally, to save or
+load your defaults on the fly (e.g. if you forgotten to set something), you can
+assign a keys to macros with a targets of `===save_char_defaults` or
+`===load_char_defaults` or simply run these functions as needed in the lua
+console.
 
 Additionally, to save your defaults on the fly, you can assign a key to a macro
 with a target of `===save_char_defaults`.
