@@ -27,11 +27,14 @@ chdat = nil
 char_combo = you.race() .. you.class()
 loaded_attempted = false
 
--- Wrapper of crawl.mpr() that prints text in white.
+-- Wrapper of crawl.mpr() that prints text in white by default.
 if not mpr then
-   mpr = function (msg)
-      crawl.mpr("<white>" .. msg .. "</white>")
-   end
+  mpr = function (msg, color)
+    if not color then
+      color = "white"
+    end
+    crawl.mpr("<" .. color .. ">" .. msg .. "</" .. color .. ">")
+  end
 end
 
 function save_default_target_skill(quiet)

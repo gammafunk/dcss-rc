@@ -34,7 +34,6 @@ status_messages = {
 -- NOTE: No configuration past this point.
 
 ATT_NEUTRAL = 1
-brdat = nil
 
 function hostile_in_los()
   local have_t1 = false
@@ -178,7 +177,7 @@ end
 
 function abort_bread_swing(msg)
   if msg then
-    crawl.mpr("<lightred>" .. msg .. "</lightred>")
+    mpr(msg, "lightred")
   end
   reset_bread_swing()
 end
