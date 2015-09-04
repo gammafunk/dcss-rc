@@ -2,21 +2,17 @@
 ---- Begin bread_swing ----
 ---------------------------
 
--- Automatic bread swinging for either a single or fixed number of turns. An
--- item in a fixed inventory slot (default is 'c') is automatically wielded if
--- it isn't already. This function prevents you from swinging if hostiles are
--- in LOS and interrupts multi-turn swings if hostiles wander into LOS or if
--- any unrecognized message occurs.  To enable in your rc, add a lua code block
--- with the contents of *bread_swing.lua* and a call to `bread_swing()` in your
--- `ready()` function. Additionally assign two macro keys, one with a target of
--- `===one_bread_swing` for the single-turn swing and one with a target of
--- `===start_bread_swing` for the multiple turn swing.
+-- See README.md for documentation
 
--- Max number of turns for multi-turn bread swinging.
+-- How many turns to swing at max.
 num_swing_turns = 20
 
+-- If true, look for a bread or meat ration inventory slot and use
+-- fallback_slot if we can't find a ration. If false, always use fallback_slot.
+automatic_slot = true
+
 -- Slot where you keep your bread-like item.
-bread_slot = "c"
+fallback_slot = "c"
 
 -- To have the multi-turn swing ignore status change messages, add an entry
 -- here giving the pattern of the message you'd like to ignore. The entries
@@ -51,13 +47,15 @@ end
 function get_last_message()
   for i = 1,50 do
     local msg = crawl.messages(i)
-    for s,_ in pairs(brstate.start_status) do
-      if type(status_messages[s]) == "table" then
-        for _,p in ipairs(status_messages[s]) do
-          msg = msg:gsub(p, "")
+    if not brstate.wielding then
+      for s,_ in pairs(brstate.start_status) do
+        if type(status_messages[s]) == "table" then
+          for _,p in ipairs(status_messages[s]) do
+            msg = msg:gsub(p, "")
+          end
+        else
+          msg = msg:gsub(status_messages[s], "")
         end
-      else
-        msg = msg:gsub(status_messages[s], "")
       end
     end
     msg = msg:gsub("%c* *Beep! [^%.]+%. *%c*", "")
@@ -92,19 +90,17 @@ function bad_to_swing()
     end
     return true
   end
+  -- If any unrecognized message occurs, assume we need to stop the swing.
   if brstate.last_acted then
+    local wield_pt = "^%c* *" .. c_persist.bread_slot .. " - .+[%)}] *%c*$"
+    local swing_pt = "^%c* *You swing at nothing%. *%c*$"
     msg = get_last_message()
     if not msg then
-      abort_bread_swing("Unable to find a valid previous message!")
+      abort_bread_swing("Unable to find a previous message!")
       return true
     end
-    local good_msg
-    if brstate.wielding then
-      good_msg = msg:find("^%c* *" .. bread_slot .. " - .+[)}] *%c*$")
-    else
-      good_msg = msg:find("^%c* *You swing at nothing%. *%c*$") 
-    end
-    if not good_msg then
+    local pattern = brstate.wielding and wield_pt or swing_pt
+    if not msg:find(pattern) then
       abort_bread_swing()
       return true
     end
@@ -144,11 +140,31 @@ end
 function wield_bread()
   brstate.wielding = true
   brstate.last_acted = you.turns()
-  crawl.sendkeys("w" .. bread_slot)
+  crawl.sendkeys("w" .. c_persist.bread_slot)
+end
+
+function find_bread_slot()
+  if not automatic_slot then
+    c_persist.bread_slot = fallback_slot
+    return
+  end
+  c_persist.bread_slot = nil
+  for i = 1,52 do
+    local item = items.inslot(i)
+    local name = item and item:name() or nil
+    if name and (name:find("bread ration") or name:find("meat ration")) then
+      c_persist.bread_slot = items.index_to_letter(i)
+      break
+    end
+  end
+  if not c_persist.bread_slot then
+    c_persist.bread_slot = fallback_slot
+  end
 end
 
 function bread_wielded()
-  return items.equipped_at("Weapon").slot == items.letter_to_index(bread_slot)
+  local slot = items.letter_to_index(c_persist.bread_slot)
+  return items.equipped_at("Weapon").slot == slot
 end
 
 function reset_bread_swing()
@@ -229,25 +245,39 @@ function start_bread_swing()
 end
 
 function bread_swing()
-  if not brstate.swinging or brstate.last_acted == you.turns() then
+  if you.turns() == 0 and (not c_persist.bread_slot or automatic_slot) then
+    find_bread_slot()
+  end
+
+  if not brstate.swinging then
     return
   end
+
+  -- Only act once per turn.
+  if brstate.last_acted == you.turns() then
+    -- An error happened with the 'w' command
+    if brstate.wielding and not bread_wielded() then
+      abort_bread_swing("Unable to wield swing item on slot " ..
+                          c_persist.bread_slot .. "!")
+    end
+    return
+  end
+
   if brstate.last_acted and brstate.swing_start
   and brstate.last_acted + 1 >= brstate.swing_start + brstate.num_swings then
     reset_bread_swing()
     return
   end
+
   if bad_to_swing() then
     return
   end
+
   if not bread_wielded() then
-    if brstate.wielding then
-      abort_bread_swing("Unable to wield bread on slot " .. bread_slot)
-      return
-    end
     wield_bread()
     return
   end
+
   brstate.wielding = false
   if not brstate.dir_x or not pos_is_open(brstate.dir_x, brstate.dir_y) then
     brstate.dir_x, brstate.dir_y = get_safe_direction()
