@@ -145,7 +145,8 @@ player_tiles = {
    {mons = "stone giant"}, 
    {mons = "fire giant"},
    {mons = "frost giant"},
-   {mons = "titan"},   
+   {mons = "titan"},
+   {mons = "juggernaut", min_version = 0.17},
    {mons = "octopode crusher"},
    -- Beasts and Plants
    {mons = "butterfly", tile = "mons_butterfly", num_var = 11},
@@ -319,7 +320,7 @@ player_tiles = {
    -- Sprint uniques
    {mons = "Nellie"},
    {mons = "Chuck"},
-   {mons = "Iron giant"},
+   {mons = "The Iron giant"},
    -- Fake uniques
    {mons = "Jörmungandr", tile = "mons_jormungandr", min_version = 0.16},
    {mons = "THE GIAGGOSTUONO", tile = "mons_giaggostuono", min_version = 0.16},
