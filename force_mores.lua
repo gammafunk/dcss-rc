@@ -57,7 +57,7 @@ function update_force_mores()
       fm_name = v.pattern
       if v.name then
          fm_name = v.name
-      end 
+      end
       if not v.cond and not active_fm[i] then
          action = "+"
       elseif v.cond == "xl" then

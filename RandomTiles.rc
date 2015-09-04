@@ -14,7 +14,7 @@ if not randtile_options then
       turns_change = 100,
 
       -- Which setting for tile_player_tile to use when disabling RandomTiles
-      -- with toggle_random_tile().  Can set to e.g. "normal", "playermons",
+      -- with toggle_random_tile(). Can set to e.g. "normal", "playermons",
       -- or a fixed mons/tile.
       disabled_setting = "normal",
 
@@ -24,7 +24,7 @@ if not randtile_options then
       god_message = true,
       default_god = "You",
 
-      -- Cute speech string templates.  In these %g is replaced with the
+      -- Cute speech string templates. In these %g is replaced with the
       -- god name, %am with the monster's name with an article, and %m
       -- with the monster's name without an article.
       god_speech = {["You"] = "%g become %am!",
@@ -84,7 +84,7 @@ end
 --   {mons = "The Serpent of Hell",
 --    tileset = {"mons_serpent_of_hell_tartarus",
 --               "mons_serpent_of_hell_cocytus",
---               "mons_serpent_of_hell_dis", 
+--               "mons_serpent_of_hell_dis",
 --               "mons_serpent_of_hell_gehenna"},
 --    num_var = 4},
 
@@ -142,7 +142,7 @@ player_tiles = {
    {mons = "deep elf high priest"},
    {mons = "entropy weaver", min_version = 0.17},
    {mons = "ettin"},
-   {mons = "stone giant"}, 
+   {mons = "stone giant"},
    {mons = "fire giant"},
    {mons = "frost giant"},
    {mons = "titan"},
@@ -177,7 +177,7 @@ player_tiles = {
    {mons = "orb spider"},
    {mons = "emperor scorpion"},
    {mons = "moth of wrath"},
-   {mons = "kraken"},   
+   {mons = "kraken"},
    {mons = "fire dragon"},
    {mons = "ice dragon"},
    {mons = "iron dragon"},
@@ -196,7 +196,7 @@ player_tiles = {
    {mons = "deathcap"},
    {mons = "demonic plant", tile = "mons_demonic_plant"},
    {mons = "oklob plant"},
-   {mons = "shambling mangrove"},    
+   {mons = "shambling mangrove"},
    {mons = "thorn hunter"},
    -- Horrible things
    {mons = "unseen horror"},
@@ -333,7 +333,7 @@ player_tiles = {
    {mons = "The Serpent of Hell",
     tileset = {"mons_serpent_of_hell_tartarus",
                "mons_serpent_of_hell_cocytus",
-               "mons_serpent_of_hell_dis", 
+               "mons_serpent_of_hell_dis",
                "mons_serpent_of_hell_gehenna"},
     num_var = 4},
    {mons = "Asmodeus"},
@@ -433,7 +433,7 @@ function init_player_tiles(tiles)
    if crawl.version then
       version = tonumber(crawl.version("major"))
    end
-   
+
    for i,v in ipairs(player_tiles) do
       if v.mons
          and (not v.min_version or version >= tonumber(v.min_version))
@@ -480,12 +480,12 @@ function change_tile(index, force)
          var_type = "random"
       end
       variant = 1
-      if var_type == "random" 
+      if var_type == "random"
       or (var_type == "fixed" and index_change) then
          variant = crawl.random2(valid_tiles[index].num_var) + 1
       elseif var_type == "sequence"
          and not index_change
-         and randtile_state.last_variant >= 1 
+         and randtile_state.last_variant >= 1
       and randtile_state.last_variant < valid_tiles[index].num_var then
          variant = randtile_state.last_variant + 1
       end
@@ -507,16 +507,16 @@ function change_tile(index, force)
    elseif valid_tiles[index].mons then
       tileopt = "mons:" .. valid_tiles[index].mons
    end
-   
+
    if not tileopt then
       return
    end
-   
+
    if index_change then
       randtile_state.index = index
       randtile_state.last_index_change = you.turns()
    end
-   
+
    crawl.setopt("tile_player_tile = " .. tileopt)
    if valid_tiles[index].weapon_offsets then
       crawl.setopt("tile_weapon_offsets = "
@@ -530,7 +530,7 @@ function change_tile(index, force)
    else
       crawl.setopt("tile_shield_offsets = reset")
    end
-   
+
    if index_change then
       tile_change_message()
    end
@@ -577,7 +577,7 @@ function random_tile(force_change)
       return
    end
    num_tiles = #valid_tiles
-   
+
    session_start = randtile_state.last_xl < 0
       or randtile_state.last_index_change < 0
 
@@ -585,7 +585,7 @@ function random_tile(force_change)
    if session_start or xl_changed then
       randtile_state.last_xl = tonumber(you.xl())
    end
-   
+
    turns_passed = tonumber(you.turns()) - randtile_options.turns_change
    index_changed = force_change or session_start or randtile_state.timer_enabled
       and (xl_changed or turns_passed >= randtile_state.last_index_change)
@@ -594,7 +594,7 @@ function random_tile(force_change)
    else
       index = randtile_state.index
    end
-   
+
    var_type = "fixed"
    if valid_tiles[index].num_var
    and (valid_tiles[index].tile or valid_tiles[index].tileset) then
@@ -603,7 +603,7 @@ function random_tile(force_change)
    if not index_changed and var_type == "fixed" then
       return
    end
-   
+
    -- We are changing the player tile because of an index change or because we
    -- are using a variant tileset that changes with every UI input.
    change_tile(index)

@@ -129,6 +129,7 @@ Additionally, to save your defaults on the fly, you can assign a key to a macro
 with a target of `===save_char_defaults`.
 
 ## force_mores
+
 Add and remove force-more messages based on hp/xl conditions. A force-more is
 triggered the first time it comes into view if it's of a certain kind and
 requires the player to hit e.g. space to continue. These messages can help to

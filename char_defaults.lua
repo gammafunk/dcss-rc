@@ -83,7 +83,7 @@ function save_char_defaults(quiet)
   if not have_weapon then
     chdat["Weapon"] = nil
   end
-  local have_ranged = false  
+  local have_ranged = false
   for _,sk in ipairs(ranged_skills) do
     if you.train_skill(sk) > 0 then
       chdat["Ranged"] = you.train_skill(sk)
@@ -107,7 +107,7 @@ function save_char_defaults(quiet)
     chdat["target_skill"] = nil
     if not need_target_skill and c_persist.target_skill then
       chdat["target_skill"] = c_persist.target_skill
-      msg = skill_message(msg, "Target", nil, c_persist.target_skill) 
+      msg = skill_message(msg, "Target", nil, c_persist.target_skill)
     end
   end
   if not quiet then
@@ -174,7 +174,7 @@ function load_char_defaults(quiet)
     else
       -- Called by target_skill() trigger setting a skill target. We call it
       -- here here since setting it skips the skills menu, which we don't want
-      -- that.  This means the call to char_defaults() should come before
+      -- that. This means the call to char_defaults() should come before
       -- target_skill() in ready()
       init_target_skill()
     end

@@ -3,10 +3,10 @@
 ------------------------
 
 -- Prompt when eating in LOS of charmed tier-one demon, such as those made by
--- summon greater demon, since they can become hostile mid-meal.  To enable in
+-- summon greater demon, since they can become hostile mid-meal. To enable in
 -- your rc, add a lua code block with the contents of *force_mores.lua* and
 -- make a macro binding your 'e' key to `===safe_eat`.
-   
+
 function safe_eat()
   tier_one_demons = {["executioner"] = true, ["shadow fiend"] = true,
                      ["ice fiend"] = true, ["brimstone fiend"] = true,

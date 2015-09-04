@@ -48,7 +48,7 @@ best_skill =  is_priest and "Invocations" or best_skill
 
 char_map = {
    Elf = {glyph = "e", colour = "red",
-          roles = { 
+          roles = {
              {skills = {"Summonings"}, colour = "brown", title = "Summoner"},
              {skills = {"Summonings"}, min_lvl = 16, colour = "yellow",
               title = "Demonologist"},
@@ -87,7 +87,7 @@ char_map = {
                  {skills = ranged_skills, min_lvl = 16, colour = "white",
                   title = "Javelineer"}}},
    Orc = {glyph = "o", colour = "red",
-          roles = { 
+          roles = {
              {skills = {"Invocations"}, min_lvl = 7, colour = "green",
               title = "Priest"},
              {skills = {"Invocations"}, min_lvl = 15, colour = "lightgreen",
