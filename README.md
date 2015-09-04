@@ -47,18 +47,21 @@ Automatically and randomly change the player tile to that of various monsters.
 
 #### Including and enabling RandomTiles in your rc
 
-If you play on the server [CSZO](http://crawl.s-z.org/), you can add the
-following to your rc
+If you play on the servers [CSZO](http://crawl.s-z.org/),
+[CAO](http://crawl.akrasiac.org:8080/), or
+[CBRO](http://crawl.berotato.org:8080/), you can add the following to your rc:
 
 ```
 include += RandomTiles.rc
 ```
 
-If you don't play on CSZO or you'd like to change **RandomTiles.rc** (to set
-options or to add/change the tiles used), copy this files into your rc
-directly. It has some comments on how to modify the default options and the
-tile sets used. To enable, add a call to `random_tile()` to your `ready()`
-function.
+If you don't play on these servers or if or you'd like to change the tiles
+used, copy the contents of *RandomTiles.rc* into your rc directly.
+
+Next you have to enable RandomTiles in your `ready()` function by adding a call
+to `random_tiles()`; See the example `ready()` code block above if you don't
+have one defined already. This must be done regardless of how you include
+*RandomTiles.rc* in your rc.
 
 #### Macro functions to change tiles
 
@@ -85,6 +88,17 @@ enabled and disabled states. When the timer is disabled, RandomTiles doesn't
 change tile as turns pass or your XL changes. Hence your tile is fixed to the
 current one, but you can still use `set_tile_by_name()` and `new_random_tile()`
 to modify it.
+
+#### Settings and changing tile sets.
+
+See the `randtile_options` variable defined in *RandomTiles.rc* and associated
+comments. You can copy this variable definition into a lua code block in your
+rc and change e.g. the number of turns before a tile change, the setting to use
+when RandomTiles is disabled, and to customize the tile change messages.
+
+To change the tilesets, redefine the variable `player_tiles` using the format
+described in the comments above it in *RandomTiles.rc*. The redefined version
+must have entries with the same structure as the one in that file.
 
 ## target_skill
 Opens the skill screen automaticaly when a skill reaches a target level set by
