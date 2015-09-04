@@ -51,7 +51,7 @@ end
 function get_last_message()
   for i = 1,50 do
     local msg = crawl.messages(i)
-    for s,_ in pairs(brdat.start_status) do
+    for s,_ in pairs(brstate.start_status) do
       if type(status_messages[s]) == "table" then
         for _,p in ipairs(status_messages[s]) do
           msg = msg:gsub(p, "")
@@ -68,20 +68,14 @@ function get_last_message()
   return nil
 end
 
-function status_changed()
-  if not brdat.start_status then
-    return false
+function bad_to_swing()
+  local hp, mhp = you.hp()
+  -- Stop multiple turn swing when our hp recovers.
+  if brstate.swing_start and brstate.start_hp < mhp and hp == mhp then
+    mpr("HP restored.")
+    reset_bread_swing()
+    return true
   end
-  local status = you.status()
-  for s,_ in pairs(brdat.start_status) do
-    if not status:find(s) then
-      return true
-    end
-  end
-  return false
-end
-
-function unsafe_to_swing()
   if you.status("manticore barbs") then
     abort_bread_swing("You must remove the manticore barbs first.")
     return true
@@ -91,21 +85,21 @@ function unsafe_to_swing()
     return true
   end
   if hostile_in_los() then
-    if not brdat.swing_start then
+    if not brstate.swing_start then
       abort_bread_swing("You can't swing bread with a hostile monster in view!")
     else
       abort_bread_swing()
     end
     return true
   end
-  if brdat.last_acted then
+  if brstate.last_acted then
     msg = get_last_message()
     if not msg then
       abort_bread_swing("Unable to find a valid previous message!")
       return true
     end
     local good_msg
-    if brdat.wielding then
+    if brstate.wielding then
       good_msg = msg:find("^%c* *" .. bread_slot .. " - .+[)}] *%c*$")
     else
       good_msg = msg:find("^%c* *You swing at nothing%. *%c*$") 
@@ -148,10 +142,8 @@ function get_safe_direction()
 end
 
 function wield_bread()
-  brdat.wielding = true
-  brdat.last_acted = you.turns()
-  -- Wield message will become the first message examined.
-  brdat.start_message = nil
+  brstate.wielding = true
+  brstate.last_acted = you.turns()
   crawl.sendkeys("w" .. bread_slot)
 end
 
@@ -160,19 +152,32 @@ function bread_wielded()
 end
 
 function reset_bread_swing()
-  if not c_persist.bread then
-    c_persist.bread = { }
-    brdat = c_persist.bread
-    brdat.dir_x = nil
-    brdat.dir_y = nil
+  -- Clear out table in old versions
+  if c_persist.bread then
+    c_persist.bread = nil
   end
-  brdat = c_persist.bread
-  brdat.last_acted = nil
-  brdat.wielding = false
-  brdat.swinging = false
-  brdat.num_swings = nil
-  brdat.swing_start = nil
-  brdat.start_status = { }
+  if not brstate then
+    brstate = { }
+    brstate.dir_x = nil
+    brstate.dir_y = nil
+  end
+  brstate.last_acted = nil
+  brstate.wielding = false
+  brstate.swinging = false
+  brstate.num_swings = nil
+  brstate.swing_start = nil
+  brstate.start_hp = nil
+  brstate.start_status = { }
+end
+
+-- Wrapper of crawl.mpr() that prints text in white by default.
+if not mpr then
+  mpr = function (msg, color)
+    if not color then
+      color = "white"
+    end
+    crawl.mpr("<" .. color .. ">" .. msg .. "</" .. color .. ">")
+  end
 end
 
 function abort_bread_swing(msg)
@@ -197,56 +202,56 @@ end
 
 function do_swing_bread()
   -- Our first turn of bread swinging.
-  if not brdat.swing_start then
+  if not brstate.swing_start then
     -- Record starting status to track any status changes.
-    brdat.start_status = { }
+    brstate.start_status = { }
     local status = you.status()
     for s,_ in pairs(status_messages) do
       if status:find(s) then
-        brdat.start_status[s] = true
+        brstate.start_status[s] = true
       end
     end
-    brdat.swing_start = you.turns()
+    brstate.swing_start = you.turns()
+    brstate.start_hp = you.hp()
   end
-  brdat.last_acted = you.turns()
-  crawl.sendkeys(control(delta_to_vi(brdat.dir_x, brdat.dir_y)))
+  brstate.last_acted = you.turns()
+  crawl.sendkeys(control(delta_to_vi(brstate.dir_x, brstate.dir_y)))
 end
 
 function one_bread_swing()
-  brdat.swinging = true
-  brdat.num_swings = 1
+  brstate.swinging = true
+  brstate.num_swings = 1
 end
 
 function start_bread_swing()
-  brdat.swinging = true
-  brdat.num_swings = num_swing_turns
+  brstate.swinging = true
+  brstate.num_swings = num_swing_turns
 end
 
 function bread_swing()
-  if not brdat.swinging or brdat.last_acted == you.turns() then
+  if not brstate.swinging or brstate.last_acted == you.turns() then
     return
   end
-  if brdat.last_acted and brdat.swing_start
-    and (brdat.last_acted + 1 >= brdat.swing_start + brdat.num_swings
-         or status_changed()) then
+  if brstate.last_acted and brstate.swing_start
+  and brstate.last_acted + 1 >= brstate.swing_start + brstate.num_swings then
     reset_bread_swing()
     return
   end
-  if unsafe_to_swing() then
+  if bad_to_swing() then
     return
   end
   if not bread_wielded() then
-    if brdat.wielding then
+    if brstate.wielding then
       abort_bread_swing("Unable to wield bread on slot " .. bread_slot)
       return
     end
     wield_bread()
     return
   end
-  brdat.wielding = false
-  if not brdat.dir_x or not pos_is_open(brdat.dir_x, brdat.dir_y) then
-    brdat.dir_x, brdat.dir_y = get_safe_direction()
-    if not brdat.dir_x then
+  brstate.wielding = false
+  if not brstate.dir_x or not pos_is_open(brstate.dir_x, brstate.dir_y) then
+    brstate.dir_x, brstate.dir_y = get_safe_direction()
+    if not brstate.dir_x then
       abort_bread_swing("No safe direction found!")
       return
     end
