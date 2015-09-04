@@ -14,7 +14,7 @@ if not randtile_options then
       turns_change = 100,
 
       -- Which setting for tile_player_tile to use when disabling RandomTiles
-      -- with toggle_random_tiles().  Can set to e.g. "normal", "playermons",
+      -- with toggle_random_tile().  Can set to e.g. "normal", "playermons",
       -- or a fixed mons/tile.
       disabled_setting = "normal",
 
@@ -626,7 +626,7 @@ end
 
 -- Toggle RandomTiles, setting it tile_player_tile to default setting if we're
 -- disabling.
-function toggle_random_tiles()
+function toggle_random_tile()
    if randtile_state.enabled then
       randtile_state.enabled = false
       crawl.setopt("tile_player_tile = " .. randtile_options.disabled_setting)

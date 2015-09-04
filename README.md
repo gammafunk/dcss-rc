@@ -79,7 +79,7 @@ which function you want.
 
 #### Macro functions for toggling RandomTiles
 
-The function `toggle_random_tiles()` will toggle RandomTiles between enabled
+The function `toggle_random_tile()` will toggle RandomTiles between enabled
 and disabled states. When disabled, RandomTiles sets `tile_player_tile` to the
 value in `randtile_options.disabled_setting`, which is "normal" by default.
 
