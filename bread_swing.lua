@@ -36,7 +36,7 @@ function hostile_in_los()
   for x = -7,7 do
     for y = -7,7 do
       m = monster.get_monster_at(x, y)
-      if m and m:attitude() <= ATT_NEUTRAL then
+      if m and not m:is_safe() then
         return true
       end
     end
@@ -121,7 +121,7 @@ function feat_is_open(feat)
   return true
 end
 
-function pos_is_open(x, y)
+function safe_swing_pos(x, y)
   return not monster.get_monster_at(x, y) and feat_is_open(view.feature_at(x,y))
 end
 
@@ -129,7 +129,7 @@ function get_safe_direction()
   local have_t1 = false
   for x = -1,1 do
     for y = -1,1 do
-      if (x ~= 0 or y ~= 0) and pos_is_open(x, y) then
+      if (x ~= 0 or y ~= 0) and safe_swing_pos(x, y) then
         return x, y
       end
     end
@@ -294,7 +294,7 @@ function bread_swing()
   end
 
   brstate.wielding = false
-  if not brstate.dir_x or not pos_is_open(brstate.dir_x, brstate.dir_y) then
+  if not brstate.dir_x or not safe_swing_pos(brstate.dir_x, brstate.dir_y) then
     brstate.dir_x, brstate.dir_y = get_safe_direction()
     if not brstate.dir_x then
       abort_bread_swing("No safe direction found!")
