@@ -7,7 +7,7 @@ This project has settings and lua code for use in configuration files for
 
 #### 1. Include the .rc or .lua file in your rc
 
-For [RandomTiles](#RandomTiles), some servers have *RandomTiles.rc* available
+For [RandomTiles](#randomtiles), some servers have *RandomTiles.rc* available
 for use in `include` statements; see the documentation in that section.
 
 For the other components, you must add a lua code block to your rc with the
