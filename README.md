@@ -100,7 +100,7 @@ If you don't play on these servers or if or you'd like to change the tiles
 used, copy the contents of *RandomTiles.rc* into your rc directly. Regardless
 of how you include *RandomTiles.rc* in your rc you must add a call to the
 function `random_tile()` in your `ready()` function. See the [installation
-section](#Installation) for examples.
+section](#installation) for examples.
 
 #### Macro functions to change tiles
 
@@ -158,7 +158,7 @@ call to `char_defaults()` if you're also using char_defaults._
 
 Additionally assign a key to a macro with a target of `===set_target_skill` so
 can change the skill target on the fly. See the [installation
-section](#Installation) for examples.
+section](#installation) for examples.
 
 ## char_defaults
 
@@ -175,7 +175,7 @@ before the call to `target_skill()` in `ready()`. To save or load your defaults
 on the fly (e.g. if you forgotten to set something), you can assign a keys to
 macros with a targets of `===save_char_defaults` or `===load_char_defaults` or
 simply run these functions as needed in the lua console. See the [installation
-section](#Installation) for examples.
+section](#installation) for examples.
 
 Additionally, to save your defaults on the fly, you can assign a key to a macro
 with a target of `===save_char_defaults`.
@@ -191,7 +191,7 @@ speedruns).
 To enable in your rc, add a lua code block with the contents of
 *force_mores.lua* and a call to the function `force_mores()` in your `ready()`
 function according to the instructions in the [installation
-section](#Installation).
+section](#installation).
 
 ## bread_swing
 
@@ -207,7 +207,7 @@ To enable in your rc, add a lua code block with the contents of
 function. Additionally assign two macro keys, one with a target of
 `===one_bread_swing` for the single-turn swing and one with a target of
 `===start_bread_swing` for the multiple turn swing. See the [installation
-section](#Installation) for examples.
+section](#installation) for examples.
 
 If the variable `automatic_slot` is true (default), the swing item slot is
 automatically chosen to that of any bread or meat ration in inventory on turn 0
@@ -223,7 +223,7 @@ Prompt when eating in LOS of charmed tier-one demon, such as those made by
 summon greater demon, since they can become hostile mid-meal. To enable in your
 rc, add a lua code block with the contents of *force_mores.lua* and make a
 macro binding your 'e' key to `===safe_eat`. See the instructions in the
-[installation section](#Installation) for examples.
+[installation section](#installation) for examples.
 
 ## load_message
 
@@ -234,11 +234,11 @@ DCSS versions 0.16 and later.
  To enable in your rc, add a lua code block with the contents of
 *load_message.lua*, add a call to the functionn `load_message()` in your
 `ready()` function, and make a macro binding 'S' to `===save_with_message`. See
-the instructions in the [installation section](#Installation) for examples.
+the instructions in the [installation section](#installation) for examples.
 
 ## char_dump
 
 Make a character dump every N turns (default of 1000). To enable in your rc,
 add a lua code block with the contents of *char_dump.lua* and a call to the
 function `char_dump()` in your `ready()` function according to the instructions
-in the [installation section](#Installation).
+in the [installation section](#installation).
