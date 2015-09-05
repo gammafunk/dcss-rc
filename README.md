@@ -59,7 +59,7 @@ If you don't play on these servers or if or you'd like to change the tiles
 used, copy the contents of *RandomTiles.rc* into your rc directly.
 
 Next you have to enable RandomTiles in your `ready()` function by adding a call
-to `random_tiles()`; See the example `ready()` code block above if you don't
+to `random_tile()`; See the example `ready()` code block above if you don't
 have one defined already. This must be done regardless of how you include
 *RandomTiles.rc* in your rc.
 
