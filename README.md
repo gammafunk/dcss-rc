@@ -156,7 +156,9 @@ If the variable `automatic_slot` is true (default), the swing item slot is
 automatically chosen to that of any bread or meat ration in inventory on turn 0
 or if a slot isn't chosen already. If `automatic_slot` is false or no ration is
 found, the slot in the variable `fallback_slot` is used (default is slot
-'c'). The variable `num_swing_turns` sets the max number of swing (default 20).
+'c'). The variable `num_swing_turns` sets the max number of swing (default
+20). You can set a macro key to a target of `===set_swing_slot` or call
+`set_swing_slot()` from the lua console to change the slot on the fly.
 
 ## safe_eat
 Prompt when eating in LOS of charmed tier-one demon, such as those made by

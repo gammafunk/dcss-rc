@@ -92,7 +92,7 @@ function bad_to_swing()
   end
   -- If any unrecognized message occurs, assume we need to stop the swing.
   if brstate.last_acted then
-    local wield_pt = "^%c* *" .. c_persist.bread_slot .. " - .+[%)}] *%c*$"
+    local wield_pt = "^%c* *" .. c_persist.swing_slot .. " - .+[%)}] *%c*$"
     local swing_pt = "^%c* *You swing at nothing%. *%c*$"
     msg = get_last_message()
     if not msg then
@@ -140,31 +140,32 @@ end
 function wield_bread()
   brstate.wielding = true
   brstate.last_acted = you.turns()
-  crawl.sendkeys("w" .. c_persist.bread_slot)
+  crawl.sendkeys("w" .. c_persist.swing_slot)
 end
 
-function find_bread_slot()
+function find_swing_slot()
+  brstate.set_slot = true
   if not automatic_slot then
-    c_persist.bread_slot = fallback_slot
+    c_persist.swing_slot = fallback_slot
     return
   end
-  c_persist.bread_slot = nil
+  c_persist.swing_slot = nil
   for i = 1,52 do
     local item = items.inslot(i)
     local name = item and item:name() or nil
     if name and (name:find("bread ration") or name:find("meat ration")) then
-      c_persist.bread_slot = items.index_to_letter(i)
+      c_persist.swing_slot = items.index_to_letter(i)
       break
     end
   end
-  if not c_persist.bread_slot then
-    c_persist.bread_slot = fallback_slot
+  if not c_persist.swing_slot then
+    c_persist.swing_slot = fallback_slot
   end
 end
 
 function bread_wielded()
-  local slot = items.letter_to_index(c_persist.bread_slot)
-  return items.equipped_at("Weapon").slot == slot
+  local weapon = items.equipped_at("Weapon")
+  return weapon and weapon.slot == items.letter_to_index(c_persist.swing_slot)
 end
 
 function reset_bread_swing()
@@ -174,6 +175,7 @@ function reset_bread_swing()
   end
   if not brstate then
     brstate = { }
+    brstate.set_slot = false
     brstate.dir_x = nil
     brstate.dir_y = nil
   end
@@ -244,9 +246,22 @@ function start_bread_swing()
   brstate.num_swings = num_swing_turns
 end
 
+function set_swing_slot()
+  crawl.formatted_mpr("Enter an slot letter for the swing item: ", "prompt")
+  local letter = crawl.c_input_line()
+  local index = items.letter_to_index(letter)
+  if not index or index < 0 then
+    mpr("Must be a letter (a-z or A-Z)!", "lightred")
+    return
+  end
+  c_persist.swing_slot = letter
+  brstate.set_slot = true
+  mpr("Set swing slot to " .. letter .. ".")
+end
+
 function bread_swing()
-  if you.turns() == 0 and (not c_persist.bread_slot or automatic_slot) then
-    find_bread_slot()
+  if not c_persist.swing_slot or you.turns() == 0 and not brstate.set_slot then
+    find_swing_slot()
   end
 
   if not brstate.swinging then
@@ -258,7 +273,7 @@ function bread_swing()
     -- An error happened with the 'w' command
     if brstate.wielding and not bread_wielded() then
       abort_bread_swing("Unable to wield swing item on slot " ..
-                          c_persist.bread_slot .. "!")
+                          c_persist.swing_slot .. "!")
     end
     return
   end
