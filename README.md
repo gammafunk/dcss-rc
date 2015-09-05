@@ -51,7 +51,7 @@ this would be:
 #### 3. Make any necessary or desired macros
 
 To work properly, the [target_skill](#target_skill),
-[bread_swing](#bread_swing), [safe_eat](#safe_eat), components require a macro
+[bread_swing](#bread_swing), and [safe_eat](#safe_eat) components require a macro
 definition to call a function. Most other components also have useful functions
 available for macros. See each component's help section for the required and
 available functions.
@@ -124,18 +124,26 @@ change tile as turns pass or your XL changes. Hence your tile is fixed to the
 current one, but you can still use `set_tile_by_name()` and `new_random_tile()`
 to modify it.
 
-Note that
-
 #### Settings and changing tile sets.
 
-See the `randtile_options` variable defined in *RandomTiles.rc* and associated
-comments. You can copy this variable definition into a lua code block in your
-rc and change e.g. the number of turns before a tile change, the setting to use
-when RandomTiles is disabled, and to customize the tile change messages.
+Note that the tile changes you make using the functions above are saved across
+sessions. So if you want to use a fixed tile, select the tile you want with
+`set_tile_by name()` and then disable tile changes with
+`toggle_tile_timer()`. You will then have this as your fixed tile until you set
+a new one or call `toggle_tile_timer()` to enable tile changes again.
 
-To change the tilesets, redefine the variable `player_tiles` using the format
-described in the comments above it in *RandomTiles.rc*. The redefined version
-must have entries with the same structure as the one in that file.
+For other settings, see the `randtile_options` variable defined in
+*RandomTiles.rc* and its associated comments. You can copy this variable
+definition into a lua code block in your rc and change e.g. the number of turns
+before a tile change, the setting to use when RandomTiles is disabled, and
+customize the tile change messages.
+
+To change the tileset used, you'll have to copy *RandomTiles.rc* directly into
+your rc and redefine the variable `player_tiles`; see the comments above that
+variable describing the format. To disable a particular tile, you can remove
+the entry's line or comment it out by preceeding it with `--`. If you add or
+modify an entry, be aware that it must have the same structure as the other
+entries in `player_tiles`.
 
 ## target_skill
 
@@ -163,11 +171,11 @@ data automatically become the new default. This code works in DCSS versions
 To enable in your rc, add a lua code block with the contents of
 *char_defaults.lua* and a call to the function `char_defaults()` in your
 `ready()` function. If you are using *target_skill.lua*, this call must come
-before the call to `target_skill()` in `ready()`. Additionally, to save or load
-your defaults on the fly (e.g. if you forgotten to set something), you can
-assign a keys to macros with a targets of `===save_char_defaults` or
-`===load_char_defaults` or simply run these functions as needed in the lua
-console. See the [installation section](#Installation) for examples.
+before the call to `target_skill()` in `ready()`. To save or load your defaults
+on the fly (e.g. if you forgotten to set something), you can assign a keys to
+macros with a targets of `===save_char_defaults` or `===load_char_defaults` or
+simply run these functions as needed in the lua console. See the [installation
+section](#Installation) for examples.
 
 Additionally, to save your defaults on the fly, you can assign a key to a macro
 with a target of `===save_char_defaults`.
