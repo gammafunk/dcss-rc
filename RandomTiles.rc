@@ -409,8 +409,8 @@ player_tiles = {
    {mons = "spatial vortex", tile = "mons_spatial_vortex", num_var = 4,
     var_type = "sequence"},
    {mons = "block of ice", tile = "mons_block_of_ice", num_var = 2,
-    var_type="fixed"}}
--- end player_tiles array
+    var_type="fixed"},
+   } -- end player_tiles array
 
 -- Note: No further configuration past this point.
 
