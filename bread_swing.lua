@@ -33,6 +33,12 @@ status_messages = {
 
 ATT_NEUTRAL = 1
 
+version = 0.15
+if crawl.version then
+    version = tonumber(crawl.version("major"))
+end
+los_range = version >= 0.17 and 7 or 8
+
 -- Wrapper of crawl.mpr() that prints text in white by default.
 if not mpr then
     mpr = function (msg, color)
@@ -148,8 +154,8 @@ end
 
 function hostile_in_los()
     local have_t1 = false
-    for x = -7,7 do
-        for y = -7,7 do
+    for x = -los_range,los_range do
+        for y = -los_range,los_range do
             m = monster.get_monster_at(x, y)
             if m and not m:is_safe() then
                 return true
