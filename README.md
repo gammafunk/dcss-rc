@@ -58,8 +58,8 @@ available functions.
 
 To make a macro binding a function to a key, use *~* or *Ctrl-d* followed by
 *m*, and then enter `===function-name`, where "function-name" is the function
-you'd like to use without `()`. For example, Randomtiles has a function
-`new_random_tile()`, so macro target is `===new_random_tile`.
+you'd like to use without `()`. For example, [RandomTiles](#randomtiles) has a
+function `new_random_tile()`, so the macro target is `===new_random_tile`.
 
 ###### Optional Lua console
 
