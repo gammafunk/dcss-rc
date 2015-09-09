@@ -141,19 +141,16 @@ if __name__ == '__main__':
                "cao" : "ws://crawl.akrasiac.org:8080/socket",
                "cbro" : "ws://crawl.berotato.org:8080/socket"}
     games = ["trunk", "0.16"]
-    default_servers = ",".join(sorted(servers.keys()))
-    default_games = ",".join(games)
 
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("servers", nargs='+', metavar="<server>",
+                        help="Server to update, one of: " + server_codes)
     parser.add_argument("-f", dest="rc_file", nargs=1, metavar="<rc-file>",
                         default=None, help="The rc file to use.")
     parser.add_argument("-u", dest="username", metavar="<username>",
                         help="The account username.", default=None)
     parser.add_argument("-p", dest="password", metavar="<password>",
                         help="The account password.", default=None)
-    parser.add_argument("-s", dest="servers", metavar="<server1>[,<server2>,...]",
-                        help="Comma-seperated list of servers to update "
-                        "(default: %(default)s).", default=default_servers)
     parser.add_argument("-g", dest="games", metavar="<game1>[,<game2>,...]",
                         help="Comma-seperated list of games to update "
                         "(default: %(default)s).", default=default_games)
@@ -168,7 +165,7 @@ if __name__ == '__main__':
         else:
             sys.exit("No crawl rc found and none given with -f")
 
-    update_servers = args.servers.split(",")
+    update_servers = args.servers
     for s in update_servers:
         if s not in servers:
             sys.exit("Unrecognized server: " + s)
