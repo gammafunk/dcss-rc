@@ -132,14 +132,19 @@ def handler(webs):
             if not webs.open:
                 break
             if len(messages) == 0 and len(found_games) == len(update_games):
-                print("All rcs updated, closing connection")
+                print("All rcs updated, closing connection.")
                 yield from webs.close()
                 break
 
 if __name__ == '__main__':
     servers = {"cszo" : "ws://crawl.s-z.org/socket",
-               "cao" : "ws://crawl.akrasiac.org:8080/socket",
-               "cbro" : "ws://crawl.berotato.org:8080/socket"}
+               "cao"  : "ws://crawl.akrasiac.org:8080/socket",
+               "cbro" : "ws://crawl.berotato.org:8080/socket",
+               "cxc"  : "ws://crawl.xtahua.com:8080/socket",
+               "cue"  : "ws://www.underhound.eu:8080/socket",
+               "lld"  : "ws://lazy-life.ddo.jp:8080/socket",
+               "cwz"  : "ws://webzook.net:8080/socket"}
+    server_codes = ", ".join(sorted(servers.keys()))
     games = ["trunk", "0.16"]
 
     parser = argparse.ArgumentParser(description=__doc__)
