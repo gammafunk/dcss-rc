@@ -23,9 +23,7 @@ import zlib
 def connect(url):
     global messages
 
-    print("Connecting to " + url)
     webs = yield from websockets.connect(url)
-    print("Connected to " + url)
     messages.append({"msg" : "login",
                      "username" : username,
                      "password" : password})
@@ -39,7 +37,6 @@ def send_message(webs):
         return
 
     message = messages.pop(0)
-    print("Sending message " + message["msg"])
     yield from webs.send(json.dumps(message))
 
 def update_rcs(webs, message):
@@ -65,6 +62,7 @@ def update_rcs(webs, message):
                     "game_id" : game_id,
                     "contents" : rc_text}
             messages.append(data)
+            print("Sending update for game {}.".format(g))
 
     if len(found_games) != len(update_games):
         game_desc =  "None"
@@ -79,7 +77,6 @@ def handle_message(webs, message):
     global messages
 
     if message["msg"] == "ping":
-        print("Received ping")
         response = {"msg" : "pong"}
         messages.append(response)
     elif message["msg"] == "login_success":
@@ -157,8 +154,8 @@ if __name__ == '__main__':
     parser.add_argument("-p", dest="password", metavar="<password>",
                         help="The account password.", default=None)
     parser.add_argument("-g", dest="games", metavar="<game1>[,<game2>,...]",
-                        help="Comma-seperated list of games to update "
-                        "(default: %(default)s).", default=default_games)
+                        help="Comma-seperated list of games to update."
+                        "(default: %(default)s).", default=",".join(games))
     args = parser.parse_args()
 
     rc_file = args.rc_file
@@ -192,6 +189,8 @@ if __name__ == '__main__':
         password = getpass.getpass("Crawl password: ")
 
     decomp = zlib.decompressobj(-zlib.MAX_WBITS)
+    print("Update user {0} with {1} bytes from "
+          "file {2}".format(username, len(rc_text), rc_file))
     for s in update_servers:
         num_rcs_updated = 0
         messages = []
