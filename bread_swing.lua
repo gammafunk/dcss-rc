@@ -209,10 +209,13 @@ end
 
 function feat_is_open(feat)
     local fname = feat:lower()
-    local feat_patterns = {"wall", "grate", "tree", "mangrove", "endless lava",
-                           "open sea", "statue", "idol", "somewhere",
-                           "sealed door", "closed door", "runed door"}
-    for i,p in ipairs(feat_patterns) do
+    -- Unique substrings that identify solid features.
+    local solid_features = {"wall", "grate", "tree", "mangrove",
+                            "endless_lava", "open_sea", "statue", "idol",
+                            "malign_gateway", "sealed_door", "closed_door",
+                            "runed_door", "explore_horizon"}
+
+    for i,p in ipairs(solid_features) do
         if fname:find(p) then
             return false
         end
