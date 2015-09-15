@@ -181,7 +181,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("servers", nargs='+', metavar="<server>",
                         help="Server to update, one of: " + server_codes)
-    parser.add_argument("-f", dest="rc_file", nargs=1, metavar="<rc-file>",
+    parser.add_argument("-f", dest="rc_file", metavar="<rc-file>",
                         default=None, help="The rc file to use.")
     parser.add_argument("-u", dest="username", metavar="<username>",
                         help="The account username.", default=None)
