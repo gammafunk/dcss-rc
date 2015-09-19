@@ -299,6 +299,7 @@ player_tiles = {
     {mons = "Rupert"},
     {mons = "Nessos"},
     {mons = "Vashnia"},
+    {mons = "Lamia", tile = "mons_lamia", min_version = 0.17},
     {mons = "Aizul"},
     {mons = "Azrael"},
     {mons = "XTAHUA"},
