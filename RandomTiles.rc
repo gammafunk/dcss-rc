@@ -37,57 +37,64 @@ if not randtile_options then
         message_colour = "lightblue" }
 end
 
--- player_tiles defines the default array of player tiles that RandomTiles
--- chooses from. New tiles can be added anywhere in this array, and lines can
--- be removed or comment out to disable a tile. Each entry must have a `mons'
--- field with the monster name at a minimum. The actual tile to use can be come
--- from the fields `mons', `tile', or `tileset'.
-
--- The `mons' field should be a string that describes the player tile if `tile'
--- or `tileset' is used, or the corresponding monster's name if not. If neither
--- `tile' nor `tileset' are defined, and `mons' has value of e.g. "monster
--- name", then the tile is changed equivalent to the command:
-
---   tile_player_tile = mons:monster name
-
--- If the `mons' value isn't the monster's name or the tile doesn't have a
--- corresponding monster, the `tile' field must exist and give the tile's
--- name. The player_name_pairs[] array in the source file
--- rltiles/tiledef-player.cc defines the names for all player tiles, and only
+-- player_tiles defines the default array of player tiles from which
+-- RandomTiles chooses. New tiles entries can be added anywhere in this array,
+-- and lines can be removed or comment out to disable a tile, but remember that
+-- a comma must come after each entry. Each entry must have at minimum a `mons'
+-- field defined with a name for the entry. The actual tile to use can come
+-- from this `mons' field or either of the optional fields `tile' and
+-- `tileset', which are described later. If neither `tile' nor `tileset' are
+-- defined, then `mons' must be the monster name as seen under xv in-game (and
+-- as defined in the source file mon-data.h). For example, the entry:
+--
+--     {mons = "hell sentinel"},
+--
+-- is equivalent to the rc option:
+--
+--     tile_player_tile = mons:hell sentinel
+--
+-- If the `mons' field isn't the monster's name, either because you've renamed
+-- it or because the corresponding monster doesn't exist, set the `tile' field
+-- to the tile's full name. The player_name_pairs[] array in the source file
+-- rltiles/tiledef-player.cc defines these names for all player tiles, and only
 -- tiles defined in this file can be used. These are the tiles you see in
 -- crawl's tilesheet file player.png.
-
--- When `tile' is defined with a string like "mons_monster_name", the tile is
--- changed equivalent to the command:
-
---   tile_player_tile = tile:mons_monster_name
-
--- For tiles like butterflies with variant tiles, you can set the field
--- `num_var' to the number of variants. The array _tile_player_count[] in
--- rltiles/tiledef-player.cc defines how many variants exist for each tile, but
--- it's easier to look in files/subfolders e.g. rltiles/mon where the
--- individual tile images and see how many variants a tile has. Since
--- rltiles/mon/animals has butterfly.png through butterfly10.png, which means
--- 11 variants, the entry is:
-
---   {mons = "butterfly", tile = "mons_butterfly", num_var=11},
-
--- By default RandomTiles chooses a new variant with each UI action (e.g. any
--- keystroke, even if the player's turn didn't change). Set the field
--- `var_type' to either "fixed" or "sequence" to change this behaviour. With
--- "fixed" a single variant is chosen with each tile index change, and with
--- "sequence" variants are progressed through in order with each UI action.
-
--- You can define a custom set of variants using the `tileset' field. For
--- example, here's an entry for the Serpent of Hell:
-
---   {mons = "The Serpent of Hell",
---    tileset = {"mons_serpent_of_hell_tartarus",
---               "mons_serpent_of_hell_cocytus",
---               "mons_serpent_of_hell_dis",
---               "mons_serpent_of_hell_gehenna"},
---    num_var = 4},
-
+--
+-- For example, the following entry:
+--
+--     {mons = "a Zot statue", tile = "mons_zot_statue"},
+--
+-- is equivalent to the rc option:
+--
+--     tile_player_tile = tile:mons_zot_statue
+--
+-- For monsters like butterflies that have variant tiles, you can set the field
+-- `num_var' to the number of variants in order to use them. The array
+-- _tile_player_count[] in rltiles/tiledef-player.cc defines how many variants
+-- exist for each tile, but it's easier to look in the folders under
+-- rltiles/mon where the individual tile images are and see how many variants a
+-- tile has. Since rltiles/mon/animals has butterfly.png through
+-- butterfly10.png, which means 11 variants, the entry is:
+--
+--     {mons = "butterfly", tile = "mons_butterfly", num_var=11},
+--
+-- By default RandomTiles chooses a new variant with each UI action (i.e. any
+-- keystroke that's not in a menu or prompt), even if the player's turn didn't
+-- change. Set the field `var_type' to either "fixed" or "sequence" to change
+-- this behavior. With "fixed" a single variant is chosen when the entry is
+-- chosen, and with "sequence" variants are progressed through in order with
+-- each UI action.
+--
+-- You can define a custom set of variants for use in an entry using the
+-- `tileset' field. For example, here's an entry for the Serpent of Hell that
+-- randomly chooses a Hell variant with every UI action:
+--
+--     {mons = "The Serpent of Hell",
+--      tileset = {"mons_serpent_of_hell_tartarus",
+--                 "mons_serpent_of_hell_cocytus",
+--                 "mons_serpent_of_hell_dis",
+--                 "mons_serpent_of_hell_gehenna"}},
+--
 -- These variants are used will be chosen according to the same rules above.
 
 -- begin player_tiles array
@@ -122,16 +129,16 @@ player_tiles = {
     {mons = "water nymph"},
     {mons = "merfolk impaler",
      tileset = {"mons_merfolk_impaler", "mons_merfolk_impaler_water"},
-     num_var = 2, var_type = "fixed"},
+     var_type = "fixed"},
     {mons = "merfolk aquamancer",
      tileset = {"mons_merfolk_aquamancer", "mons_merfolk_aquamancer_water"},
-     num_var = 2, var_type = "fixed"},
+     var_type = "fixed"},
     {mons = "merfolk javelineer",
      tileset = {"mons_merfolk_javelineer", "mons_merfolk_javelineer_water"},
-     num_var = 2, var_type = "fixed"},
+     var_type = "fixed"},
     {mons = "merfolk avatar",
      tileset = {"mons_merfolk_avatar", "mons_merfolk_avatar_water"},
-     num_var = 2, var_type = "fixed"},
+     var_type = "fixed"},
     {mons = "orc high priest"},
     {mons = "orc sorcerer"},
     {mons = "orc warlord"},
@@ -170,7 +177,7 @@ player_tiles = {
                 "mons_boulder_beetle_rolling_2",
                 "mons_boulder_beetle_rolling_3",
                 "mons_boulder_beetle_rolling_4"},
-     num_var = 6, var_type = "sequence"},
+     var_type = "sequence"},
     {mons = "torpor snail", weapon_offsets = "9,-2", shield_offsets = "0,0"},
     {mons = "ghost moth"},
     {mons = "trapdoor spider"},
@@ -297,7 +304,7 @@ player_tiles = {
     {mons = "Asterion"},
     {mons = "Roxanne"},
     {mons = "Ilsuiw", tileset = {"mons_ilsuiw", "mons_ilsuiw_water"},
-     num_var = 2, var_type = "fixed"},
+     var_type = "fixed"},
     {mons = "Wiglaf"},
     {mons = "Agnes"},
     {mons = "Jory"},
@@ -330,8 +337,7 @@ player_tiles = {
      tileset = {"mons_serpent_of_hell_tartarus",
                 "mons_serpent_of_hell_cocytus",
                 "mons_serpent_of_hell_dis",
-                "mons_serpent_of_hell_gehenna"},
-     num_var = 4},
+                "mons_serpent_of_hell_gehenna"}},
     {mons = "Asmodeus"},
     {mons = "Dispater"},
     {mons = "Mnoleg"},
@@ -484,40 +490,44 @@ end
 function change_tile(index, force)
     local tileopt = nil
     local change_index = force or index ~= rtdat.index
-
-    if valid_tiles[index].num_var then
-        local var_type = valid_tiles[index].var_type
+    local entry = valid_tiles[index]
+    local num_var = entry.num_var
+    if not num_var and entry.tileset then
+        num_var = table.getn(entry.tileset)
+    end
+    if num_var then
+        local var_type = entry.var_type
         if not var_type then
             var_type = "random"
         end
         local variant = 1
         if var_type == "random"
         or (var_type == "fixed" and change_index) then
-            variant = crawl.random2(valid_tiles[index].num_var) + 1
+            variant = crawl.random2(num_var) + 1
         elseif var_type == "sequence"
             and not change_index
             and rtdat.last_variant >= 1
-        and rtdat.last_variant < valid_tiles[index].num_var then
+        and rtdat.last_variant < num_var then
             variant = rtdat.last_variant + 1
         end
         rtdat.last_variant = variant
         -- custom-defined tilesets or an variant set defined by crawl itself.
-        if valid_tiles[index].tileset then
-            tileopt = valid_tiles[index].tileset[variant]
-        elseif valid_tiles[index].tile then
+        if entry.tileset then
+            tileopt = entry.tileset[variant]
+        elseif entry.tile then
             local var_suf
             if variant == 1 then
                 var_suf = ""
             else
                 var_suf = "_" .. variant - 1
             end
-            tileopt = valid_tiles[index].tile .. var_suf
+            tileopt = entry.tile .. var_suf
         end
         tileopt = "tile:" .. tileopt
-    elseif valid_tiles[index].tile then
-        tileopt = "tile:" .. valid_tiles[index].tile
-    elseif valid_tiles[index].mons then
-        tileopt = "mons:" .. valid_tiles[index].mons
+    elseif entry.tile then
+        tileopt = "tile:" .. entry.tile
+    elseif entry.mons then
+        tileopt = "mons:" .. entry.mons
     end
 
     if not tileopt then
@@ -604,10 +614,10 @@ function random_tile(force_change)
         index = rtdat.index
     end
 
-    local var_type = "fixed"
-    if valid_tiles[index].num_var
-    and (valid_tiles[index].tile or valid_tiles[index].tileset) then
-        var_type = valid_tiles[index].var_type
+    local entry = valid_tiles[index]
+    local var_type = "random"
+    if (entry.num_var or entry.tileset) and entry.var_type then
+        var_type = entry.var_type
     end
     if not change_index and var_type == "fixed" then
         return
