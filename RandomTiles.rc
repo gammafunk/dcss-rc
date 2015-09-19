@@ -96,6 +96,48 @@ end
 --                 "mons_serpent_of_hell_gehenna"}},
 --
 -- These variants are used will be chosen according to the same rules above.
+--
+-- When the `tileset' field is used, there are two special `var_type' values of
+-- "terrain" and "status" available, which will change the tile according to
+-- the terrain you occupy or your status, respectively. To use "terrain", make
+-- `tileset' into a lua table, with the first entry having key "default" and a
+-- tile to use when the terrain doesn't match any other entry. The subsequent
+-- entries should have lua patterns as keys that match the terrain of
+-- interest. For example, this is an entry for Ilsuiw that uses her water tile
+-- when the player is in deep or shallow water (note the square brackets around
+-- the key names):
+--
+--     {mons = "Ilsuiw", tileset = {["default"] = "mons_ilsuiw",
+--                                  ["water"]   = "mons_ilsuiw_water"},
+--      var_type = "terrain"},
+--
+-- The terrain keys are matched with a lua pattern search, so "water" matches
+-- both "deep_water" and "shallow_water". The names used are from the
+-- .vaultname field in the feat_defs array defined in the source file
+-- feature-data.h. This field is the third entry on the first row of each entry
+-- and uses _ instead of spaces.
+--
+-- To use `var_type = "status"', make the tileset field into an an array of
+-- arrays, with the first entry in the inner array giving the short status name
+-- and the second giving the corresponding tile. The first entry in `tileset'
+-- must have a status of "default" for when no other status entry
+-- matches. Since multiple status values can be active for the player, we use
+-- the first matching entry, so they should be listed in order of
+-- preference. For example, the following entry "Snorgy Snail" will use the
+-- Purgy tile normally, the Snorg tile when berserking, and the torpor snail
+-- tile when slowed:
+--
+--     {mons = "Snorgy Snail", tileset = {{"default", "mons_purgy"},
+--                                        {"berserk", "mons_snorg"},
+--                                        {"slow"},   "mons_torpor_snail"}},
+--      var_type = "status"},
+--
+-- The status names can be seen under the @ listing on the % screen, and these
+-- are the short_text values from the duration_data[] array defined in the
+-- source file duration-data.h. The names are matched as lua patterns, so
+-- substring matches and wildcards will work; see the lua reference for
+-- details: http://www.lua.org/pil/20.2.html
+--
 
 -- begin player_tiles array
 player_tiles = {
@@ -128,17 +170,21 @@ player_tiles = {
     {mons = "spriggan air mage"},
     {mons = "water nymph"},
     {mons = "merfolk impaler",
-     tileset = {"mons_merfolk_impaler", "mons_merfolk_impaler_water"},
-     var_type = "fixed"},
+     tileset = {["default"] = "mons_merfolk_impaler",
+                ["water"] = "mons_merfolk_impaler_water"},
+     var_type = "terrain"},
     {mons = "merfolk aquamancer",
-     tileset = {"mons_merfolk_aquamancer", "mons_merfolk_aquamancer_water"},
-     var_type = "fixed"},
+     tileset = {["default"] = "mons_merfolk_aquamancer",
+                ["water"] = "mons_merfolk_aquamancer_water"},
+     var_type = "terrain"},
     {mons = "merfolk javelineer",
-     tileset = {"mons_merfolk_javelineer", "mons_merfolk_javelineer_water"},
-     var_type = "fixed"},
+     tileset = {["default"] = "mons_merfolk_javelineer",
+                ["water"] = "mons_merfolk_javelineer_water"},
+     var_type = "terrain"},
     {mons = "merfolk avatar",
-     tileset = {"mons_merfolk_avatar", "mons_merfolk_avatar_water"},
-     var_type = "fixed"},
+     tileset = {["default"] = "mons_merfolk_avatar",
+                ["water"] = "mons_merfolk_avatar_water"},
+     var_type = "terrain"},
     {mons = "orc high priest"},
     {mons = "orc sorcerer"},
     {mons = "orc warlord"},
@@ -305,8 +351,9 @@ player_tiles = {
     {mons = "XTAHUA"},
     {mons = "Asterion"},
     {mons = "Roxanne"},
-    {mons = "Ilsuiw", tileset = {"mons_ilsuiw", "mons_ilsuiw_water"},
-     var_type = "fixed"},
+    {mons = "Ilsuiw", tileset = {["default"] = "mons_ilsuiw",
+                                 ["water"] = "mons_ilsuiw_water"},
+     var_type = "terrain"},
     {mons = "Wiglaf"},
     {mons = "Agnes"},
     {mons = "Jory"},
@@ -511,11 +558,37 @@ function change_tile(index, force)
             and rtdat.last_variant >= 1
         and rtdat.last_variant < num_var then
             variant = rtdat.last_variant + 1
+        elseif var_type == "terrain" and entry.tileset then
+            local feat = view.feature_at(0,0)
+            -- Set to "air" when flying so water and lava features don't match.
+            if you.status("flying") then
+                feat = "air"
+            end
+            variant = "default"
+            for p, t in pairs(entry.tileset) do
+                if p ~= "default" and feat:find(p) then
+                    variant = p
+                    break
+                end
+            end
+        elseif var_type == "status" and entry.tileset then
+            local status = you.status()
+            for i, v in ipairs(entry.tileset) do
+                if i > 1 and status:find(v[1]) then
+                    variant = i
+                    break
+                end
+            end
         end
         rtdat.last_variant = variant
         -- custom-defined tilesets or an variant set defined by crawl itself.
         if entry.tileset then
-            tileopt = entry.tileset[variant]
+            -- When var_type = "status"
+            if type(entry.tileset[variant]) == "table" then
+                tileopt = entry.tileset[variant][2]
+            else
+                tileopt = entry.tileset[variant]
+            end
         elseif entry.tile then
             local var_suf
             if variant == 1 then
