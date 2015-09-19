@@ -206,10 +206,11 @@ player_tiles = {
     {mons = "unseen horror"},
     {mons = "ugly thing", tile = "mons_ugly_thing", num_var = 6},
     {mons = "very ugly thing", tile = "mons_very_ugly_thing", num_var = 6},
-    {mons = "an X", tile = "mons_abomination_large", num_var = 7,
+    {mons = "large abmoniation", tile = "mons_abomination_large", num_var = 7,
      var_type = "fixed"},
+    {mons = "tentacled monstrosity"},
+    {mons = "Cigotuvi's Monster", tile = "mons_cigotuvis_monster"},
     {mons = "eldritch tentacle", tile = "mons_eldritch_tentacle_portal_9"},
-    {mons = "horrible X", tile = "mons_cigotuvis_monster"},
     -- Jellies and eyes
     {mons = "great orb of eyes"},
     {mons = "giant orange brain"},
