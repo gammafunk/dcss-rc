@@ -183,9 +183,8 @@ function find_swing_slot()
     end
     c_persist.swing_slot = nil
     for _,item in ipairs(items.inventory()) do
-        local name = item and item:name() or nil
-        if name and (name:find("bread ration") or name:find("meat ration")) then
-            c_persist.swing_slot = items.index_to_letter(i)
+        if item.class() == "Comestibles" then
+            c_persist.swing_slot = items.index_to_letter(item.slot)
             break
         end
     end
