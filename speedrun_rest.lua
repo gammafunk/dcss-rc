@@ -21,8 +21,8 @@ fallback_slot = "c"
 naga_always_walk = false
 
 -- Delay in milliseconds before sending the next walk command. Makes the
--- visuals a bit less jarring when using walk resting.
-walk_delay = 0
+-- visuals a bit less jarring when using walk resting. Set to 0 to disable.
+walk_delay = 50
 
 -- To have the multi-turn rest ignore status change messages, add an entry here
 -- giving the pattern of the message you'd like to ignore. The entries below
