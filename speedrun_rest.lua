@@ -7,11 +7,11 @@
 -- How many turns to rest at max.
 num_rest_turns = 20
 
--- If true, look for a bread or meat ration inventory slot and use
--- fallback_slot if we can't find a ration. If false, always use fallback_slot.
+-- If true, look for a foot item inventory slot and use fallback_slot if we
+-- can't find a ration. If false, always use fallback_slot.
 automatic_slot = true
 
--- Slot where you keep your bread-like item.
+-- Slot where you keep your slow swing item.
 fallback_slot = "c"
 
 -- Set to true to have Na characters always walk instead of item swing if

@@ -7,8 +7,10 @@ This project has settings and lua code for use in configuration files for
 
 #### 1. Include the .rc or .lua file in your rc
 
-For [RandomTiles](#randomtiles), some servers have *RandomTiles.rc* available
-for use in `include` statements; see the documentation in that section.
+For [RandomTiles](#randomtiles), some servers have
+[RandomTiles.rc](https://raw.githubusercontent.com/gammafunk/dcss-rc/master/RandomTiles.rc)
+available for use in `include` statements; see the documentation in that
+section.
 
 For the other components, you must add a lua code block to your rc with the
 contents of the .lua file. To make a code block, add an opening brace followed
@@ -97,8 +99,8 @@ include += RandomTiles.rc
 ```
 
 If you don't play on these servers or if or you'd like to change the tiles
-used, copy the contents of *RandomTiles.rc* into your rc directly. Regardless
-of how you include *RandomTiles.rc* in your rc you must add a call to the
+used, copy the contents of [RandomTiles.rc](https://raw.githubusercontent.com/gammafunk/dcss-rc/master/RandomTiles.rc) into your rc directly. Regardless
+of how you include [RandomTiles.rc](https://raw.githubusercontent.com/gammafunk/dcss-rc/master/RandomTiles.rc) in your rc you must add a call to the
 function `random_tile()` in your `ready()` function. See the [installation
 section](#installation) for examples.
 
@@ -133,12 +135,12 @@ sessions. So if you want to use a fixed tile, select the tile you want with
 a new one or call `toggle_tile_timer()` to enable tile changes again.
 
 For other settings, see the `randtile_options` variable defined in
-*RandomTiles.rc* and its associated comments. You can copy this variable
+[RandomTiles.rc](https://raw.githubusercontent.com/gammafunk/dcss-rc/master/RandomTiles.rc) and its associated comments. You can copy this variable
 definition into a lua code block in your rc and change e.g. the number of turns
 before a tile change, the setting to use when RandomTiles is disabled, and
 customize the tile change messages.
 
-To change the tileset used, you'll have to copy *RandomTiles.rc* directly into
+To change the tileset used, you'll have to copy [RandomTiles.rc](https://raw.githubusercontent.com/gammafunk/dcss-rc/master/RandomTiles.rc) directly into
 your rc and redefine the variable `player_tiles`; see the comments above that
 variable describing the format. To disable a particular tile, you can remove
 the entry's line or comment it out by preceeding it with `--`. If you add or
@@ -147,12 +149,12 @@ entries in `player_tiles`.
 
 ## target_skill
 
-Opens the skill screen automaticaly when a skill reaches a target level set by
+Opens the skill screen automatically when a skill reaches a target level set by
 the player. Original code by elliptic with some reorganization. This code
 works in DCSS versions 0.16 and later.
 
 To enable in your rc, add a lua code block with the contents of
-*target_skill.lua* and a call to the function `target_skill()` in your
+[target_skill.lua](https://raw.githubusercontent.com/gammafunk/dcss-rc/master/target_skill.lua) and a call to the function `target_skill()` in your
 `ready()` function. _Note: You must add `target_skill()` to `ready()` after the
 call to `char_defaults()` if you're also using char_defaults._
 
@@ -163,18 +165,20 @@ section](#installation) for examples.
 ## char_defaults
 
 Load default skill settings for each race+class combination automatically on
-turn 0. Recommended that you also use *target_skill.lua* so that you can set
-skills (and a skill target) on turn 0 for chars without defaults and have this
-data automatically become the new default. This code works in DCSS versions
-0.16 and later.
+turn 0. Recommended that you also use
+[target_skill.lua](https://raw.githubusercontent.com/gammafunk/dcss-rc/master/target_skill.lua)
+so that you can set skills (and a skill target) on turn 0 for chars without
+defaults and have this data automatically become the new default. This code
+works in DCSS versions 0.16 and later.
 
 To enable in your rc, add a lua code block with the contents of
-*char_defaults.lua* and a call to the function `char_defaults()` in your
-`ready()` function. If you are using *target_skill.lua*, this call must come
-before the call to `target_skill()` in `ready()`. To save or load your defaults
-on the fly (e.g. if you forgotten to set something), you can assign a keys to
-macros with a targets of `===save_char_defaults` or `===load_char_defaults` or
-simply run these functions as needed in the lua console. See the [installation
+[char_defaults.lua](https://raw.githubusercontent.com/gammafunk/dcss-rc/master/char_defaults.lua)
+and a call to the function `char_defaults()` in your `ready()` function. If you
+are using [target_skill](#target_skill), this call must come before the call to
+`target_skill()` in `ready()`. To save or load your defaults on the fly
+(e.g. if you forgotten to set something), you can assign a keys to macros with
+a targets of `===save_char_defaults` or `===load_char_defaults` or simply run
+these functions as needed in the lua console. See the [installation
 section](#installation) for examples.
 
 Additionally, to save your defaults on the fly, you can assign a key to a macro
@@ -189,41 +193,71 @@ avoid killing your weaker characters under manual movement (e.g. in
 speedruns).
 
 To enable in your rc, add a lua code block with the contents of
-*force_mores.lua* and a call to the function `force_mores()` in your `ready()`
-function according to the instructions in the [installation
-section](#installation).
+[force_mores.lua](https://raw.githubusercontent.com/gammafunk/dcss-rc/master/force_mores.lua)
+and a call to the function `force_mores()` in your `ready()` function according
+to the instructions in the [installation section](#installation).
 
 ## speedrun_rest
 
-Automatic bread swinging for either a single turn or fixed number of turns. An
-item in a fixed inventory slot is automatically wielded if it isn't
-already. The default slot used is that of a bread or meat ration, but see
-configuration below. This function prevents you from swinging if hostiles are
-in LOS and interrupts multi-turn swings if hostiles wander into LOS or any
-relevant message occurs. This code works in DCSS versions 0.16 and later.
+Automatic slow swinging or walking for either a single turn or fixed number of
+turns. Performing actions that take more than 10 aut regenerates more HP per
+turn, which is preferred when minimizing turncount for score purposes. This is
+also known as "bread swinging", but using 2h weapons when the player is
+untrained in the weapon skill can be better as these are even slower to swing
+than 15 aut. Additionally some characters like Naga or Chei worshipers might
+prefer slow walking to swinging because it gives similar or better (i.e. under
+Chei) regen/turn without requiring weapon swap.
+
+This code supports both regen methods and can automatically detect when to use
+which. For swinging, an item in a fixed inventory slot is automatically
+wielded if it isn't already. The default slot used is the first food item found
+in inventory, but see configuration below. For both swinging and walking, this
+function prevents you from resting if hostiles are in LOS and interrupts
+multi-turn rests if hostiles wander into LOS or any relevant event message
+occurs. If the wielded weapon is unswappable (Vampiric, Distortion without
+Lugonu, *Contam, *Curse, or *Drain), and the player walk would take more than
+10 aut, slow walk is used automatically. This code works in DCSS versions 0.16
+and later.
 
 To enable in your rc, add a lua code block with the contents of
-*speedrun_rest.lua* and a call to the function `speedrun_rest()` in your
-`ready()` function. Additionally assign two macro keys, one with a target of
-`===one_turn_rest` for the single-turn swing and one with a target of
-`===start_resting` for the multiple turn swing. See the [installation
-section](#installation) for examples.
+[speedrun_rest.lua](https://raw.githubusercontent.com/gammafunk/dcss-rc/master/speedrun_rest.lua)
+and a call to the function `speedrun_rest()` in your `ready()`
+function. Additionally assign two macro keys, one with a target of
+`===one_turn_rest` for the single-turn rest and one with a target of
+`===start_resting` for the multiple turn rest. See the
+[installation section](#installation) for examples. You can also set a macro
+key to a target of `===set_swing_slot` or call `set_swing_slot()` from the lua
+console to change the swing slot on the fly.
 
-If the variable `automatic_slot` is true (default), the swing item slot is
-automatically chosen to that of any bread or meat ration in inventory on turn 0
-or if a slot isn't chosen already. If `automatic_slot` is false or no ration is
-found, the slot in the variable `fallback_slot` is used (default is slot
-'c'). The variable `num_swing_turns` sets the max number of swing (default
-20). You can set a macro key to a target of `===set_swing_slot` or call
-`set_swing_slot()` from the lua console to change the slot on the fly.
+#### Configuration Variables
+
+These have reasonable defaults and don't require modification, but can be
+useful. See the comments above these in
+[speedrun_rest.lua](https://raw.githubusercontent.com/gammafunk/dcss-rc/master/speedrun_rest.lua)
+for additional details.
+
+* `automatic_slot`: If true, the swing item slot is automatically chosen to be
+  the first food item in inventory.
+* `fallback_slot`: If `automatic_slot` is false or no food item was found, this
+  is the default slot used.
+* `num_rest_turns`: How many turns to rest at max for the multi-turn resting
+  started by `start_resting()`
+* `naga_always_walk`: If true, Naga characters will always walk instead of
+  swinging.
+* `walk_delay`: The visual delay between each walk command in milliseconds.
+* `status_messages` and `ignore_messages`: See the comments in
+  [speedrun_rest.lua](https://raw.githubusercontent.com/gammafunk/dcss-rc/master/speedrun_rest.lua)
+  to details on how to set these to ignore any additional status change
+  messages or general messages while resting.
 
 ## safe_eat
 
 Prompt when eating in LOS of charmed tier-one demon, such as those made by
 summon greater demon, since they can become hostile mid-meal. To enable in your
-rc, add a lua code block with the contents of *force_mores.lua* and make a
-macro binding your 'e' key to `===safe_eat`. See the instructions in the
-[installation section](#installation) for examples.
+rc, add a lua code block with the contents of
+[force_mores.lua](https://raw.githubusercontent.com/gammafunk/dcss-rc/master/force_mores.lua)
+and make a macro binding your 'e' key to `===safe_eat`. See the instructions in
+the [installation section](#installation) for examples.
 
 ## load_message
 
@@ -232,13 +266,15 @@ game. Original code by elliptic with some reorganization. This code works in
 DCSS versions 0.16 and later.
 
  To enable in your rc, add a lua code block with the contents of
-*load_message.lua*, add a call to the functionn `load_message()` in your
-`ready()` function, and make a macro binding 'S' to `===save_with_message`. See
-the instructions in the [installation section](#installation) for examples.
+[load_message.lua](https://raw.githubusercontent.com/gammafunk/dcss-rc/master/load_message.lua),
+add a call to the functionn `load_message()` in your `ready()` function, and
+make a macro binding 'S' to `===save_with_message`. See the instructions in the
+[installation section](#installation) for examples.
 
 ## char_dump
 
 Make a character dump every N turns (default of 1000). To enable in your rc,
-add a lua code block with the contents of *char_dump.lua* and a call to the
-function `char_dump()` in your `ready()` function according to the instructions
-in the [installation section](#installation).
+add a lua code block with the contents of
+[char_dump.lua](https://raw.githubusercontent.com/gammafunk/dcss-rc/master/char_dump.lua)
+and a call to the function `char_dump()` in your `ready()` function according
+to the instructions in the [installation section](#installation).
