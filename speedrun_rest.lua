@@ -322,6 +322,7 @@ end
 
 function get_rest_type()
     if you.race() == "Naga" and naga_always_walk
+        or you.god() == "Cheibriados"
     or not weapon_can_swap() then
         return "walk"
     else
