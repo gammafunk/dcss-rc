@@ -408,16 +408,16 @@ autopickup_no_burden = true
 
 function ready()
 
-  -- Enable char default skills; this must come before target_skill()
+  -- Enable char default skills; this must come before target_skill().
   char_defaults()
 
-  -- Enable skill target settings
+  -- Enable skill target settings.
   target_skill()
 
-  -- Enable bread swinging
-  bread_swing()
+  -- Enable speedrun resting.
+  speedrun_rest()
 
-  -- Enable persistent messages
+  -- Enable persistent messages.
   load_message()
 
   -- Dynamic force-mores.

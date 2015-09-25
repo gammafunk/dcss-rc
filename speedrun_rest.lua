@@ -1,6 +1,6 @@
----------------------------
----- Begin bread_swing ----
----------------------------
+-----------------------------
+---- Begin speedrun_rest ----
+-----------------------------
 
 -- See README.md for documentation
 
@@ -478,12 +478,12 @@ function do_resting()
     end
 end
 
-function one_bread_swing()
+function one_turn_rest()
     rstate.resting = true
     rstate.num_turns = 1
 end
 
-function start_bread_swing()
+function start_resting()
     rstate.resting = true
     rstate.num_turns = num_rest_turns
 end
@@ -501,7 +501,7 @@ function set_swing_slot()
     mpr("Set swing slot to " .. letter .. ".")
 end
 
-function bread_swing()
+function speedrun_rest()
     local rest_type = get_rest_type()
     if rest_type == "item"
         and (not c_persist.swing_slot
@@ -555,6 +555,6 @@ end
 
 reset_rest()
 
--------------------------
----- End bread_swing ----
--------------------------
+---------------------------
+---- End speedrun_rest ----
+---------------------------

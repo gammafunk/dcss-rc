@@ -51,10 +51,10 @@ this would be:
 #### 3. Make any necessary or desired macros
 
 To work properly, the [target_skill](#target_skill),
-[bread_swing](#bread_swing), and [safe_eat](#safe_eat) components require a macro
-definition to call a function. Most other components also have useful functions
-available for macros. See each component's help section for the required and
-available functions.
+[speedrun_rest](#speedrun_rest), and [safe_eat](#safe_eat) components require a
+macro definition to call a function. Most other components also have useful
+functions available for macros. See each component's help section for the
+required and available functions.
 
 To make a macro binding a function to a key, use *~* or *Ctrl-d* followed by
 *m*, and then enter `===function-name`, where "function-name" is the function
@@ -193,7 +193,7 @@ To enable in your rc, add a lua code block with the contents of
 function according to the instructions in the [installation
 section](#installation).
 
-## bread_swing
+## speedrun_rest
 
 Automatic bread swinging for either a single turn or fixed number of turns. An
 item in a fixed inventory slot is automatically wielded if it isn't
@@ -203,10 +203,10 @@ in LOS and interrupts multi-turn swings if hostiles wander into LOS or any
 relevant message occurs. This code works in DCSS versions 0.16 and later.
 
 To enable in your rc, add a lua code block with the contents of
-*bread_swing.lua* and a call to the function `bread_swing()` in your `ready()`
-function. Additionally assign two macro keys, one with a target of
-`===one_bread_swing` for the single-turn swing and one with a target of
-`===start_bread_swing` for the multiple turn swing. See the [installation
+*speedrun_rest.lua* and a call to the function `speedrun_rest()` in your
+`ready()` function. Additionally assign two macro keys, one with a target of
+`===one_turn_rest` for the single-turn swing and one with a target of
+`===start_resting` for the multiple turn swing. See the [installation
 section](#installation) for examples.
 
 If the variable `automatic_slot` is true (default), the swing item slot is
