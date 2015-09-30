@@ -121,7 +121,9 @@ end
 function record_status()
     -- Record starting status to track any status changes.
     rstate.start_status = { }
-    rstate.start_message = get_last_message()
+    -- Add patterns to ignore whitespace that's not removed in messages we
+    -- ignore.
+    rstate.start_message = " *" .. get_last_message() .. " *"
     local status = you.status()
     for s,_ in pairs(status_messages) do
         if status:find(s) then
@@ -154,10 +156,11 @@ function get_last_message()
         end
         if rest_type == "walk" then
             for _,p in ipairs(move_patterns) do
-                msg = msg:gsub(p, "")
+                -- Also remove any whitespace.
+                msg = msg:gsub(" *" .. p .. " *", "")
             end
         end
-        msg = msg:gsub("Beep! [^%.]+%.", "")
+        msg = msg:gsub(" *Beep! [^%.]+%. *", "")
         for _,p in ipairs(ignore_messages) do
             msg = msg:gsub(p, "")
         end
@@ -363,9 +366,13 @@ function bad_to_act()
             abort_rest("Unable to find a previous message!")
             return true
         end
-        local wield_pt = "^" .. c_persist.swing_slot .. " - .+[%)}]$"
-        local swing_pt = "^You swing at nothing%.$"
+        local wield_pt = "^ *" .. c_persist.swing_slot .. " - .+[%)}] *$"
+        local swing_pt = "^ *You swing at nothing%. *$"
         local pattern = rstate.wielding and wield_pt or swing_pt
+        local char = ""
+        for i = 1,msg:len() do
+            char = char .. " " .. tostring(msg:byte(i))
+        end
         if (rest_type == "item" and not msg:find(pattern))
         or rest_type == "walk" and msg ~= rstate.start_message then
             abort_rest()
