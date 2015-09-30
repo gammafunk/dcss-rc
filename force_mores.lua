@@ -24,17 +24,17 @@ fm_patterns = {
          "|manticore|harpy|faun|merfolk|siren|water nymph" ..
          "|jumping spider|mana viper|hill giant|vault guard" ..
          "|preserver|a wizard|[0-9]+ wizards|ogre mage" ..
-         "|deep elf (knight|sorceror)",
+         "|deep elf (knight|mage|conjurer))",
      cond = "maxhp", cutoff = 60, name = "squishy_60hp"},
     {pattern = "(centaur warrior|yaktaur captain|dragon|hydra" ..
          "|dragon|alligator snapping turtle|satyr" ..
          "|naga sharpshooter|merfolk avatar|anaconda" ..
          "|shock serpent|guardian serpent|emperor scorpion" ..
          "|stone giant|titan|fire giant|sphinx|frost giant" ..
-         "|war gargoyle|vault warden|convoker|monstrosity" ..
+         "|war gargoyle|vault (warden|sentinel)|convoker|monstrosity" ..
          "|tengu reaver" ..
          "|deep elf (master archer|blade master|death mage" ..
-         "|sorceror|summoner)" ..
+         "|sorcerer|demonologist|annihilator)" ..
          "|octopode crusher|yaktaur captain)",
      cond = "maxhp", cutoff = 90, name = "squishy_90hp"}
 } -- end fm_patterns
