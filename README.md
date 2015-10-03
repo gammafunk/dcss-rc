@@ -181,9 +181,6 @@ a targets of `===save_char_defaults` or `===load_char_defaults` or simply run
 these functions as needed in the lua console. See the [installation
 section](#installation) for examples.
 
-Additionally, to save your defaults on the fly, you can assign a key to a macro
-with a target of `===save_char_defaults`.
-
 ## force_mores
 
 Add and remove force-more messages based on hp/xl conditions. A force-more is
