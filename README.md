@@ -183,11 +183,21 @@ section](#installation) for examples.
 
 ## force_mores
 
-Add and remove force-more messages based on hp/xl conditions. A force-more is
-triggered the first time it comes into view if it's of a certain kind and
-requires the player to hit e.g. space to continue. These messages can help to
-avoid killing your weaker characters under manual movement (e.g. in
-speedruns).
+Add and remove force-more messages automatically based on current max hp or
+experience level.
+
+Force-more messages print a message of "--more--" and require the player to hit
+space, making the player pause for consideration before acting. These are
+normally set in the rc option `force_more_message`. For certain dangerous
+monsters it's common to make a force-more specifically for when the monster
+first comes into view (i.e. each time the player encounters a new monster of
+that type). For some monsters, it's desirable to have these messages only for
+weaker characters or only for earlier portions of the game.
+
+This code has a set of dynamic force-mores defined for characters with lower
+hp, with sets defined for XL1, Maxhp < 20, Maxhp < 40, Maxhp < 60, and Maxhp
+< 90. Other sets can be defined by modifying the variable `fm_patterns`; see
+the comments above that variable for details.
 
 To enable in your rc, add a lua code block with the contents of
 [force_mores.lua](https://raw.githubusercontent.com/gammafunk/dcss-rc/master/force_mores.lua)

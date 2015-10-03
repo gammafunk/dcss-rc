@@ -2,31 +2,34 @@
 ---- Begin conditional force_mores ----
 ---------------------------------------
 
--- Add and remove force-more messages based on hp/xl conditions. A force-more
--- is triggered the first time it comes into view if it's of a certain kind and
--- requires the player to hit e.g. space to continue. These messages can help
--- to avoid killing your weaker characters under manual movement (e.g. in
--- speedruns). To enable in your rc, add a lua code block with the contents of
--- *force_mores.lua* and a call to `force_mores()` in your `ready()` function.
+-- See README.md for details.
 
 last_turn = you.turns()
+
+-- Each entry must have a name field with a descriptive name, a pattern field
+-- giving the regexp matching the appropriate monster(s), a cond field giving
+-- the condition type, and a cutoff field giving the max value where the
+-- force-more is active. Possible values for cond are xl and maxhp. Note that
+-- the final pattern will be "(pattern).*into view" where pattern is the value
+-- from the entry.
+
 fm_patterns = {
     -- General early game threats
-    {pattern = "(adder|gnoll|hound)", cond = "xl", cutoff = 2,
-     name = "XL1"},
-    {pattern = "orc wizard|Ogre|orc warrior", cond = "maxhp",
-     cutoff = 20},
-    {pattern = "orc priest", cond = "maxhp", cutoff = 40},
+    {pattern = "adder|gnoll|hound", cond = "xl", cutoff = 2,
+    name = "XL1"},
+    {pattern = "orc wizard|Ogre|orc warrior", cond = "20mhp",
+     cutoff = 20, name = "20hp"},
+    {pattern = "orc priest", cond = "maxhp", cutoff = 40, name = "40mhp"},
     -- Problems for squishies with 60 or 90 hp
-    {pattern = "(centaur [^wzs]|yaktaur|drake" ..
+    {pattern = "centaur [^wzs]|yaktaur|drake" ..
          "|blink frog|torpor|spiny frog|blink frog" ..
          "|black mamba|hydra|spriggan|alligator|snapping turtle" ..
          "|manticore|harpy|faun|merfolk|siren|water nymph" ..
          "|jumping spider|mana viper|hill giant|vault guard" ..
          "|preserver|a wizard|[0-9]+ wizards|ogre mage" ..
-         "|deep elf (knight|mage|conjurer))",
-     cond = "maxhp", cutoff = 60, name = "squishy_60hp"},
-    {pattern = "(centaur warrior|yaktaur captain|dragon|hydra" ..
+         "|deep elf (knight|mage|conjurer)",
+     cond = "maxhp", cutoff = 60, name = "60mhp"},
+    {pattern = "centaur warrior|yaktaur captain|dragon|hydra" ..
          "|dragon|alligator snapping turtle|satyr" ..
          "|naga sharpshooter|merfolk avatar|anaconda" ..
          "|shock serpent|guardian serpent|emperor scorpion" ..
@@ -35,8 +38,8 @@ fm_patterns = {
          "|tengu reaver" ..
          "|deep elf (master archer|blade master|death mage" ..
          "|sorcerer|demonologist|annihilator)" ..
-         "|octopode crusher|yaktaur captain)",
-     cond = "maxhp", cutoff = 90, name = "squishy_90hp"}
+         "|octopode crusher|yaktaur captain",
+     cond = "maxhp", cutoff = 90, name = "90mhp"}
 } -- end fm_patterns
 
 active_fm = {}
@@ -64,7 +67,7 @@ function update_force_mores()
     local deactivated = {}
     local hp, maxhp = you.hp()
     for i,v in ipairs(fm_patterns) do
-        local msg = v.pattern .. ".*into view"
+        local msg = "(" .. v.pattern .. ").*into view"
         local action = nil
         local fm_name = v.pattern
         if v.name then
@@ -82,13 +85,6 @@ function update_force_mores()
             if active_fm[i] and maxhp >= v.cutoff then
                 action = "-"
             elseif not active_fm[i] and maxhp < v.cutoff then
-                action = "+"
-            end
-        elseif v.cond == "br" then
-            if active_fm[i] and you.branch():lower() ~= v.value:lower() then
-                action = "-"
-            elseif not active_fm[i]
-            and you.branch():lower() == v.value:lower() then
                 action = "+"
             end
         end
