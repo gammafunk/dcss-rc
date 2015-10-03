@@ -403,7 +403,8 @@ autopickup_no_burden = true
 ##############################
 {
 
--- Lua includes happen at the line below.
+-- Note: My final rc file has the lua files from
+-- https://github.com/gammafunk/dcss-rc included on the line below.
 --LUA INCLUDE--
 
 function ready()
