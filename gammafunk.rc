@@ -7,8 +7,8 @@
 tile_window_width = 1300
 tile_window_height = 700
 tile_full_screen = false
+# Set by RandomTiles
 #tile_player_tile = playermons
-show_player_species = true
 view_delay = 300
 bindkey = [~] CMD_LUA_CONSOLE
 
@@ -346,7 +346,6 @@ feature += altar {⚑}
 
 default_manual_training = true
 show_gold_turns = true
-show_game_turns = true
 allow_self_target = prompt
 
 # Spellcasting spam reduction by monqy
