@@ -16,30 +16,34 @@ last_turn = you.turns()
 fm_patterns = {
     -- General early game threats
     {pattern = "adder|gnoll|hound", cond = "xl", cutoff = 2,
-    name = "XL1"},
-    {pattern = "orc wizard|Ogre|orc warrior", cond = "20mhp",
+     name = "XL1"},
+    -- Problems for chars with 20, 60, 90, or 120 mhp
+    {pattern = "orc|Ogre", cond = "20mhp",
      cutoff = 20, name = "20hp"},
     {pattern = "orc priest", cond = "maxhp", cutoff = 40, name = "40mhp"},
-    -- Problems for squishies with 60 or 90 hp
-    {pattern = "centaur [^wzs]|yaktaur|drake" ..
-         "|blink frog|torpor|spiny frog|blink frog" ..
-         "|black mamba|hydra|spriggan|alligator|snapping turtle" ..
-         "|manticore|harpy|faun|merfolk|siren|water nymph" ..
-         "|jumping spider|mana viper|hill giant|vault guard" ..
-         "|preserver|a wizard|[0-9]+ wizards|ogre mage" ..
-         "|deep elf (knight|mage|conjurer)",
+    {pattern = "centaur [^wzs]|drake|blink frog|spiny frog|basilisk" ..
+         "|raven|komodo dragon|blink frog|snapping turtle|black mamba" ..
+         "|(redback|trapdoor) spider|hill giant|deep elf (summoner|mage)" ..
+         "|gargoyle|sixfirhy|sun demon",
      cond = "maxhp", cutoff = 60, name = "60mhp"},
-    {pattern = "centaur warrior|yaktaur captain|dragon|hydra" ..
-         "|dragon|alligator snapping turtle|satyr" ..
-         "|naga sharpshooter|merfolk avatar|anaconda" ..
-         "|shock serpent|guardian serpent|emperor scorpion" ..
-         "|stone giant|titan|fire giant|sphinx|frost giant" ..
-         "|war gargoyle|vault (warden|sentinel)|convoker|monstrosity" ..
-         "|tengu reaver" ..
-         "|deep elf (master archer|blade master|death mage" ..
-         "|sorcerer|demonologist|annihilator)" ..
-         "|octopode crusher|yaktaur captain",
-     cond = "maxhp", cutoff = 90, name = "90mhp"}
+    {pattern = "hydra|death yak|tarantella|(wolf|orb|jumping) spider" ..
+         "|alligator|catoblepas|(fire|ice) dragon|spriggan (rider|druid)" ..
+         "|torpor|yaktaur|vault guard|manticore|harpy|faun|merfolk|siren" ..
+         "|water nymph|mana viper|a wizard|[0-9]+ wizards|ogre mage" ..
+         "|deep elf (knight|conjurer)|tengu conjurer|green death" ..
+         "|shadow demon",
+     cond = "maxhp", cutoff = 90, name = "90mhp"},
+    {pattern = "centaur warrior|yaktaur captain" ..
+         "|(quicksilver|storm|shadow|iron) dragon|alligator snapping turtle" ..
+         "|satyr|naga sharpshooter|merfolk avatar|anaconda|shock serpent" ..
+         "|emperor scorpion(stone|frost|fire) giant|titan|entropy weaver" ..
+         "|thorn hunter|sphinx|war gargoyle|preserver" ..
+         "|vault (warden|sentinel)|convoker|monstrosity|tengu reaver" ..
+         "|deep elf (master archer|blademaster|death mage" ..
+                    "|sorcerer|demonologist|annihilator)" ..
+         "|octopode crusher|yaktaur captain|spriggan (defender|air mage)" ..
+         "|reaper|balrug",
+     cond = "maxhp", cutoff = 120, name = "120mhp"}
 } -- end fm_patterns
 
 active_fm = {}
