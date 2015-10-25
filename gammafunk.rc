@@ -344,6 +344,7 @@ feature += altar {⚑}
 ### Interface options ###
 #########################
 
+ability_menu = false
 default_manual_training = true
 show_gold_turns = true
 allow_self_target = prompt
