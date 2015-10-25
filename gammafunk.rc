@@ -36,12 +36,6 @@ user_note_prefix = >>
 travel_delay = -1
 explore_delay = -1
 rest_delay = -1
-auto_exclude += oklob,statue,curse skull,roxanne,hyperactive,lightning spire
-auto_exclude += mimic
-
-explore_stop = items,greedy_items,greedy_pickup,greedy_pickup_gold
-explore_stop += greedy_visited_item_stack,stairs,shops,altars,gates
-explore_stop += greedy_sacrificeable
 
 runrest_ignore_poison  = 2:30
 runrest_ignore_monster += ^butterfly$:1
@@ -54,76 +48,6 @@ auto_sacrifice = before_explore
 : else
 auto_sacrifice = true
 : end
-
-## runrest messages
-stop := runrest_stop_message
-stop =
-ignore := runrest_ignore_message
-ignore =
-
-# Annoyances
-ignore += Jiyva gurgles merrily
-ignore += Jiyva appreciates your sacrifice
-ignore += Jiyva says: Divide and consume
-ignore += You hear.*splatter
-ignore += You feel.*sick
-ignore += disappears in a puff of smoke
-ignore += engulfed in a cloud of smoke
-ignore += standing in the rain
-ignore += safely over a trap
-ignore += A.*toadstool withers and dies
-ignore += toadstools? grow
-ignore += You walk carefully through the
-ignore += grinding sound
-ignore += contamination has completely
-ignore += chunks of flesh in your inventory.*rotted away
-ignore += lightning rod has recharged
-ignore += your breath back
-
-# Bad things
-stop += found.*trap
-stop += You fall through a shaft
-stop += An alarm trap emits a blaring wail
-stop += (blundered into a|invokes the power of) Zot
-stop += A huge blade swings out and slices into you
-stop += sense of stasis
-stop += flesh start
-stop += (starving|devoid of blood)
-stop += wrath finds you
-stop += lose consciousness
-
-# Expiring effects
-stop += You feel yourself slow down
-stop += less insulated
-stop += You are starting to lose your buoyancy
-stop += You lose control over your flight
-stop += Your hearing returns
-stop += Your transformation is almost over
-stop += back to life
-stop += uncertain
-stop += time is quickly running out
-stop += life is in your own hands
-stop += is no longer charmed
-
-: if you.race() == "Ghoul" then
-stop += smell.*(rott(ing|en)|decay)
-stop += something tasty in your inventory
-: end
-
-:if you.god() == "Xom" then
-stop += god:
-:else
-ignore += god:
-:end
-
-ignore += pray:
-ignore += talk:
-ignore += talk_visual:
-ignore += friend_spell:
-ignore += friend_enchant:
-ignore += friend_action:
-ignore += sound:
-
 
 ####################
 ### Menu options ###
@@ -370,33 +294,9 @@ end
 ### Auotpick options ###
 ########################
 
-autopickup = $?!+"/%|\
-
-## From
+autopickup += |\
 ae := autopickup_exceptions
-ae += useless_item
-ae += evil_item
-ae += amulet of (inacc|the gourmand|controlled flight|warding|stasis|faith)
-ae += amulet of (resist .*|clarity|rage|guardian spirit|conser|regeneration)
-ae += ring of (fire|ice|protection from|see invisible|flight|poison|magical pow)
-ae += ring of (teleport|invisibility|sustain|susten|wizardry|positive|stealth)
-ae += potion of (lignification|mutation)
-ae += potion of (lignification|mutation)
-
-: if you.race() ~= "Vampire" then
-ae += potion of blood
-: end
 ae += staff of .*
-
-: if you.race() == "Vampire" or you.race() == "Mummy"
-:   or you.race() == "Ghoul" then
-  ae += scroll.*(holy word)
-: else
-  ae += scroll.*(torment)
-: end
-
-default_friendly_pickup = none
-autopickup_no_burden = true
 
 ##############################
 ## Lua and ready() function ##
@@ -438,7 +338,7 @@ end
 ####################
 
 autoinscribe += (bad|dangerous)_item.*potion:!q
-autoinscribe += potion.*(berserk rage|strong poison):!q
+autoinscribe += potion.*(berserk rage):!q
 autoinscribe += (bad|dangerous)_item.*scroll:!r
 autoinscribe += of faith:!P
 autoinscribe += ( rod ):!a
@@ -471,125 +371,6 @@ note_monsters += octopode crusher,juggernaut,caustic shrike
 ## Zot
 note_monsters += killer klown,electric golem,death cob,curse toe,orb of fire
 
-
-###################
-# Message colours #
-###################
-
-### standard colours to be used for message highlighting
-$danger   := lightred
-$warning  := yellow
-$boring   := darkgrey
-$item_dmg := $danger
-
-msc := message_colour
-msc =
-
-# Multi-turn
-channel.multiturn = mute
-
-# Allies
-msc += mute:returns to your side
-msc += mute:a demon appears
-msc += mute:puff of smoke
-msc += mute:carefully avoids
-msc += mute:is recalled
-msc += mute:wall.*burn.*your
-msc += mute:dissolves? into (sparkling lights|shadows)
-msc += mute:you swap places
-msc += mute:your.*(looks stronger|shudders|resists)
-msc += mute:(stumbles backwards|holds.*ground)
-msc += mute:(something|your).*(misses|does no damage)
-msc += mute:your.*(blinks|safely over|gestures)
-msc += mute:(phases out.*|misses) (your|something).*
-msc += mute:your.*but does no damage
-msc += mute:your.*(picks up|drops)
-msc += mute:your.*basks in the mutagenic energy
-
-msc += mute:constricts?.*no damage
-
-# Prayer
-channel.pray += mute
-
-# Jiyva
-: if you.god() == "Jiyva" then
-msc += mute:slurping|squelching
-msc += mute:splits in two
-msc += mute:You feel.*(less hungry|power returning|better)
-: end
-
-# Interface
-msc += mute:Cast which spell\? \(
-msc += mute:^Casting.*
-msc += mute:Confirm with \. or Enter, or press \? or \* to list all spells\.
-msc += mute:Press\: \? - help, Shift-Dir - straight line, f - you
-msc += mute:for a list of commands and other information
-msc += mute:melds.*
-msc += mute:Switching to.*
-msc += mute:Switching back.*
-
-# Other
-msc += mute:This raw flesh tastes terrible
-msc += mute:melds into your body
-msc += mute:begins to bleed from.*wounds
-msc += mute:writhes in agony as.*flesh
-msc += mute:An air elemental.*itself.*the air
-msc += mute:You feel a.*surge of power
-msc += mute:Your legs become a tail as you enter the water
-msc += mute:You cannot train any new skill
-
-# Default colours
-msc += $danger:drains you
-msc += $danger:feel drained
-msc += $danger:strangely unstable
-msc += $danger:curare-tipped.*hits you
-msc += $danger:Space warps.* around you
-msc += $danger:Space bends around you
-msc += $danger:sense of stasis
-msc += $danger:clumsily bash
-msc += $danger:goes berserk
-msc += $danger:Forgetting.* will destroy the book
-msc += $danger:The blast of calcifying dust hits you
-msc += $danger:You are engulfed in calcifying dust
-msc += $danger:is moving more slowly
-msc += $danger:^It .* you
-msc += $danger:You block its attack
-msc += $danger:constricts you
-msc += $danger:you convulse
-msc += $danger:You feel a build-up of mutagenic energy
-
-msc += $item_dmg:rots? away
-
-msc += $warning:ticking.*clock
-msc += $warning:dying ticks
-msc += $warning:distant snort
-msc += $warning:odd grinding sound
-msc += $warning:creaking of ancient gears
-msc += $warning:floor suddenly vibrates
-msc += $warning:a sudden draft
-msc += $warning:coins.*counted
-msc += $warning:tolling.*bell
-msc += $warning:roar of battle
-msc += $warning:creaking.*oriflamme
-msc += $warning:oriflamme is probably
-msc += $warning:wave of frost
-msc += $warning:crackling.*melting
-msc += $warning:hiss.*sand
-msc += $warning:sound.*rushing water
-msc += $warning:rusting.*drain
-msc += $warning:drain falling apart
-msc += $warning:oppressive heat
-msc += $warning:rumble.*avalanche of rocks
-msc += $warning:crackle.*arcane power
-msc += $warning:crackle.*magical portal
-msc += $warning:fails to return
-msc += $warning:no longer ripe
-
-msc += $boring:You start (resting|waiting)
-msc += $boring:Unknown command
-msc += $boring:but (do no|doesn't do any) damage
-msc += $boring:(prevent|prevents) you from hitting
-
 #####################
 ### More messages ###
 #####################
@@ -615,7 +396,6 @@ more += You can't (read|drink|do) that
 more += That item cannot be evoked
 more += This wand has no charges
 more += You are held in a net
-more += You have disarmed
 more += You don't have any such object
 more += do not work when you're silenced
 more += You can't unwield
@@ -628,7 +408,6 @@ more += sense of stasis
 more += You cannot teleport right now
 more += The writing blurs in front of your eyes
 more += You fall through a shaft
-more += A huge blade swings out and slices into you
 more += (blundered into a|invokes the power of) Zot
 more += Ouch! That really hurt!
 more += dispelling energy hits you
@@ -733,20 +512,22 @@ spell_slot += Control undead:not
 spell_slot += Corpse rot:otn
 spell_slot += Dazzling spray:ydz
 spell_slot += Darkness:DAR
+spell_slot += Death channel:ndt
 spell_slot += Discord:DOC
 spell_slot += Disjunction:dox
 spell_slot += Dispel undead:ndp
 spell_slot += Dispersal:dxp
 spell_slot += Dragon form:dof
 spell_slot += Dragon's call:dou
-## gone in 0.17
+## 0.16
 spell_slot += Enslavement:vxt
 spell_slot += Ensorcelled hibernation:zbx
+spell_slot += Excruciating wounds:nwd
 spell_slot += Fire storm:fot
 spell_slot += Fireball:fbd
 spell_slot += Flame tongue:zfo
 spell_slot += Force lance:ofc
-## gone in 0.17
+## 0.16
 spell_slot += Forcefull dismissal:dou
 spell_slot += Freezing cloud:cdo
 spell_slot += Freeze:zcf
@@ -788,7 +569,7 @@ spell_slot += Shadow creatures:wdu
 spell_slot += Shatter:TSH
 spell_slot += Shock:zok
 spell_slot += Simulacrum:cnu
-## gone in 0.17
+## 0.16
 spell_slot += Singularity:ytu
 spell_slot += Slow:wox
 spell_slot += Spectral weapon:wox
@@ -810,7 +591,7 @@ spell_slot += Summon ice beast:bcu
 spell_slot += Summon lightning spire:tpu
 spell_slot += Summon mana viper:vpu
 spell_slot += Summon small mammal:zou
-## gone in 0.17
+## 0.16
 spell_slot += Sure blade:bdu
 spell_slot += Teleport other:opt
 spell_slot += Throw frost:cow
