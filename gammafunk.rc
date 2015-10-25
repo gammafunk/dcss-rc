@@ -153,6 +153,7 @@ menu += inventory:lightgray:.*(book|jewellery|magical staff)
 
 menu += lightblue:unidentified .*weapon.*(runed|glowing|enchanted)
 menu += lightblue:unidentified .*armour.*(runed|glowing|embroidered|shiny|dyed)
+menu += brown:.*ring of slaying.*
 
 prefer_safe_chunks     = true
 show_inventory_weights = true
@@ -294,7 +295,7 @@ end
 ### Auotpick options ###
 ########################
 
-autopickup += |\
+autopickup += |\:=
 ae := autopickup_exceptions
 ae += staff of .*
 
@@ -610,40 +611,38 @@ spell_slot += .*:YXWZ
 ### Item slots ###
 ##################
 
-## rings ##
-item_slot += .*ring of (dexterity|evasion) : eE
-item_slot += ring of .*fire : Ff
-item_slot += ring of flight : L
-item_slot += ring of (ice|protection from cold) : Cc
-item_slot += .*ring of intelligence : iI
-item_slot += ring of invisibility : I
-item_slot += ring of magical power : Ww
-item_slot += ring of poison resistance : P
-item_slot += ring of positive energy : Nn
-item_slot += ring of protection from magic : Mm
-item_slot += ring of see invisible : V
-item_slot += .*ring of (slaying|strength) : Ss
-item_slot += ring of stealth : Qq
-item_slot += ring of sustain abilities : X
-item_slot += ring of teleportation : T
-item_slot += ring of teleport control : E
-item_slot += ring of wizardry : Zz
-
-## amulets ##
-item_slot += amulet of clarity : Y
-item_slot += amulet of gourmand : Dd
-item_slot += amulet of guardian spirit : Dd
-item_slot += amulet of regeneration : G
-item_slot += amulet of rage : B
-item_slot += amulet of resist corrosion : O
-item_slot += amulet of resist mutation : U
+## In order of letter used.
 item_slot += amulet of stasis : A
+item_slot += amulet of rage : B
+item_slot += ring of (ice|protection from cold) : Cc
+item_slot += amulet of the gourmand : D
+item_slot += \+[0-9]+ ring of evasion : Ee
+item_slot += ring of .*fire : Ff
+item_slot += amulet of regeneration : g
+item_slot += amulet of guardian spirit : G
 item_slot += amulet of faith : H
-item_slot += amulet of warding : R
-
-item_slot += inaccuracy|loudness : Jj
-
-## item_slot
+item_slot += \+[0-9]+ ring of intelligence : Ii
+item_slot += amulet of warding : J
+item_slot += amulet of clarity : K
+item_slot += ring of flight : L
+item_slot += ring of protection from magic : Mm
+item_slot += ring of positive energy : Nn
+item_slot += \+[0-9]+ ring of protection : Oo
+item_slot += ring of poison resistance : P
+item_slot += ring of stealth : Qq
+item_slot += amulet of resist corrosion : R
+item_slot += \+[0-9]+ ring of strength : Ss
+item_slot += ring of teleportation : T
+## 0.16
+item_slot += ring of teleport control : t
+item_slot += ring of sustain (abilities|attributes) : u
+item_slot += amulet of resist mutation : U
+item_slot += ring of see invisible : v
+item_slot += ring of invisibility : V
+item_slot += ring of magical power : Ww
+item_slot += \+[0-9]+ ring of dexterity : Xx
+item_slot += \+[0-9]+ ring of slaying : Yy
+item_slot += ring of wizardry : Zz
 
 ###################
 ## Debug Options ##
