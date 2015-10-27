@@ -274,8 +274,23 @@ default_manual_training = true
 show_gold_turns = true
 allow_self_target = prompt
 
-# Spellcasting spam reduction by monqy
+########################
+### Auotpick options ###
+########################
+
+## Add staves and rods; note you can't use += with this option.
+autopickup = $?!+"/%|\
+
+ae := autopickup_exceptions
+## Don't ever need a second stave
+ae += staff of .*
+
+##############################
+## Lua and ready() function ##
+##############################
 {
+
+-- Spellcasting spam reduction by monqy
 local function generic_cast_spell(cmd)
   crawl.mpr('<cyan>Cast which spell?</cyan>')
   crawl.flush_prev_message()
@@ -289,20 +304,6 @@ end
 function force_cast_spell()
   generic_cast_spell('Z')
 end
-}
-
-########################
-### Auotpick options ###
-########################
-
-autopickup += |\:=
-ae := autopickup_exceptions
-ae += staff of .*
-
-##############################
-## Lua and ready() function ##
-##############################
-{
 
 -- Note: My final rc file has the lua files from
 -- https://github.com/gammafunk/dcss-rc included on the line below.
