@@ -40,7 +40,6 @@ rest_delay = -1
 runrest_ignore_poison  = 2:30
 runrest_ignore_monster += ^butterfly$:1
 show_travel_trail = true
-trapwalk_safe_hp = dart:20,needle:15,arrow:35,bolt:45,spear:40,blade:95
 
 : if you.god() ~= "Nemelex Xobeh" and you.god() ~= "Elyvilon"
 :   and you.god() ~= "No God"  then
@@ -104,7 +103,6 @@ menu += lightcyan:potions? of.*(beneficial mutation|experience)
   menu += lightgrey:potions? of coagulated blood
 : else
   menu += darkgrey:potions? of.*blood
-  menu += lightred:potions? of.*porridge
 : end
 
 ### Scrolls ###
@@ -153,12 +151,8 @@ menu += inventory:lightgray:.*(book|jewellery|magical staff)
 
 menu += lightblue:unidentified .*weapon.*(runed|glowing|enchanted)
 menu += lightblue:unidentified .*armour.*(runed|glowing|embroidered|shiny|dyed)
-menu += brown:.*ring of slaying.*
 
-prefer_safe_chunks     = true
-show_inventory_weights = true
-auto_drop_chunks       = yes
-sort_menus += inv: true : equipped, freshness, charged
+sort_menus += inv: true : equipped, charged
 
 ########################
 ### Glyphs and colors ##
@@ -184,9 +178,7 @@ item += potions? of.*(beneficial mutation|experience):lightcyan
 : if you.race() == "Vampire" then
   item += potions? of blood:lightred
   item += potions? of coagulated blood:lightgrey
-  item += potions? of.*porridge:darkgrey
 : else
-  item += potions? of.*porridge:lightred
   item += potions? of.*blood:darkgrey
 : end
 
@@ -271,7 +263,6 @@ feature += altar {⚑}
 
 ability_menu = false
 default_manual_training = true
-show_gold_turns = true
 allow_self_target = prompt
 
 ########################
@@ -348,7 +339,7 @@ autoinscribe += manual of:!d
 autoinscribe += staff of (Wucad Mu|energy|channeling|wizardry|power|conjuration|summoning):!a
 autoinscribe += (bread|meat) ration:!e
 autoinscribe += scroll.+of.*(acquirement|vulnerability|summoning|teleportation|silence|fear|magic mapping|holy word|torment):!r
-autoinscribe += potion.+of (might|brilliance|cancellation|cure mutation|restore abilities|magic|resistance|haste|invisibility|porridge):!q
+autoinscribe += potion.+of (might|brilliance|cancellation|cure mutation|restore abilities|magic|resistance|haste|invisibility):!q
 
 : if you.god() == "Fedhas" then
 autoinscribe += fruit:!e
