@@ -189,7 +189,7 @@ if __name__ == '__main__':
                         help="The account password.", default=None)
     parser.add_argument("-g", dest="games", metavar="<game1>[,<game2>,...]",
                         help="Comma-seperated list of games to update."
-                        "(default: %(default)s).", default=",".join(games))
+                        "(default: %(default)s).", default="trunk")
     args = parser.parse_args()
 
     rc_file = args.rc_file
