@@ -207,9 +207,6 @@ if __name__ == '__main__':
             sys.exit("Unrecognized server: " + s)
 
     update_games = args.games.split(",")
-    for g in update_games:
-        if g not in games:
-            sys.exit("Unrecognized game: " + g)
 
     rc_fh = open(rc_file, "rU")
     rc_text = rc_fh.read()
