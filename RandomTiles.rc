@@ -163,7 +163,7 @@ player_tiles = {
     {mons = "guardian serpent"},
     {mons = "greater naga"},
     {mons = "naga sharpshooter"},
-    {mons = "salamander firebrand"},
+    {mons = "salamander firebrand", max_version = 0.17},
     {mons = "salamander stormcaller", min_version = 0.17},
     {mons = "spriggan berserker"},
     {mons = "spriggan defender"},
@@ -200,7 +200,8 @@ player_tiles = {
     {mons = "frost giant"},
     {mons = "titan"},
     {mons = "juggernaut", min_version = 0.17},
-    {mons = "octopode crusher"},
+    {mons = "iron giant", min_version = 0.18},
+    {mons = "octopode crusher", max_version = 0.17},
     -- Beasts and Plants
     {mons = "butterfly", tile = "mons_butterfly", num_var = 11},
     {mons = "death yak", weapon_offsets = "-4,0", shield_offsets = "-2,0"},
@@ -230,6 +231,7 @@ player_tiles = {
     {mons = "orb spider"},
     {mons = "emperor scorpion"},
     {mons = "moth of wrath"},
+    {mons = "spark wasp", min_version = 0.18},
     {mons = "kraken"},
     {mons = "fire dragon"},
     {mons = "ice dragon"},
@@ -372,7 +374,7 @@ player_tiles = {
     -- Sprint uniques
     {mons = "Nellie"},
     {mons = "Chuck"},
-    {mons = "The Iron giant"},
+    {mons = "The Iron giant", max_version = 0.17},
     -- Fake uniques
     {mons = "Jörmungandr", tile = "mons_jormungandr"},
     {mons = "THE GIAGGOSTUONO", tile = "mons_giaggostuono"},
