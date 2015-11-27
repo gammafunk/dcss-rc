@@ -1,21 +1,43 @@
 # Crawl Init file
 
-##############################
-### Tiles and view options ###
-##############################
+#####################
+### Tiles options ###
+#####################
 
 tile_window_width = 1300
 tile_window_height = 700
 tile_full_screen = false
 # Set by RandomTiles
 #tile_player_tile = playermons
-view_delay = 300
-bindkey = [~] CMD_LUA_CONSOLE
 
 ## To set up RandomTiles, you need (1) the include below and (2) to add/modify
 ## the ready() function in your rc. See my ready() section below and the
 ## project page: https://github.com/gammafunk/dcss-rc
 include += RandomTiles.rc
+
+##################
+### UI options ###
+##################
+
+travel_delay = -1
+explore_delay = -1
+rest_delay = -1
+view_delay = 300
+
+runrest_ignore_poison  = 2:10
+runrest_ignore_monster += ^butterfly$:1
+show_travel_trail = false
+
+confirm_butcher = never
+easy_eat_chunks = true
+rest_delay = -1
+hp_colour       = 100:green, 75:yellow, 50:red, 25:lightred
+mp_colour       = 100:green, 75:yellow, 50:red, 25:lightred
+hp_warning      = 25
+autofight_stop  = 50
+auto_sacrifice = true
+
+bindkey = [~] CMD_LUA_CONSOLE
 
 ######################
 ### Morgue options ###
@@ -28,25 +50,6 @@ note_hp_percent = 10
 note_all_skill_levels = true
 note_chat_messages = false
 user_note_prefix = >>
-
-##############################
-### Travel-related options ###
-##############################
-
-travel_delay = -1
-explore_delay = -1
-rest_delay = -1
-
-runrest_ignore_poison  = 2:30
-runrest_ignore_monster += ^butterfly$:1
-show_travel_trail = true
-
-: if you.god() ~= "Nemelex Xobeh" and you.god() ~= "Elyvilon"
-:   and you.god() ~= "No God"  then
-auto_sacrifice = before_explore
-: else
-auto_sacrifice = true
-: end
 
 ####################
 ### Menu options ###
@@ -330,20 +333,33 @@ end
 ### Autoinscribe ###
 ####################
 
-autoinscribe += (bad|dangerous)_item.*potion:!q
-autoinscribe += potion.*(berserk rage):!q
-autoinscribe += (bad|dangerous)_item.*scroll:!r
-autoinscribe += of faith:!P
-autoinscribe += ( rod ):!a
-autoinscribe += manual of:!d
-autoinscribe += staff of (Wucad Mu|energy|channeling|wizardry|power|conjuration|summoning):!a
-autoinscribe += (bread|meat) ration:!e
-autoinscribe += scroll.+of.*(acquirement|vulnerability|summoning|teleportation|silence|fear|magic mapping|holy word|torment):!r
-autoinscribe += potion.+of (might|brilliance|cancellation|cure mutation|restore abilities|magic|resistance|haste|invisibility):!q
+ai := autoinscribe
 
-: if you.god() == "Fedhas" then
-autoinscribe += fruit:!e
-: end
+ai += (bad|dangerous)_item.*potion:!q
+ai += (bad|dangerous)_item.*scroll:!r
+ai += potion.*(berserk rage):!q
+
+ai += of faith:!P
+ai += ( rod ):!a
+ai += manual of:!d
+ai += staff of (Wucad Mu|energy|channeling|wizardry|power|conjuration|summoning):!a
+
+## from simm's rc
+ai += curing:@q1
+ai += potions? of heal wounds:@q2
+ai += wand of heal wounds:@v2
+ai += potions? of haste:@q3
+ai += wand of hasting:@v3
+ai += scrolls? of teleportation:@r4
+ai += wand of teleportation:@v4
+ai += identify:@r1
+ai += remove curse:@r2
+ai += blowgun:@w1
+ai += (curare|dispersal):!f
+
+ai += (meat|bread) ration:@e1
+ai += (beef jerk|fruit|pizza):@e2
+ai += royal jell:@e3
 
 #########
 # Notes #
