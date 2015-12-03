@@ -285,3 +285,30 @@ add a lua code block with the contents of
 [char_dump.lua](https://github.com/gammafunk/dcss-rc/blob/master/char_dump.lua)
 and a call to the function `char_dump()` in your `ready()` function according
 to the instructions in the [installation section](#installation).
+
+## toggle_options
+
+Toggle a group of RC options on and off persistently across games without
+editing your rc. To enable in your rc, add a lua code block defining a table
+named `option_groups` followed by the contents of
+[toggle_options.lua](https://github.com/gammafunk/dcss-rc/blob/master/toggle_options.lua). In
+the `option_groups` table, each key is the descriptive name of a group of
+options, and the associated value should itself be an array of tables giving
+option entries. An option entry table has keys "option", "on", and "off". The
+value for "option" is an string containing an RC line that includes "%t"
+somewhere in the string to represent where the option is changes as it toggles
+between the on or off state. The value for "on" gives the string replacing "%t"
+when the option is enabled, and "off" gives the string replacing "%t" when
+disabled. See
+[gammafunk.rc](https://github.com/gammafunk/dcss-rc/blob/master/gammafunk.rc)
+for a complete example of this table.
+
+Once `options_groups` is defined and
+[toggle_options.lua](https://github.com/gammafunk/dcss-rc/blob/master/toggle_options.lua)
+is included in your RC, functions are automatically made that can be called in
+macros or the lua console to toggle a specific option group on or off. These
+functions are named like `toggle_<group>_options()`, where "<group>" is the key
+in `options_groups` for a specific group. For example, if I define a group in
+`option_groups` using the key named "turncount", the function created will be
+`toggle_turncount_options()`, which I can assign to macro using a target of
+`===toggle_turncount_options`.

@@ -1,6 +1,6 @@
--- Some simple options good for realtime and turncount runs, set up to be
--- toggleable. Note that I don't have much experience playing realtime runs,
--- those options are just taken from RCs of players who do.
+-----------------------------
+---- Begin toggle_options ---
+-----------------------------
 
 -- Wrapper of crawl.mpr() that prints text in white by default.
 if not mpr then
@@ -12,95 +12,80 @@ if not mpr then
     end
 end
 
-function toggle_realtime_options()
-    if c_persist.realtime_options then
-        disable_realtime_options(true)
+function set_option_group_state(group, enable, verbose)
+    if not group then
+        return
+    end
+
+    found = false
+    state_key = enable and "on" or "off"
+    for g,opts in pairs(option_groups) do
+        if group == g then
+            for i, opt in ipairs(opts) do
+                local opt_val = opt.option:gsub("%%t", opt[state_key])
+                crawl.setopt(opt_val)
+            end
+            c_persist.enabled_options[group] = enable
+            found = true
+            break
+        end
+    end
+    if not found then
+        mpr("Error: Unable to find option group '" .. group .. "'.")
+        return
+    end
+    if verbose then
+        local verb = enable and "Enabling" or "Disabling"
+        mpr(verb .. " option group '" .. group .. "'.")
+    end
+end
+
+function toggle_options(group)
+    if not group then
+        return
+    end
+
+    if c_persist.enabled_options[group] then
+        set_option_group_state(group, false, true)
     else
-        enable_realtime_options(true)
-    end
-end
-
-function enable_realtime_options(verbose)
-    crawl.setopt("ae += >wand of (magic darts|flame|frost)")
-    crawl.setopt("ae += >wand of (slowing|polymorph|confusion|paralysis)")
-    crawl.setopt("use_animations = ")
-    c_persist.realtime_options = true
-    if verbose then
-        mpr("Enabling realtime options.")
-    end
-end
-
-function disable_realtime_options(verbose)
-    crawl.setopt("ae -= >wand of (magic darts|flame|frost)")
-    crawl.setopt("ae -= >wand of (slowing|polymorph|confusion|paralysis)")
-    crawl.setopt("use_animations = beam, range, hp, monster_in_sight, " ..
-                     "pickup, monster, player, branch_entry")
-    c_persist.realtime_options = false
-    if verbose then
-        mpr("Disabling realtime options.")
-    end
-end
-
-function toggle_turncount_options()
-    if c_persist.turncount_options then
-        disable_turncount_options(true)
-    else
-        enable_turncount_options(true)
-    end
-end
-
-function enable_turncount_options(verbose)
-    crawl.setopt("ae += >wand of (magic darts|flame|frost)")
-    crawl.setopt("ae += >wand of (slowing|polymorph|confusion|paralysis)")
-    crawl.setopt("use_animations = ")
-    c_persist.turncount_options = true
-    if verbose then
-        mpr("Enabling turncount options.")
-    end
-end
-
-function disable_turncount_options(verbose)
-    crawl.setopt("ae -= >wand of (magic darts|flame|frost)")
-    crawl.setopt("ae -= >wand of (slowing|polymorph|confusion|paralysis)")
-    crawl.setopt("use_animations = beam, range, hp, monster_in_sight, " ..
-                     "pickup, monster, player, branch_entry")
-    c_persist.turncount_options = false
-    if verbose then
-        mpr("Disabling turncount options.")
+        set_option_group_state(group, true, true)
     end
 end
 
 
-function toggle_turncount_options()
-
-    if c_persist.turncount_options then
-        crawl.setopt("confirm_butcher = auto")
-        crawl.setop("ai -= (bread|meat) ration:!e")
-        crawl.setopt("ai -= scroll.+of.*(acquirement|summoning|teleportation" ..
-                         "|fear|magic mapping):!r")
-        crawl.setopt("ai -= potion.+of(curing|heal wounds|might|agility" ..
-                         "|brilliance|magic|invisibility):!q")
-    else
-        crawl.setopt("confirm_butcher = never")
-        crawl.setop("ai += (bread|meat) ration:!e")
-        crawl.setopt("ai += scroll.+of.*(acquirement|summoning|teleportation" ..
-                         "|fear|magic mapping):!r")
-        crawl.setopt("ai += potion.+of(curing|heal wounds|might|agility" ..
-                         "|brilliance|magic|invisibility):!q")
+function init_toggle_options()
+    if not c_persist.enabled_options then
+        c_persist.enabled_options = {}
     end
-    c_persist.turncount_options = not c_persist.turncount_options
-    verb = c_persist.turncount_options and "Enabling" or "Disabling"
-    mpr(verb .. " turncount options.")
+
+    if not option_groups then
+        mpr("Error: option_groups table undefined.", "lightred")
+        return
+    end
+
+    for group,_ in pairs(option_groups) do
+        local found = false
+        for g,enabled in pairs(c_persist.enabled_options) do
+            if group == g then
+                local toggle_func = function()
+                    toggle_options(g)
+                end
+                _G["toggle_" .. g .. "_options"] = toggle_func
+                if enabled then
+                    set_option_group_state(g, true, false)
+                end
+                found = true
+                break
+            end
+        end
+        if not found then
+            c_persist.enabled_options[group] = false
+        end
+    end
 end
 
-if c_persist.realtime_options == nil then
-    c_persist.realtime_options = false
-elseif c_persist.realtime_options then
-    enable_realtime_options()
-end
+init_toggle_options()
 
-if c_persist.turncount_options == nil then
-    c_persist.turncount_options = false
-elseif c_persist.turncount_options then
-    enable_turncount_options()
-end
+---------------------------
+---- End toggle_options ---
+---------------------------
