@@ -7,8 +7,6 @@
 tile_window_width = 1300
 tile_window_height = 700
 tile_full_screen = false
-# Set by RandomTiles
-#tile_player_tile = playermons
 
 ## To set up RandomTiles, you need (1) the include below and (2) to add/modify
 ## the ready() function in your rc. See my ready() section below and the
@@ -103,7 +101,6 @@ menu += lightcyan:potions? of.*(beneficial mutation|experience)
 ## food potions
 : if you.race() == "Vampire" then
   menu += lightred:potions? of blood
-  menu += lightgrey:potions? of coagulated blood
 : else
   menu += darkgrey:potions? of.*blood
 : end
@@ -243,16 +240,9 @@ mons := mon_glyph
 mons ^= dancing weapon : cyan {
 mons ^= spectral weapon : lightcyan {
 mons ^= * : ✱
-## For 0.16
-mons ^= death cob : yellow z
-mons ^= curse toe : lightgreen z
-mons ^= ancient champion : lightcyan z
-mons ^= curse skull : lightmagenta z
 
 ## Wall glyphs, requires a font and terminal that can render these.
 feature += crystal wall {░}
-## For 0.16
-feature += green crystal {░}
 
 feature += stone wall {▒}
 feature += metal wall {▓}
@@ -278,56 +268,6 @@ autopickup = $?!+"/%|\
 ae := autopickup_exceptions
 ## Don't ever need a second stave
 ae += staff of .*
-
-##############################
-## Lua and ready() function ##
-##############################
-{
-
--- Spellcasting spam reduction by monqy
-local function generic_cast_spell(cmd)
-  crawl.mpr('<cyan>Cast which spell?</cyan>')
-  crawl.flush_prev_message()
-  crawl.process_keys(cmd)
-end
-
-function cast_spell()
-  generic_cast_spell('z')
-end
-
-function force_cast_spell()
-  generic_cast_spell('Z')
-end
-
--- Note: My final rc file has the lua files from
--- https://github.com/gammafunk/dcss-rc included on the line below.
---LUA INCLUDE--
-
-function ready()
-
-  -- Enable char default skills; this must come before target_skill().
-  char_defaults()
-
-  -- Enable skill target settings.
-  target_skill()
-
-  -- Enable speedrun resting.
-  speedrun_rest()
-
-  -- Enable persistent messages.
-  load_message()
-
-  -- Dynamic force-mores.
-  force_mores()
-
-  -- Char dumps every 1k turns.
-  char_dump()
-
-  -- Enable RandomTiles.
-  random_tile()
-end
-
-}
 
 ####################
 ### Autoinscribe ###
@@ -376,7 +316,9 @@ note_monster  += lich,ancient lich,curse skull,greater mummy
 ## Some enemies it's good to note for Vaults:5
 note_monsters += tengu reaver,storm dragon,titan
 ## Depths
-note_monsters += octopode crusher,juggernaut,caustic shrike
+## 0.17
+note_monsters += octopode crusher
+note_monsters += juggernaut,irong giant,caustic shrike
 ## Zot
 note_monsters += killer klown,electric golem,death cob,curse toe,orb of fire
 
@@ -449,8 +391,11 @@ more += Deactivating autopickup
 ## Problematic monsters
 more += (giant eyeball|shining eye|cacodemon|neqoxec|guardian serpent|flayed ghost|greater mummy|mummy priest|hell sentinel|fiend|tormentor|hellion|lich|executioner|orb of fire|death cob|juggernaut|moth of wrath|ghost moth|curse toe|curse skull|draconian shifter).*into view
 
-## Uniques
-more += (Agnes|Aizul|Antaeus|Asmodeus|Asterion|Azrael|Blork the orc|Boris|Cerebov|Crazy Yiuf|Dispater|Dissolution|Donald|Dowan|Duvessa|Edmund|the Enchantress|Ereshkigal|Erica|Erolcha|Eustachio|Fannar|Frances|Frederick|Gastronok|Geryon|Gloorx Vloq|Grinder|Grum|Harold|Ignacio|Ijyb|Ilsuiw|Jessica|Jorgrun|Jory|Joseph|Josephine|Khufu|Kirke|Lamia|the Lernaean hydra|Lom Lobon|Louise|Mara|Margery|Maud|Maurice|Menkaure|Mennas|Mnoleg|Murray|Natasha|Nergalle|Nessos|Nikola|Norris|Pikel|Plog|Polyphemus|Prince Ribbit|Psyche|Purgy|Robin|Roxanne|the royal jelly|Rupert|Saint Roka|the Serpent of Hell|Sigmund|Snorg|Sonja|Terence|Tiamat|Urug|Vashnia|Wiglaf|Xtahua).*into view
+## Any uniques and any pan lords
+more += (?-i:[A-Z]).* comes? into view
+
+## 0.17
+more += the royal jelly.* comes? into view
 
 ###################
 ### Spell slots ###
@@ -528,16 +473,12 @@ spell_slot += Dispel undead:ndp
 spell_slot += Dispersal:dxp
 spell_slot += Dragon form:dof
 spell_slot += Dragon's call:dou
-## 0.16
-spell_slot += Enslavement:vxt
 spell_slot += Ensorcelled hibernation:zbx
 spell_slot += Excruciating wounds:nwd
 spell_slot += Fire storm:fot
 spell_slot += Fireball:fbd
 spell_slot += Flame tongue:zfo
 spell_slot += Force lance:ofc
-## 0.16
-spell_slot += Forcefull dismissal:dou
 spell_slot += Freezing cloud:cdo
 spell_slot += Freeze:zcf
 spell_slot += Fulminant prism:ptf
@@ -578,8 +519,6 @@ spell_slot += Shadow creatures:wdu
 spell_slot += Shatter:TSH
 spell_slot += Shock:zok
 spell_slot += Simulacrum:cnu
-## 0.16
-spell_slot += Singularity:ytu
 spell_slot += Slow:wox
 spell_slot += Spectral weapon:wox
 spell_slot += Spellforged servitor:vto
@@ -600,8 +539,6 @@ spell_slot += Summon ice beast:bcu
 spell_slot += Summon lightning spire:tpu
 spell_slot += Summon mana viper:vpu
 spell_slot += Summon small mammal:zou
-## 0.16
-spell_slot += Sure blade:bdu
 spell_slot += Teleport other:opt
 spell_slot += Throw frost:cow
 spell_slot += Throw flame:fow
@@ -641,8 +578,6 @@ item_slot += ring of stealth : Qq
 item_slot += amulet of resist corrosion : R
 item_slot += \+[0-9]+ ring of strength : Ss
 item_slot += ring of teleportation : T
-## 0.16
-item_slot += ring of teleport control : t
 item_slot += ring of sustain (abilities|attributes) : u
 item_slot += amulet of resist mutation : U
 item_slot += ring of see invisible : v
@@ -657,3 +592,75 @@ item_slot += ring of wizardry : Zz
 ###################
 
 fsim_rounds = 10000
+
+##############################
+## Lua and ready() function ##
+##############################
+
+{
+
+-- Spellcasting spam reduction by monqy
+local function generic_cast_spell(cmd)
+  crawl.mpr('<cyan>Cast which spell?</cyan>')
+  crawl.flush_prev_message()
+  crawl.process_keys(cmd)
+end
+
+function cast_spell()
+  generic_cast_spell('z')
+end
+
+function force_cast_spell()
+  generic_cast_spell('Z')
+end
+
+-- Some simple options for turncount and realtime runs. Note I don't play much
+-- of the latter, and these options are taken from the RCs of players who do.
+option_groups = {
+    ["turncount"] = {
+        {option = "confirm_butcher = %t", on="never", off="auto"},
+        {option = "ai %t= (bread|meat) ration:!e", on="+", off="-"},
+        {option = "ai %t= scroll.+of.*(acquirement|summoning|teleportation" ..
+             "|fear|magic mapping):!r", on="+", off="-"},
+        {option = "ai %t= potion.+of(curing|heal wounds|might|agility" ..
+             "|brilliance|magic|invisibility):!q", on="+", off="-"}
+    },
+    ["realtime"] = {
+        {option = "ae %t= >wand of (magic darts|flame|frost)", on="+", off="-"},
+        {option = "ae %t= >wand of (slowing|polymorph|confusion|paralysis)",
+         on="+", off="-"},
+        {option = "use_animations = %t", on="", off="beam, range, hp, " ..
+             "monster_in_sight, pickup, monster, player, branch_entry"},
+    },
+} -- end option groups
+
+
+-- Note: My final rc file has the lua files from
+-- https://github.com/gammafunk/dcss-rc included starting on the next line.
+--LUA INCLUDE--
+
+function ready()
+
+  -- Enable char default skills; this must come before target_skill().
+  char_defaults()
+
+  -- Enable skill target settings.
+  target_skill()
+
+  -- Enable speedrun resting.
+  speedrun_rest()
+
+  -- Enable persistent messages.
+  load_message()
+
+  -- Dynamic force-mores.
+  force_mores()
+
+  -- Char dumps every 1k turns.
+  char_dump()
+
+  -- Enable RandomTiles.
+  random_tile()
+end
+
+}
