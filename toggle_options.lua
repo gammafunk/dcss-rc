@@ -2,6 +2,8 @@
 ---- Begin toggle_options ---
 -----------------------------
 
+-- See README.md for documentation.
+
 -- Wrapper of crawl.mpr() that prints text in white by default.
 if not mpr then
     mpr = function (msg, color)

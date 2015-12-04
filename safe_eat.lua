@@ -2,10 +2,7 @@
 ---- Begin safe_eat ----
 ------------------------
 
--- Prompt when eating in LOS of charmed tier-one demon, such as those made by
--- summon greater demon, since they can become hostile mid-meal. To enable in
--- your rc, add a lua code block with the contents of *force_mores.lua* and
--- make a macro binding your 'e' key to `===safe_eat`.
+-- See README.md for documentation.
 
 version = 0.15
 if crawl.version then

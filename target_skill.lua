@@ -2,12 +2,7 @@
 ---- Beging target_skill ----
 -----------------------------
 
--- Opens the skill screen automaticaly when a skill reaches a target level set
--- by the player. To enable in your rc, add a lua code block with the contents
--- of *target_skill.lua* and a call to `target_skill()` in your `ready()`
--- function. Additionally you'll wand to assign a key to a macro with a target
--- of `===set_target_skill` so can change the skill target on the fly. Original
--- code by elliptic with some reorganization.
+-- See README.md for documentation.
 
 skill_list = {"Fighting","Short Blades","Long Blades","Axes","Maces & Flails",
               "Polearms","Staves","Unarmed Combat","Bows","Crossbows",

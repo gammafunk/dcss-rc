@@ -2,12 +2,7 @@
 ---- Begin load_message ----
 ----------------------------
 
--- Leave a message on save that will be displayed next time the player
--- loads the game. To enable in your rc, add a lua code block with the
--- contents of *load_message.lua*, add a call to `load_message()` in
--- your `ready()` function, and make a macro binding 'S' to
--- `===save_with_message`. Original code by elliptic with some
--- reorganization.
+-- See README.md for documentation.
 
 message_color = "white"
 

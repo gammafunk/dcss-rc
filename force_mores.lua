@@ -2,7 +2,7 @@
 ---- Begin conditional force_mores ----
 ---------------------------------------
 
--- See README.md for details.
+-- See README.md for documentation.
 
 last_turn = you.turns()
 

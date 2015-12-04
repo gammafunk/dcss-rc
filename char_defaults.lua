@@ -2,17 +2,7 @@
 ---- Begin char_defaults ----
 -----------------------------
 
--- Load default skill settings for each race+class combination automatically on
--- turn 0. Recommended that you also use *target_skill.lua* so that you can set
--- skills (and a skill target) on turn 0 for chars without defaults and have
--- this data automatically become the new default. To enable in your rc, add a
--- lua code block with the contents of *char_defaults.lua* and a call to
--- `char_defaults()` in your `ready()` function. If you are using
--- *target_skill.lua*, this call must come before the call to `target_skill()`
--- in `ready()`. Additionally, to save or load your defaults on the fly
--- (e.g. if you forgotten to set something), you can assign a keys to macros
--- with a targets of `===save_char_defaults` or `===load_char_defaults` or
--- simply run these functions as needed in the lua console.
+-- See README.md for documentation.
 
 weapon_skills = {"Unarmed Combat", "Short Blades", "Long Blades", "Axes",
                  "Maces & Flails", "Polearms", "Staves"}

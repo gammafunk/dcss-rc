@@ -2,7 +2,7 @@
 ---- Begin speedrun_rest ----
 -----------------------------
 
--- See README.md for documentation
+-- See README.md for documentation.
 
 -- How many turns to rest at max.
 num_rest_turns = 20

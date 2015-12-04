@@ -3,8 +3,7 @@
 ---- Begin RandomTiles ----
 ---------------------------
 
--- Automatically and randomly change the player tile to that of various
--- monsters. See README.md for setup details.
+-- See README.md for documentation.
 
 -- RandomTile options
 -- If you set randtile_options elsewhere in your rc,  we don't override it.
