@@ -10,7 +10,7 @@ tile_full_screen = false
 
 ## To set up RandomTiles, you need (1) the include below and (2) to add/modify
 ## the ready() function in your rc. See my ready() section below and the
-## project page: https://github.com/gammafunk/dcss-rc
+## project page: https://github.com/gammafunk/dcss-rc#randomtiles
 include += RandomTiles.rc
 
 ##################
@@ -36,18 +36,6 @@ autofight_stop  = 50
 auto_sacrifice = true
 
 bindkey = [~] CMD_LUA_CONSOLE
-
-######################
-### Morgue options ###
-######################
-
-dump_message_count = 30
-dump_order  = header,hiscore,stats,misc,mutations,skills,spells,inventory
-dump_order += screenshot,monlist,messages,action_counts,vaults,notes,kills
-note_hp_percent = 10
-note_all_skill_levels = true
-note_chat_messages = false
-user_note_prefix = >>
 
 ####################
 ### Menu options ###
@@ -587,6 +575,34 @@ item_slot += \+[0-9]+ ring of dexterity : Xx
 item_slot += \+[0-9]+ ring of slaying : Yy
 item_slot += ring of wizardry : Zz
 
+############
+## Macros ##
+############
+
+macros += M e ===safe_eat
+macros += M S ===save_with_message
+macros += M 1 aa
+macros += M 3 zz
+macros += M 6 ===one_turn_rest
+macros += M 7 ===start_resting
+macros += M 8 ===new_random_tile
+macros += M 9 ===set_tile_by_name
+macros += M 0 ===toggle_tile_timer
+macros += M - ===toggle_random_tile
+macros += M ] ===set_target_skill
+
+######################
+### Morgue options ###
+######################
+
+dump_message_count = 30
+dump_order  = header,hiscore,stats,misc,mutations,skills,spells,inventory
+dump_order += screenshot,monlist,messages,action_counts,vaults,notes,kills
+note_hp_percent = 10
+note_all_skill_levels = true
+note_chat_messages = false
+user_note_prefix = >>
+
 ###################
 ## Debug Options ##
 ###################
@@ -616,6 +632,8 @@ end
 
 -- Some simple options for turncount and realtime runs. Note I don't play much
 -- of the latter, and these options are taken from the RCs of players who do.
+-- Uses the toggle_options lua:
+--   https://github.com/gammafunk/dcss-rc#toggle_options
 option_groups = {
     ["turncount"] = {
         {option = "confirm_butcher = %t", on="never", off="auto"},
