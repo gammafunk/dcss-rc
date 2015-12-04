@@ -16,17 +16,18 @@ For the other components, you must add a lua code block to your rc with the
 contents of the .lua file. To make a code block, add an opening brace followed
 by a closing brace to your rc with each on their own lines, then add the file
 contents on the lines in between. Each file has opening and closing comment
-lines, so your added code block will look something like:
+lines with the lua code in between. Using [target_skill](#target_skill) as an
+example, this would look like:
 
 ```
 {
--------------------------
----- Begin char_dump ----
--------------------------
-<lua code>
------------------------
----- End char_dump ----
------------------------
+----------------------------
+---- Begin target_skill ----
+----------------------------
+<lua code from target_skill.lua>
+--------------------------
+---- End target_skill ----
+--------------------------
 }
 ```
 
@@ -38,17 +39,20 @@ may already have a `ready()` function defined, in which case add the call on
 its own line.
 
 If not, you'll need to create a code block to define a `ready()` function.
-Using *char_dump* as an example, which has a function called `char_dump()`,
-this would be:
+Again using [target_skill](#target_skill) as an example, which has a function
+named `target_skill()`, this would look like:
 
 ```lua
 {
   function ready()
-    -- Enable char_dump
-    char_dump()
+    -- Enable target_skill
+    target_skill()
   end
 }
 ```
+
+Note that lines having `--` as the first non-whitespace characters are
+comments.
 
 #### 3. Make any necessary or desired macros
 
@@ -59,9 +63,14 @@ functions available for macros. See each component's help section for the
 required and available functions.
 
 To make a macro binding a function to a key, use *~* or *Ctrl-d* followed by
-*m*, and then enter `===function-name`, where "function-name" is the function
-you'd like to use without `()`. For example, [RandomTiles](#randomtiles) has a
-function `new_random_tile()`, so the macro target is `===new_random_tile`.
+*m* to define a macro, then enter the key you'd like to bind to the macro, and
+finally enter a target name of `===function-name`, where "function-name" is the
+function you'd like to use excluding the `()`. For example,
+[RandomTiles](#randomtiles) has a function `new_random_tile()`, so the macro
+target is `===new_random_tile`. You can also define macros directly in your RC;
+see the `macro` option in the
+[options guide](https://github.com/crawl/crawl/blob/master/crawl-ref/docs/options_guide.txt)
+for details.
 
 ###### Optional Lua console
 
