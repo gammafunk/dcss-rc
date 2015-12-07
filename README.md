@@ -316,8 +316,8 @@ Once `options_groups` is defined and
 [toggle_options.lua](https://github.com/gammafunk/dcss-rc/blob/master/toggle_options.lua)
 is included in your RC, functions are automatically made that can be called in
 macros or the lua console to toggle a specific option group on or off. These
-functions are named like `toggle_<group>_options()`, where "<group>" is the key
+functions are named like `toggle_<group>_options()`, where `<group>` is the key
 in `options_groups` for a specific group. For example, if I define a group in
 `option_groups` using the key named "turncount", the function created will be
-`toggle_turncount_options()`, which I can assign to macro using a target of
-`===toggle_turncount_options`.
+`toggle_turncount_options()`, which can be called from the lua console or
+assigned to macro using a target of `===toggle_turncount_options`.
