@@ -16,8 +16,8 @@ fallback_slot = "c"
 
 -- Set to true to have Na characters always walk instead of item swing if
 -- they're able to walk slowly. This is not as turncount efficient for non-Chei
--- worshipers, but the difference is small and some Na players may prefer it
--- over having to change the wielded weapon.
+-- worshipers, but some Na players may prefer it over having to change the
+-- wielded weapon.
 naga_always_walk = false
 
 -- Delay in milliseconds before sending the next walk command. Makes the
