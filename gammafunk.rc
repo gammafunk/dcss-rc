@@ -71,48 +71,48 @@ menu += inventory:lightgreen:.*equipped.*
 
 ### Food ###
 menu += red:evil_eating.*chunk
-menu += magenta:mutagenic.*chunk
-menu += green:poisonous.*chunk
+menu += blue:mutagenic.*chunk
 menu += darkgrey:inedible
 menu += lightgrey: +(chunks?$|chunks? +)
 menu += brown:fruit
-menu += yellow:(pizza|jerky|jerkies)n
-menu += cyan:royal jelly
-menu += lightcyan:(meat ration|bread ration)
+menu += yellow:(pizza|jerky|jerkies)
+menu += green:royal jelly
+menu += lightgreen:bread ration
+menu += lightred:meat ration
 
 
 ### Potions ###
 
-# Damage buffs
-menu += green:potions? of.*berserk
-menu += lightgreen:potions? of.*might
+# Heal wounds
+menu += lightred:potions? of.*heal wounds
 
-# Mundane and rare
+# Mundane and ultra-rare
 menu += lightgrey:potions? of.*(curing|flight)
 menu += white:potions? of.*(experience|beneficial mutation)
-# Food
+# These are analogous to chunks
 : if you.race() == "Vampire" then
   menu += lightgrey:potions? of blood
 : else
   menu += darkgrey:potions? of.*blood
 : end
 
-# Heal wounds
-menu += lightred:potions? of.*heal wounds
+# Damage buffs
+menu += brown:potions? of.*berserk
+menu += yellow:potions? of.*might
 
 # Other buffs
 menu += green:potions? of.*brilliance
 menu += lightgreen:potions? of.*(invisibility|agility)
 
-# emergency/escape
-menu += magenta:potions? of.*(magic|ambrosia)
-menu += lightmagenta:potions? of.*haste
-
 ## mutations
 menu += cyan:potions? of.*cancellation
 menu += lightcyan:potions? of.*cure mutation
 
-# Mostly harmful
+# emergency/escape
+menu += magenta:potions? of.*(magic|ambrosia)
+menu += lightmagenta:potions? of.*haste
+
+# Mostly harmful. Keep this after cure mutation to avoid matching that.
 menu += blue:potions? of.*(lignification|mutation)
 
 ### Scrolls ###
@@ -123,68 +123,67 @@ menu += blue:scroll.*noise
 # Recharging
 menu += lightred:scroll.*recharging
 
-## Mundane/common
+# Mundane and ultra-rare
 menu += grey:scroll.*(amnesia|curse)
-menu += white:scroll.*(acquirement)
+menu += white:scroll.*acquirement
 
-# Damage
+# Damaging scrolls
 : if you.race() == "Vampire" or you.race() == "Mummy"
 :   or you.race() == "Ghoul" then
-  menu += blue:scroll.*(holy word)
-  menu += brown:scroll.*(torment)
+  menu += blue:scroll.*holy word
+  menu += brown:scroll.*torment
 : else
   menu += brown:scroll.*holy word
   menu += blue:scroll.*torment
 : end
-
 menu += yellow:scroll.*summoning
 
 # Hexes and Enchantments
 menu += green:scroll.*(silence|immolation|vulnerability)
 menu += lightgreen:scroll.*(enchant|brand)
 
+# Dungeon info
+menu += cyan:scroll.*identify
+menu += lightcyan:scroll.*magic map
+
 # Escape
 menu += magenta:scroll.*(fog|teleport)
 menu += lightmagenta:scroll.*(fear|blink)
 
-# Damaging scrolls
-menu += lightred:scroll.*summoning
-## tactical and the really good stuff (mmap for speedruns)
-menu += cyan:scroll.*(silence|noise|vulnerability|immolation)
-menu += lightcyan:scroll.*(acquire|recharging|magic map)
-
 
 ### Wands ###
 
+# Can be harmful, only useful early
 menu += blue:wand of.*random effects
 
 # Heal wounds
 menu += lightred:wand of.*heal wounds
 
-# lower-level damage and strong AOE
+# Lowest-level damage and strong AOE
 ## 0.17
 menu += lightgrey:wand of.*(flame|frost|magic dart)
 menu += white:wand of.*iceblast
 
-# high level damage
-## 0.17
+# High level damage
+## 0.17, keep before wand of fire to avoid matching fireball
 menu += brown:wand of.*(lightning|fireball)
 ## 0.17
 menu += yellow:wand of.*(draining|cold|fire|acid)
 
-# hexes
+# Hexes
 menu += green:wand of.*(slowing|confusion|polymorph)
 menu += lightgreen:wand of.*(invisibility|paralysis|enslavement)
 
 # Dig/disint
 menu += cyan:wand of.*(digging|disintegration)
 
-# escape
+# Escape
 menu += magenta:wand of.*teleportation
 menu += lightmagenta:wand of.*hasting
 
 
-### Identification ###
+### General identification ###
+
 menu += lightmagenta:unidentified.*artefact.*jewellery
 menu += white:.*artefact
 menu += lightblue:unidentified .*(potion|scroll|wand|jewellery|book|rod|magical staff)
@@ -192,6 +191,8 @@ menu += lightblue:unidentified .*(potion|scroll|wand|jewellery|book|rod|magical 
 menu += magenta:.*known.*ring of (dexterity|strength|intelligence|slaying|evasion|protection(?! from))
 menu += inventory:lightgray:.*(book|jewellery|magical staff)
 
+# Look out for branded/ego weapons/armour. This is only for menu colors, for
+#  glyph color we retain the base item type color.
 : if you.race() ~= "Felid" then
    menu += lightblue:unidentified .*weapon.*(runed|glowing|enchanted)
    menu += lightblue:unidentified .*armour.*(runed|glowing|embroidered|shiny|dyed)
@@ -215,22 +216,21 @@ item += useless_item:darkgrey
 
 ### Potions ###
 item += potions? of.*(lignification|mutation):blue
-
 item += potions? of.*(curing|flight):lightgrey
-item += potions? of.*(experience|beneficial mutation):white
-item += potions? of.*berserk:brown
-item += potions? of.*might:yellow
-item += potions? of.*(brilliance):green
-item += potions? of.*(invisibility|agility):lightgreen
-item += potions? of.*cancelation:cyan
-item += potions? of.*cure mutation:lightcyan
-item += potions? of.*(magic|ambrosia):magenta
-item += potions? of.*(haste|resistance):lightmagenta
 : if you.race() == "Vampire" then
   item += potions? of blood:lightgrey
 : else
   item += potions? of.*blood:darkgrey
 : end
+item += potions? of.*(experience|beneficial mutation):white
+item += potions? of.*berserk:brown
+item += potions? of.*might:yellow
+item += potions? of.*brilliance:green
+item += potions? of.*(invisibility|agility):lightgreen
+item += potions? of.*cancelation:cyan
+item += potions? of.*cure mutation:lightcyan
+item += potions? of.*(magic|ambrosia):magenta
+item += potions? of.*(haste|resistance):lightmagenta
 
 
 ### Scrolls ###
@@ -240,11 +240,11 @@ item += scroll.*(amnesia|curse):lightgrey
 item += scroll.*acquirement:white
 : if you.race() == "Vampire" or you.race() == "Mummy"
 :  or you.race() == "Ghoul" then
-  item += scroll.*(holy word):blue
-  item += scroll.*(torment):brown
+  item += scroll.*holy word:blue
+  item += scroll.*torment:brown
 : else
-  item += scroll.*(holy word):brown
-  item += scroll.*(torment):blue
+  item += scroll.*holy word:brown
+  item += scroll.*torment:blue
 : end
 item += scroll.*(summoning):yellow
 item += scroll.*(silence|vulnerability|immolation):green
@@ -253,9 +253,6 @@ item += scroll.*identify:cyan
 item += scroll.*magic mapping:lightcyan
 item += scroll.*(fog|teleport):magenta
 item += scroll.*(fear|blink):lightmagenta
-
-## TODO: Rods types?
-item += ( rod ):yellow
 
 ### Wands ###
 item += wand of.*random effects:blue
@@ -273,8 +270,9 @@ item += wand of.*(digging|disintegration):cyan
 item += wand of.*teleportation:magenta
 item += wand of.*hasting:lightmagenta
 
-
 ### General Identification ###
+## TODO: Rods types?
+item += ( rod ):yellow
 item += (book|jewellery|magical staff):brown
 item += unidentified.*(potion|scroll|jewellery|book|wand|rod|magical staff).*:lightblue
 item += known.*ring of (dexterity|strength|intelligence|slaying|evasion|protection(?! from)):magenta
@@ -284,12 +282,14 @@ item += (a )?stones?$:lightgray
 
 ### Food ###
 item += chunks?.*flesh:lightgrey
-item += mutagenic.*chunk:magenta
+item += mutagenic.*chunk:blue
 item += evil_eating.*chunk:red
-item += (inedible|rotting.*chunk):darkgrey
+item += inedible.*chunk:darkgrey
 item += fruit:brown
-item += (pizza|jerky|jerkies|royal jell):yellow
-item += (meat ration|bread ration):lightcyan
+item += (pizza|jerky|jerkies):yellow
+item += royal jelly:green
+item += bread ration:lightgreen
+item += meat ration:lightred
 
 ## Want this to override anything above
 item += useless.*(food|book|potion|scroll|missile|armour|weapon|jewellery|rod):darkgrey
