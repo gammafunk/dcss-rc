@@ -110,7 +110,7 @@ menu += lightcyan:potions? of.*cure mutation
 
 # emergency/escape
 menu += magenta:potions? of.*(magic|ambrosia)
-menu += lightmagenta:potions? of.*haste
+menu += lightmagenta:potions? of.*(haste|resistance)
 
 # Mostly harmful. Keep this after cure mutation to avoid matching that.
 menu += blue:potions? of.*(lignification|mutation)
@@ -216,6 +216,7 @@ item += useless_item:darkgrey
 
 ### Potions ###
 item += potions? of.*(lignification|mutation):blue
+item += potions? of.*heal wounds:lightred
 item += potions? of.*(curing|flight):lightgrey
 : if you.race() == "Vampire" then
   item += potions? of blood:lightgrey
