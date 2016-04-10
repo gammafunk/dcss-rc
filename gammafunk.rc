@@ -76,7 +76,7 @@ menu += darkgrey:inedible
 menu += lightgrey: +(chunks?$|chunks? +)
 menu += brown:fruit
 menu += yellow:(pizza|jerky|jerkies)
-menu += green:royal jelly
+menu += green:royal jell
 menu += lightgreen:bread ration
 menu += lightred:meat ration
 
@@ -288,7 +288,7 @@ item += evil_eating.*chunk:red
 item += inedible.*chunk:darkgrey
 item += fruit:brown
 item += (pizza|jerky|jerkies):yellow
-item += royal jelly:green
+item += royal jell:green
 item += bread ration:lightgreen
 item += meat ration:lightred
 
