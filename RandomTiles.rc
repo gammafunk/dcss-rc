@@ -211,7 +211,7 @@ player_tiles = {
     {mons = "deep elf blademaster"},
     {mons = "deep elf death mage"},
     {mons = "deep elf demonologist"},
-    {mons = "deep elf elementalist"},
+    {mons = "deep elf elementalist", min_version = 0.18},
     {mons = "deep elf high priest"},
     {mons = "deep elf knight"},
     {mons = "deep elf mage"},
