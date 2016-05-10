@@ -219,7 +219,7 @@ item += potions? of.*berserk:brown
 item += potions? of.*might:yellow
 item += potions? of.*brilliance:green
 item += potions? of.*(invisibility|agility):lightgreen
-item += potions? of.*cancelation:cyan
+item += potions? of.*cancellation:cyan
 item += potions? of.*cure mutation:lightcyan
 item += potions? of.*(magic|ambrosia):magenta
 item += potions? of.*(haste|resistance):lightmagenta
@@ -319,8 +319,14 @@ allow_self_target = prompt
 ### Auotpick options ###
 ########################
 
-## Add staves and rods; note you can't use += with this option.
+# Add staves and rods; note you can't use += with this option.
 autopickup = $?!+"/%|\
+
+# I use immolation somewhat early on, and vulnerability is useful the entire
+# game.
+autopickup_exceptions += <vulnerability|immolation
+# Tend not to use this.
+autopickup_exceptions += >silence
 
 ae := autopickup_exceptions
 ## Don't ever need a second stave
