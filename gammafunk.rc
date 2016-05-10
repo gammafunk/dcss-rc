@@ -57,7 +57,6 @@ menu =
 menu += notes:white:Reached XP level
 
 ### General Inventory###
-
 ## These two need to come first to override any entries below.
 menu += darkgrey:.*useless.*
 menu += red:.*evil_item.*
@@ -67,7 +66,6 @@ menu += inventory:white:\w \+\s
 menu += darkgrey:(melded)
 menu += lightred: cursed
 menu += inventory:lightgreen:.*equipped.*
-
 
 ### Food ###
 menu += red:evil_eating.*chunk
@@ -80,8 +78,9 @@ menu += green:royal jell
 menu += lightgreen:bread ration
 menu += lightred:meat ration
 
-
 ### Potions ###
+# Generally harmful
+menu += blue:potions? of.*(lignification|(?<!cure )mutation)
 
 # Heal wounds
 menu += lightred:potions? of.*heal wounds
@@ -112,11 +111,7 @@ menu += lightcyan:potions? of.*cure mutation
 menu += magenta:potions? of.*(magic|ambrosia)
 menu += lightmagenta:potions? of.*(haste|resistance)
 
-# Mostly harmful. Keep this after cure mutation to avoid matching that.
-menu += blue:potions? of.*(lignification|mutation)
-
 ### Scrolls ###
-
 # Mostly harmful
 menu += blue:scroll.*noise
 
@@ -150,9 +145,7 @@ menu += lightcyan:scroll.*magic map
 menu += magenta:scroll.*(fog|teleport)
 menu += lightmagenta:scroll.*(fear|blink)
 
-
 ### Wands ###
-
 # Can be harmful, only useful early
 menu += blue:wand of.*random effects
 
@@ -194,8 +187,8 @@ menu += inventory:lightgray:.*(book|jewellery|magical staff)
 # Look out for branded/ego weapons/armour. This is only for menu colors, for
 #  glyph color we retain the base item type color.
 : if you.race() ~= "Felid" then
-   menu += lightblue:unidentified .*weapon.*(runed|glowing|enchanted)
-   menu += lightblue:unidentified .*armour.*(runed|glowing|embroidered|shiny|dyed)
+   menu += lightblue:unidentified.*weapon.*(runed|glowing|enchanted)
+   menu += lightblue:unidentified.*armour.*(runed|glowing|embroidered|shiny|dyed)
 : end
 
 
@@ -212,7 +205,6 @@ item += scroll:lightgrey
 item += wand:lightgrey
 item += dangerous_item:blue
 item += useless_item:darkgrey
-
 
 ### Potions ###
 item += potions? of.*(lignification|mutation):blue
@@ -232,7 +224,6 @@ item += potions? of.*cancelation:cyan
 item += potions? of.*cure mutation:lightcyan
 item += potions? of.*(magic|ambrosia):magenta
 item += potions? of.*(haste|resistance):lightmagenta
-
 
 ### Scrolls ###
 item += scroll.*noise:blue
@@ -292,9 +283,10 @@ item += royal jell:green
 item += bread ration:lightgreen
 item += meat ration:lightred
 
-## Want this to override anything above
-item += useless.*(food|book|potion|scroll|missile|armour|weapon|jewellery|rod):darkgrey
-item += evil_item:red
+# Want this to override anything above
+item += useless:darkgrey
+# Only mark these types when forbidden; for other types it looks odd.
+item += forbidden.*(potion|scroll|food):red
 
 ## Monsters that can be easy to miss
 mons := mon_glyph
@@ -450,7 +442,7 @@ more += You have finished your manual of
 more += Deactivating autopickup
 
 ## Problematic monsters
-more += (giant eyeball|shining eye|cacodemon|neqoxec|guardian serpent|flayed ghost|greater mummy|mummy priest|hell sentinel|fiend|tormentor|hellion|lich|executioner|orb of fire|death cob|juggernaut|moth of wrath|ghost moth|curse toe|curse skull|draconian shifter).*into view
+more += (giant eyeball|shining eye|cacodemon|neqoxec|guardian serpent|flayed ghost|greater mummy|mummy priest|hell sentinel|fiend|tzitzimitl|tormentor|hellion|lich|executioner|orb of fire|death cob|juggernaut|moth of wrath|ghost moth|curse toe|curse skull|draconian shifter).*into view
 
 ## Any uniques and any pan lords
 more += (?-i:[A-Z]).* comes? into view
