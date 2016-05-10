@@ -547,7 +547,8 @@ player_tiles = {
     {mons = "thrashing horror"},
     {mons = "Tiamat", tile = "mons_tiamat", num_var = 9},
     {mons = "titan"},
-    {mons = "toadstool", tile = "mons_toadstool", num_var = 2, var_type = "fixed"},
+    {mons = "toadstool", tile = "mons_toadstool", num_var = 2,
+     var_type = "fixed"},
     {mons = "toenail golem"},
     {mons = "tormentor"},
     {mons = "torpor snail", weapon_offsets = "9,-2", shield_offsets = "0,0"},
@@ -632,10 +633,10 @@ function init_random_tiles(tiles)
 
     -- state data
     if not c_persist.randomtile_state then
-        c_persist.randomtile_state = {index = 0,
-                                      last_index_change = -1,
+        c_persist.randomtile_state = {index = 1 + crawl.random2(#valid_tiles),
+                                      last_index_change = you.turns(),
                                       last_variant = -1,
-                                      last_xl = -1,
+                                      last_xl = tonumber(you.xl()),
                                       enabled = true,
                                       timer_enabled = true }
     end
@@ -692,6 +693,7 @@ function change_tile(index, force)
         if var_type == "random"
         or (var_type == "fixed" and change_index) then
             variant = crawl.random2(num_var) + 1
+        -- Iterate the sequence variant if we have valid state for it.
         elseif var_type == "sequence"
             and not change_index
             and rtdat.last_variant >= 1
@@ -699,7 +701,8 @@ function change_tile(index, force)
             variant = rtdat.last_variant + 1
         elseif var_type == "terrain" and entry.tileset then
             local feat = view.feature_at(0,0)
-            -- Set to "air" when flying so water and lava features don't match.
+            -- Set to "air" when flying so water and lava features under the
+            -- player don't cause spurious matches.
             if you.status("flying") then
                 feat = "air"
             end
@@ -812,14 +815,13 @@ function random_tile(force_change)
     end
 
     local num_tiles = #valid_tiles
-    local begin_state = rtdat.last_xl < 0 or rtdat.last_index_change < 0
     local xl_changed = tonumber(you.xl()) ~= rtdat.last_xl
-    if begin_state or xl_changed then
+    if xl_changed then
         rtdat.last_xl = tonumber(you.xl())
     end
 
     local turns_passed = tonumber(you.turns()) - randtile_options.turns_change
-    local change_index = force_change or begin_state or rtdat.timer_enabled
+    local change_index = force_change or rtdat.timer_enabled
         and (xl_changed or turns_passed >= rtdat.last_index_change)
     local index
     if change_index then
