@@ -174,14 +174,13 @@ menu += cyan:wand of.*(digging|disintegration)
 menu += magenta:wand of.*teleportation
 menu += lightmagenta:wand of.*hasting
 
-
 ### General identification ###
-
-menu += lightmagenta:unidentified.*artefact.*jewellery
-menu += white:.*artefact
-menu += lightblue:unidentified .*(potion|scroll|wand|jewellery|book|rod|magical staff)
-
-menu += magenta:.*known.*ring of (dexterity|strength|intelligence|slaying|evasion|protection(?! from))
+menu += cyan:manual of
+menu += lightcyan:manual
+menu += lightmagenta:unidentified.*artefact.*(jewellery)
+menu += white:identified.*artefact.*(jewellery)
+menu += lightblue:unidentified .*(potion|scroll|wand|jewellery|spellbook|rod|magical staff)
+menu += magenta:.*known .*(ring of (dexterity|strength|intelligence|slaying|evasion|protection(?! from))|amulet of reflection)
 menu += inventory:lightgray:.*(book|jewellery|magical staff)
 
 # Look out for branded/ego weapons/armour. This is only for menu colors, for
@@ -263,13 +262,18 @@ item += wand of.*teleportation:magenta
 item += wand of.*hasting:lightmagenta
 
 ### General Identification ###
-## TODO: Rods types?
 item += ( rod ):yellow
-item += (book|jewellery|magical staff):brown
-item += unidentified.*(potion|scroll|jewellery|book|wand|rod|magical staff).*:lightblue
-item += known.*ring of (dexterity|strength|intelligence|slaying|evasion|protection(?! from)):magenta
-item += identified.*artefact.*jewellery:white
-item += unidentified.*artefact.*jewellery.*:lightmagenta
+item += identified.*(jewellery|magical staff):brown
+item += identified.*spellbook:magenta
+item += unidentified.*book:lightmagenta
+item += manual:lightcyan
+item += manual of:cyan
+#item += unidentified.*(potion|scroll|jewellery|wand|rod|magical staff).*:lightblue
+
+# Jewelry types
+item += known.*(ring of (dexterity|strength|intelligence|slaying|evasion|protection(?! from))|amulet of reflection):magenta
+item += identified.*artefact.*(jewellery):white
+item += unidentified.*artefact.*(jewellery).*:lightmagenta
 item += (a )?stones?$:lightgray
 
 ### Food ###
