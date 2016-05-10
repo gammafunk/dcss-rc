@@ -610,7 +610,7 @@ spell_slot += .*:XYZ
 item_slot += amulet of (stasis|harm) : A
 item_slot += amulet of rage : B
 item_slot += ring of (ice|protection from cold) : Cc
-item_slot += amulet of the gourmand : D
+item_slot += amulet of (warding|dismissal) : D
 item_slot += \+[0-9]+ ring of evasion : Ee
 item_slot += ring of .*fire : Ff
 item_slot += amulet of regeneration : g
@@ -618,9 +618,7 @@ item_slot += amulet of guardian spirit : G
 item_slot += amulet of faith : H
 item_slot += \+[0-9]+ ring of intelligence : Ii
 # 0.17
-item_slot += amulet of (warding|dismissal) : J
-# 0.17
-item_slot += amulet of (clarity : K
+item_slot += amulet of clarity : K
 item_slot += ring of flight : L
 item_slot += ring of protection from magic : Mm
 item_slot += ring of positive energy : Nn
@@ -629,10 +627,13 @@ item_slot += ring of poison resistance : P
 item_slot += ring of stealth : Qq
 # 0.17
 item_slot += (amulet|ring) of resist corrosion : R
+item_slot += amulet of mana regeneration : r
 item_slot += \+[0-9]+ ring of strength : Ss
-item_slot += ring of teleportation : T
-item_slot += ring of sustain (abilities|attributes) : u
-item_slot += amulet of resist mutation : U
+item_slot += ring of teleportation : t
+item_slot += ring of sustain attributes : T
+item_slot += amulet of gourmand : U
+# 0.17
+item_slot += amulet of resist mutation : u
 item_slot += ring of see invisible : v
 # 0.17
 item_slot += ring of invisibility : V
