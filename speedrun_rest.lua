@@ -184,7 +184,14 @@ function find_swing_slot()
     end
     c_persist.swing_slot = nil
     for _,item in ipairs(items.inventory()) do
-        if item.class() == "Comestibles" then
+        if item.class() == "Comestibles"
+            or item.class() == "Books"
+            or item.class() == "Wands"
+            or item.class() == "Missiles"
+            or (item.class() == "Hand Weapons"
+                    and (item.subtype():find("bow")
+                             or item.subtype():find("sling")
+                         or item.subtype():find("blowgun"))) then
             c_persist.swing_slot = items.index_to_letter(item.slot)
             break
         end
