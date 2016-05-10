@@ -248,6 +248,7 @@ item += wand of.*hasting:lightmagenta
 item += ( rod ):yellow
 item += identified.*(jewellery|magical staff):brown
 item += identified.*spellbook:magenta
+item += unidentified.*(potion|scroll|jewellery|wand|rod|magical staff).*:lightblue
 item += unidentified.*book:lightmagenta
 item += manual:lightcyan
 item += manual of:cyan
