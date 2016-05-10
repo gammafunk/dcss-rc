@@ -54,24 +54,40 @@ sort_menus += inv: true : equipped, charged
 menu := menu_colour
 menu =
 
+# Many of the entries below come from dat/defaults/menu_colours.txt,
+# which we have to duplicate here since we want only some of the
+# entries from that file.
 menu += notes:white:Reached XP level
 
 ### General Inventory###
-## These two need to come first to override any entries below.
-menu += darkgrey:.*useless.*
-menu += red:.*evil_item.*
-menu += pickup:lightred:god gift
-menu += inventory:white:\w \#\s
-menu += inventory:white:\w \+\s
+# Items currently not affecting you.
 menu += darkgrey:(melded)
-menu += lightred: cursed
+# Items disliked by your god.
+menu += red:forbidden
+# Useless items, comes here to override artefacts etc.
+menu += darkgrey:.*useless.*
+# Handle cursed and equipped items early to override other colour settings.
+menu += lightred:.*equipped.* cursed
+menu += red: (a|the) cursed
 menu += inventory:lightgreen:.*equipped.*
+# Colouring of autoinscribed god gifts
+menu += pickup:lightred:god gift
+# Highlight (partly) selected items
+menu_colour += inventory:white:\w \+\s
+menu_colour += inventory:white:\w \#\s
 
 ### Food ###
+# Color chunks, put ordinary ones on lightgrey.
 menu += red:evil_eating.*chunk
 menu += blue:mutagenic.*chunk
 menu += darkgrey:inedible
 menu += lightgrey: +(chunks?$|chunks? +)
+# These are analogous to chunks
+: if you.race() == "Vampire" then
+  menu += lightgrey:potions? of blood
+: end
+
+# Other food
 menu += brown:fruit
 menu += yellow:(pizza|jerky|jerkies)
 menu += green:royal jell
@@ -81,47 +97,32 @@ menu += lightred:meat ration
 ### Potions ###
 # Generally harmful
 menu += blue:potions? of.*(lignification|(?<!cure )mutation)
-
 # Heal wounds
 menu += lightred:potions? of.*heal wounds
-
 # Mundane and ultra-rare
 menu += lightgrey:potions? of.*(curing|flight)
 menu += white:potions? of.*(experience|beneficial mutation)
-# These are analogous to chunks
-: if you.race() == "Vampire" then
-  menu += lightgrey:potions? of blood
-: else
-  menu += darkgrey:potions? of.*blood
-: end
-
 # Damage buffs
 menu += brown:potions? of.*berserk
 menu += yellow:potions? of.*might
-
 # Other buffs
 menu += green:potions? of.*brilliance
 menu += lightgreen:potions? of.*(invisibility|agility)
-
-## mutations
+# Curing/avoiding mutations
 menu += cyan:potions? of.*cancellation
 menu += lightcyan:potions? of.*cure mutation
-
-# emergency/escape
+# Emergency/escape
 menu += magenta:potions? of.*(magic|ambrosia)
 menu += lightmagenta:potions? of.*(haste|resistance)
 
 ### Scrolls ###
 # Mostly harmful
 menu += blue:scroll.*noise
-
 # Recharging
 menu += lightred:scroll.*recharging
-
 # Mundane and ultra-rare
 menu += grey:scroll.*(amnesia|curse)
 menu += white:scroll.*acquirement
-
 # Damaging scrolls
 : if you.race() == "Vampire" or you.race() == "Mummy"
 :   or you.race() == "Ghoul" then
@@ -132,15 +133,12 @@ menu += white:scroll.*acquirement
   menu += blue:scroll.*torment
 : end
 menu += yellow:scroll.*summoning
-
 # Hexes and Enchantments
 menu += green:scroll.*(silence|immolation|vulnerability)
 menu += lightgreen:scroll.*(enchant|brand)
-
 # Dungeon info
 menu += cyan:scroll.*identify
 menu += lightcyan:scroll.*magic map
-
 # Escape
 menu += magenta:scroll.*(fog|teleport)
 menu += lightmagenta:scroll.*(fear|blink)
@@ -148,28 +146,22 @@ menu += lightmagenta:scroll.*(fear|blink)
 ### Wands ###
 # Can be harmful, only useful early
 menu += blue:wand of.*random effects
-
 # Heal wounds
 menu += lightred:wand of.*heal wounds
-
 # Lowest-level damage and strong AOE
-## 0.17
+# 0.17
 menu += lightgrey:wand of.*(flame|frost|magic dart)
 menu += white:wand of.*iceblast
-
 # High level damage
-## 0.17, keep before wand of fire to avoid matching fireball
+# 0.17, keep before wand of fire to avoid matching fireball
 menu += brown:wand of.*(lightning|fireball)
-## 0.17
+# 0.17
 menu += yellow:wand of.*(draining|cold|fire|acid)
-
 # Hexes
 menu += green:wand of.*(slowing|confusion|polymorph)
 menu += lightgreen:wand of.*(invisibility|paralysis|enslavement)
-
 # Dig/disint
 menu += cyan:wand of.*(digging|disintegration)
-
 # Escape
 menu += magenta:wand of.*teleportation
 menu += lightmagenta:wand of.*hasting
@@ -182,13 +174,9 @@ menu += white:identified.*artefact.*(jewellery)
 menu += lightblue:unidentified .*(potion|scroll|wand|jewellery|spellbook|rod|magical staff)
 menu += magenta:.*known .*(ring of (dexterity|strength|intelligence|slaying|evasion|protection(?! from))|amulet of reflection)
 menu += inventory:lightgray:.*(book|jewellery|magical staff)
-
-# Look out for branded/ego weapons/armour. This is only for menu colors, for
-#  glyph color we retain the base item type color.
-: if you.race() ~= "Felid" then
-   menu += lightblue:unidentified.*weapon.*(runed|glowing|enchanted)
-   menu += lightblue:unidentified.*armour.*(runed|glowing|embroidered|shiny|dyed)
-: end
+# Ego items
+menu += lightblue:unidentified.*weapon.*(runed|glowing|enchanted)
+menu += lightblue:unidentified.*armour.*(runed|glowing|embroidered|shiny|dyed)
 
 
 ##############
@@ -209,11 +197,6 @@ item += useless_item:darkgrey
 item += potions? of.*(lignification|mutation):blue
 item += potions? of.*heal wounds:lightred
 item += potions? of.*(curing|flight):lightgrey
-: if you.race() == "Vampire" then
-  item += potions? of blood:lightgrey
-: else
-  item += potions? of.*blood:darkgrey
-: end
 item += potions? of.*(experience|beneficial mutation):white
 item += potions? of.*berserk:brown
 item += potions? of.*might:yellow
@@ -268,7 +251,6 @@ item += identified.*spellbook:magenta
 item += unidentified.*book:lightmagenta
 item += manual:lightcyan
 item += manual of:cyan
-#item += unidentified.*(potion|scroll|jewellery|wand|rod|magical staff).*:lightblue
 
 # Jewelry types
 item += known.*(ring of (dexterity|strength|intelligence|slaying|evasion|protection(?! from))|amulet of reflection):magenta
@@ -278,6 +260,9 @@ item += (a )?stones?$:lightgray
 
 ### Food ###
 item += chunks?.*flesh:lightgrey
+: if you.race() == "Vampire" then
+  item += potions? of blood:lightgrey
+: end
 item += mutagenic.*chunk:blue
 item += evil_eating.*chunk:red
 item += inedible.*chunk:darkgrey
@@ -383,7 +368,7 @@ note_monsters += tengu reaver,storm dragon,titan
 note_monsters += octopode crusher
 note_monsters += juggernaut,irong giant,caustic shrike
 ## Zot
-note_monsters += killer klown,electric golem,death cob,curse toe,orb of fire
+note_monsters += killer klown,electric golem,curse toe,orb of fire
 
 #####################
 ### More messages ###
@@ -421,7 +406,6 @@ more += Your surroundings flicker
 more += sense of stasis
 more += You cannot teleport right now
 more += The writing blurs in front of your eyes
-more += You fall through a shaft
 more += (blundered into a|invokes the power of) Zot
 more += Ouch! That really hurt!
 more += dispelling energy hits you
@@ -433,7 +417,7 @@ more += wrath finds you
 more += lose consciousness
 more += Space warps horribly around you
 more += hits you.*distortion
-more += Space bends around you\.
+more += Space bends around you
 more += watched by something
 more += The dungeon rumbles around
 more += The air twists around and violently strikes you in flight
@@ -444,7 +428,6 @@ more += You are starting to lose your buoyancy
 more += Your hearing returns
 more += Your transformation is almost over
 more += You feel yourself come back to life
-more += uncertain
 
 # Others
 more += You have reached level
