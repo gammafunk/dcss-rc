@@ -169,8 +169,8 @@ menu += lightmagenta:wand of.*hasting
 ### General identification ###
 menu += cyan:manual of
 menu += lightcyan:manual
-menu += lightmagenta:unidentified.*artefact.*(jewellery)
-menu += white:identified.*artefact.*(jewellery)
+menu += lightmagenta:unidentified.*artefact.*
+menu += white:.*artefact.*
 menu += lightblue:unidentified .*(potion|scroll|wand|jewellery|spellbook|rod|magical staff)
 menu += magenta:.*known .*(ring of (dexterity|strength|intelligence|slaying|evasion|protection(?! from))|amulet of reflection)
 menu += inventory:lightgray:.*(book|jewellery|magical staff)
