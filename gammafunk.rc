@@ -721,7 +721,6 @@ option_groups = {
     },
 } -- end option groups
 
-
 -- Note: My final rc file has the lua files from
 -- https://github.com/gammafunk/dcss-rc included starting on the next line.
 --LUA INCLUDE--
