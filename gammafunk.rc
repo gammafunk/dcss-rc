@@ -704,21 +704,21 @@ end
 -- Uses the toggle_options lua:
 --   https://github.com/gammafunk/dcss-rc#toggle_options
 option_groups = {
-    ["turncount"] = {
-        {option = "confirm_butcher = %t", on="never", off="auto"},
-        {option = "ai %t= (bread|meat) ration:!e", on="+", off="-"},
-        {option = "ai %t= scroll.+of.*(acquirement|summoning|teleportation" ..
-             "|fear|magic mapping):!r", on="+", off="-"},
-        {option = "ai %t= potion.+of(curing|heal wounds|might|agility" ..
-             "|brilliance|magic|invisibility):!q", on="+", off="-"}
-    },
-    ["realtime"] = {
-        {option = "ae %t= >wand of (magic darts|flame|frost)", on="+", off="-"},
-        {option = "ae %t= >wand of (slowing|polymorph|confusion|paralysis)",
-         on="+", off="-"},
-        {option = "use_animations = %t", on="", off="beam, range, hp, " ..
-             "monster_in_sight, pickup, monster, player, branch_entry"},
-    },
+  ["turncount"] = {
+    {option = "confirm_butcher = %t", on="never", off="auto"},
+    {option = "ai %t= (bread|meat) ration:!e", on="+", off="-"},
+    {option = "ai %t= scroll.+of.*(acquirement|summoning|teleportation" ..
+       "|fear|magic mapping):!r", on="+", off="-"},
+    {option = "ai %t= potion.+of(curing|heal wounds|might|agility" ..
+       "|brilliance|magic|invisibility):!q", on="+", off="-"}
+  },
+  ["realtime"] = {
+    {option = "ae %t= >wand of (magic darts|flame|frost)", on="+", off="-"},
+    {option = "ae %t= >wand of (slowing|polymorph|confusion|paralysis)",
+     on="+", off="-"},
+    {option = "use_animations = %t", on="", off="beam, range, hp, " ..
+       "monster_in_sight, pickup, monster, player, branch_entry"},
+  },
 } -- end option groups
 
 -- Note: My final rc file has the lua files from
