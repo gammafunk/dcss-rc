@@ -384,6 +384,7 @@
       {mons = "Margery"},
       {mons = "Maud"},
       {mons = "Maurice"},
+      {mons = "meliai", min_version = 0.19 },
       {mons = "Menkaure"},
       {mons = "Mennas"},
       {mons = "merfolk", tileset = {
