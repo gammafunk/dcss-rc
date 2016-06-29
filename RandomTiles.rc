@@ -819,8 +819,7 @@
     if first_match then
       change_tile(first_match, true)
     else
-      mpr("Unable to match a player_tile mons value with " .. name,
-          "error", "lightred")
+      mpr("Unable to match a player_tile mons value with " .. name, "lightred")
     end
   end
 
