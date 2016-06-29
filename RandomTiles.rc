@@ -529,7 +529,7 @@
       {mons = "sixfirhy"},
       {mons = "sky beast"},
       {mons = "slave"},
-      {mons = "slime creature", num_var = 5, var_type = "fixed",
+      {mons = "slime creature", num_var = 5, var_type = "sequence",
        {mons = "smoke demon"},
        {mons = "soldier ant"},
        tile = "mons_slime_creature"},
