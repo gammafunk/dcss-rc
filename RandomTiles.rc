@@ -96,48 +96,43 @@
   --
   -- These variants are used will be chosen according to the same rules above.
   --
-  -- When the `tileset' field is used, there are two special `var_type' values of
-  -- "terrain" and "status" available, which will change the tile according to
-  -- the terrain you occupy or your status, respectively. To use "terrain", make
-  -- `tileset' into a lua table, with the first entry having key "default" and a
-  -- tile to use when the terrain doesn't match any other entry. The subsequent
-  -- entries should have lua patterns as keys that match the terrain of
-  -- interest. For example, this is an entry for Ilsuiw that uses her water tile
-  -- when the player is in deep or shallow water (note the square brackets around
-  -- the key names):
-  --
-  --     {mons = "Ilsuiw", tileset = {["default"] = "mons_ilsuiw",
-  --                                  ["water"]   = "mons_ilsuiw_water"},
-  --      var_type = "terrain"},
-  --
-  -- The terrain keys are matched with a lua pattern search, so "water" matches
-  -- both "deep_water" and "shallow_water". The names used are from the
-  -- .vaultname field in the feat_defs array defined in the source file
-  -- feature-data.h. This field is the third entry on the first row of each entry
-  -- and uses _ instead of spaces.
-  --
-  -- To use `var_type = "status"', make the tileset field into an an array of
-  -- arrays, with the first entry in the inner array giving the short status name
-  -- and the second giving the corresponding tile. The first entry in `tileset'
-  -- must have a status of "default" for when no other status entry
-  -- matches. Since multiple status values can be active for the player, we use
-  -- the first matching entry, so they should be listed in order of
-  -- preference. For example, the following entry "Snorgy Snail" will use the
-  -- Purgy tile normally, the Snorg tile when berserking, and the torpor snail
-  -- tile when slowed:
+  -- When the `tileset' field is used, there are special `var_type' values of
+  -- "terrain", "status", "percent_hp", and "xl" available, which will change
+  -- the tile conditioned on one of these values. To use one of these, make the
+  -- tileset field into an an array of arrays, with the first entry in the
+  -- inner array giving the condition value and the second giving the
+  -- corresponding tile applied under that condition. The first entry in
+  -- `tileset' must have a value of "default" for when no other entry
+  -- matches.
+
+  -- For numeric var_type values like "percent_hp" and "xl", the first
+  -- condition value for each non-default entries must be a number, and the
+  -- tile of an entry is used if the player's current value is in less than or
+  -- equal to the entry's condition value and greater than any other
+  -- non-default entry in the tileset. For string values like "terrain" and
+  -- "status", the first condition value will be a string that is matched
+  -- against the player's current value. For "status", multiple status values
+  -- can be active for the player, so we always use the first matching entry,
+  -- and they should be listed in tileset in order of preference.
+
+  -- See the entry for Ilsiuw to see a var_type example of "terrain", and the
+  -- entry for "Bai Suzhen" to see an example of "percent_hp". Here is an
+  -- example entry using a var_type of "status" that will use the Purgy tile
+  -- normally, the Snorg tile when berserking, and the torpor snail tile when
+  -- slowed (but not fast+slow):
   --
   --     {mons = "Snorgy Snail", tileset = {{"default", "mons_purgy"},
   --                                        {"berserk", "mons_snorg"},
-  --                                        -- covers fast+slow
+  --                                        -- covers fast and fast+slow
   --                                        {"fast",    "mons_purgy"},
-  --                                        {"slow"},   "mons_torpor_snail"}},
+  --                                        {"slow",   "mons_torpor_snail"}},
   --      var_type = "status"},
   --
-  -- The status names can be seen under the @ listing on the % screen, and these
-  -- are the short_text values from the duration_data[] array defined in the
-  -- source file duration-data.h. The names are matched as lua patterns, so
-  -- substring matches and wildcards will work; see the lua reference for
-  -- details: http://www.lua.org/pil/20.2.html
+  -- The status names can be seen under the @ listing on the % screen, and
+  -- these are the short_text values from the duration_data[] array defined in
+  -- the source file duration-data.h. String value conditions are matched as
+  -- lua patterns, so substring matches and wildcards will work; see the lua
+  -- reference for details: http://www.lua.org/pil/20.2.html
   --
 
   -- begin player_tiles array
@@ -159,6 +154,10 @@
       {mons = "Azrael"},
       {mons = "azure jelly"},
       {mons = "anaconda", weapon_offsets = "0,0", shield_offsets = "-2,5"},
+      {mons = "Bai Suzhen", min_version = 0.19, tileset = {
+         {"default", "mons_bai_suzhen"},
+         {0.5, "mons_bai_suzhen_dragon"}},
+       var_type = "percent_hp"},
       {mons = "ball lightning"},
       {mons = "balrug"},
       {mons = "battlemage", min_version = 0.19},
@@ -337,8 +336,8 @@
       {mons = "Ignacio"},
       {mons = "Ijyb"},
       {mons = "Ilsuiw", tileset = {
-         ["default"] = "mons_ilsuiw",
-         ["water"] = "mons_ilsuiw_water"},
+         {"default", "mons_ilsuiw"},
+         {"water", "mons_ilsuiw_water"}},
        var_type = "terrain"},
       {mons = "ironbrand convoker"},
       {mons = "ironheart preserver"},
@@ -388,26 +387,26 @@
       {mons = "Menkaure"},
       {mons = "Mennas"},
       {mons = "merfolk", tileset = {
-         ["default"] = "mons_merfolk",
-         ["water"] = "mons_merfolk_water"},
+         {"default", "mons_merfolk"},
+         {"water", "mons_merfolk_water"}},
        var_type = "terrain"},
       {mons = "merfolk aquamancer", tileset = {
-         ["default"] = "mons_merfolk_aquamancer",
-         ["water"] = "mons_merfolk_aquamancer_water"},
+         {"default", "mons_merfolk_aquamancer"},
+         {"water", "mons_merfolk_aquamancer_water"}},
        var_type = "terrain"},
       {mons = "merfolk avatar", tileset = {
-         ["default"] = "mons_merfolk_avatar",
-         ["water"] = "mons_merfolk_avatar_water"},
+         {"default", "mons_merfolk_avatar"},
+         {"water", "mons_merfolk_avatar_water"}},
        var_type = "terrain"},
       {mons = "merfolk impaler",
        tileset = {
-         ["default"] = "mons_merfolk_impaler",
-         ["water"] = "mons_merfolk_impaler_water"},
+         {"default", "mons_merfolk_impaler"},
+         {"water", "mons_merfolk_impaler_water"}},
        var_type = "terrain"},
       {mons = "merfolk javelineer",
        tileset = {
-         ["default"] = "mons_merfolk_javelineer",
-         ["water"] = "mons_merfolk_javelineer_water"},
+         {"default", "mons_merfolk_javelineer"},
+         {"water", "mons_merfolk_javelineer_water"}},
        var_type = "terrain"},
       {mons = "minotaur"},
       {mons = "Mnoleg"},
@@ -522,6 +521,10 @@
       {mons = "singularity", tile = "mons_singularity",
        num_var = 4, var_type = "sequence", min_version = 0.16,
        max_version = 0.16},
+      {mons = "siren", tileset = {
+         {"default", "mons_siren"},
+         {"water", "mons_siren_water"}},
+       var_type = "terrain"},
       {mons = "siren"},
       {mons = "sixfirhy"},
       {mons = "sky beast"},
@@ -695,6 +698,30 @@
     mpr(msg, randtile_options.message_colour)
   end
 
+  function get_terrain()
+    local feat = view.feature_at(0,0)
+    -- Set to "air" when flying so water and lava features under the
+    -- player don't cause spurious matches.
+    if you.status():find("flying") then
+      feat = "air"
+    end
+    return feat
+  end
+
+  function get_percent_hp()
+    local hp, mhp = you.hp()
+    return hp / mhp
+  end
+
+  if not var_functions then
+    var_functions = {
+      ["percent_hp"] = get_percent_hp,
+      ["status"] = you.status,
+      ["terrain"] = get_terrain,
+      ["xl"] = you.xl,
+    }
+  end
+
   -- Change the current tile using the tileset entry with the given index in
   -- valid_tiles. This will update the randtile state as necessary.
   function change_tile(index, force)
@@ -719,33 +746,28 @@
         and rtdat.last_variant >= 1
       and rtdat.last_variant < num_var then
         variant = rtdat.last_variant + 1
-      elseif var_type == "terrain" and entry.tileset then
-        local feat = view.feature_at(0,0)
-        -- Set to "air" when flying so water and lava features under the
-        -- player don't cause spurious matches.
-        if you.status("flying") then
-          feat = "air"
+      elseif var_functions[var_type] ~= nil then
+        local comp_value = var_functions[var_type]()
+        local comp_string = true
+        if type(comp_value) == "number" then
+          comp_string = false
         end
-        variant = "default"
-        for p, t in pairs(entry.tileset) do
-          if p ~= "default" and feat:find(p) then
-            variant = p
-            break
-          end
-        end
-      elseif var_type == "status" and entry.tileset then
-        local status = you.status()
-        for i, v in ipairs(entry.tileset) do
-          if i > 1 and status:find(v[1]) then
-            variant = i
-            break
+        for i, v in pairs(entry.tileset) do
+          if i > 1
+            and (comp_string and comp_value:find(v[1])
+                 or not comp_string and comp_value <= v[1]) then
+              variant = i
+              -- For string values, take the first match
+              if comp_string then
+                break
+              end
           end
         end
       end
       rtdat.last_variant = variant
       -- custom-defined tilesets or an variant set defined by crawl itself.
       if entry.tileset then
-        -- When var_type = "status"
+        -- For var_type values that use var_functions
         if type(entry.tileset[variant]) == "table" then
           tileopt = entry.tileset[variant][2]
         else
