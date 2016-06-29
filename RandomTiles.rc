@@ -435,7 +435,7 @@
       {mons = "Nergalle"},
       {mons = "Nessos"},
       {mons = "Nikola"},
-      {mons = "Norris"},
+      {mons = "Norris", max_version = 0.18},
       {mons = "obsidian statue"},
       {mons = "octopode crusher", max_version = 0.17},
       {mons = "ogre"},
