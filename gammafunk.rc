@@ -14,326 +14,216 @@ tile_map_pixels = 3
 ## project page: https://github.com/gammafunk/dcss-rc#randomtiles
 include += RandomTiles.rc
 
-##################
-### UI options ###
-##################
+############################
+### Interface & Commands ###
+############################
 
-travel_delay = -1
-explore_delay = -1
-rest_delay = -1
-view_delay = 300
-
-runrest_ignore_poison  = 2:10
-runrest_ignore_monster += ^butterfly$:1
-show_travel_trail = false
-
-confirm_butcher = never
-easy_eat_chunks = true
-rest_delay = -1
-hp_colour       = 100:green, 75:yellow, 50:red, 25:lightred
-mp_colour       = 100:green, 75:yellow, 50:red, 25:lightred
-hp_warning      = 25
-autofight_stop  = 50
-auto_sacrifice = true
-
-bindkey = [~] CMD_LUA_CONSOLE
-
-####################
-### Menu options ###
-####################
-
-drop_filter += useless_item
-sort_menus += inv: true : equipped, charged
-
-######################
-### Menu colouring ###
-######################
-
-## These should match the item_glyph colours exactly when possible.
-## For menu_colour, the first match ignores subsequent matches.
-menu := menu_colour
-menu =
-
-# Many of the entries below come from dat/defaults/menu_colours.txt,
-# which we have to duplicate here since we want only some of the
-# entries from that file.
-menu += notes:white:Reached XP level
-
-### General Inventory###
-# Items currently not affecting you.
-menu += darkgrey:(melded)
-# Items disliked by your god.
-menu += red:forbidden
-# Useless items, comes here to override artefacts etc.
-menu += darkgrey:.*useless.*
-# Handle cursed and equipped items early to override other colour settings.
-menu += lightred:.*equipped.* cursed
-menu += red: (a|the) cursed
-menu += inventory:lightgreen:.*equipped.*
-# Colouring of autoinscribed god gifts
-menu += pickup:lightred:god gift
-# Highlight (partly) selected items
-menu_colour += inventory:white:\w \+\s
-menu_colour += inventory:white:\w \#\s
-
-### Food ###
-# Color chunks, put ordinary ones on lightgrey.
-menu += red:evil_eating.*chunk
-menu += blue:mutagenic.*chunk
-menu += darkgrey:inedible
-menu += lightgrey: +(chunks?$|chunks? +)
-# These are analogous to chunks
-: if you.race() == "Vampire" then
-  menu += lightgrey:potions? of blood
-: end
-
-# Other food
-menu += brown:fruit
-menu += yellow:(pizza|jerky|jerkies)
-menu += green:royal jell
-menu += lightgreen:bread ration
-menu += lightred:meat ration
-
-### Potions ###
-# Generally harmful
-menu += blue:potions? of.*(lignification|(?<!cure|beneficial) mutation)
-# Heal wounds
-menu += lightred:potions? of.*heal wounds
-# Mundane and ultra-rare
-menu += lightgrey:potions? of.*(curing|flight)
-menu += white:potions? of.*(experience|beneficial mutation)
-# Damage buffs
-menu += brown:potions? of.*berserk
-menu += yellow:potions? of.*might
-# Other buffs
-menu += green:potions? of.*brilliance
-menu += lightgreen:potions? of.*(invisibility|agility)
-# Curing/avoiding mutations
-menu += cyan:potions? of.*cancellation
-menu += lightcyan:potions? of.*cure mutation
-# Emergency/escape
-menu += magenta:potions? of.*(magic|ambrosia)
-menu += lightmagenta:potions? of.*(haste|resistance)
-
-### Scrolls ###
-# Mostly harmful
-menu += blue:scroll.*noise
-# Recharging
-menu += lightred:scroll.*recharging
-# Mundane and ultra-rare
-menu += grey:scroll.*(amnesia|curse)
-menu += white:scroll.*acquirement
-# Damaging scrolls
-: if you.race() == "Vampire" or you.race() == "Mummy"
-:   or you.race() == "Ghoul" then
-  menu += blue:scroll.*holy word
-  menu += brown:scroll.*torment
-: else
-  menu += brown:scroll.*holy word
-  menu += blue:scroll.*torment
-: end
-menu += yellow:scroll.*summoning
-# Hexes and Enchantments
-menu += green:scroll.*(silence|immolation|vulnerability)
-menu += lightgreen:scroll.*(enchant|brand)
-# Dungeon info
-menu += cyan:scroll.*identify
-menu += lightcyan:scroll.*magic map
-# Escape
-menu += magenta:scroll.*(fog|teleport)
-menu += lightmagenta:scroll.*(fear|blink)
-
-### Wands ###
-# Can be harmful, only useful early
-menu += blue:wand of.*random effects
-# Heal wounds
-menu += lightred:wand of.*heal wounds
-# Lowest-level damage and strong AOE
-# 0.17
-menu += lightgrey:wand of.*(flame|frost|magic dart)
-menu += white:wand of.*iceblast
-# High level damage
-# 0.17, keep before wand of fire to avoid matching fireball
-menu += brown:wand of.*(lightning|fireball)
-# 0.17
-menu += yellow:wand of.*(draining|cold|fire|acid)
-# Hexes
-menu += green:wand of.*(slowing|confusion|polymorph)
-menu += lightgreen:wand of.*(invisibility|paralysis|enslavement)
-# Dig/disint
-menu += cyan:wand of.*(digging|disintegration)
-# Escape
-menu += magenta:wand of.*teleportation
-menu += lightmagenta:wand of.*hasting
-
-### General identification ###
-menu += cyan:manual of
-menu += lightcyan:manual
-menu += lightmagenta:unidentified.*artefact.*
-menu += white:.*artefact.*
-menu += lightblue:unidentified .*(potion|scroll|wand|jewellery|spellbook|rod|magical staff)
-menu += magenta:.*known .*(ring of (dexterity|strength|intelligence|slaying|evasion|protection(?! from))|amulet of reflection)
-menu += inventory:lightgray:.*(book|jewellery|magical staff)
-# Ego items
-menu += lightblue:unidentified.*weapon.*(runed|glowing|enchanted)
-menu += lightblue:unidentified.*armour.*(runed|glowing|embroidered|shiny|dyed)
-
-
-##############
-### Glyphs ###
-##############
-
-## For item_glyph, subsequent matches override previous ones.
-item := item_glyph
-
-## Reasonable defaults
-item += potion:lightgrey
-item += scroll:lightgrey
-item += wand:lightgrey
-item += dangerous_item:blue
-item += useless_item:darkgrey
-
-### Potions ###
-item += potions? of.*(lignification|mutation):blue
-item += potions? of.*heal wounds:lightred
-item += potions? of.*(curing|flight):lightgrey
-item += potions? of.*(experience|beneficial mutation):white
-item += potions? of.*berserk:brown
-item += potions? of.*might:yellow
-item += potions? of.*brilliance:green
-item += potions? of.*(invisibility|agility):lightgreen
-item += potions? of.*cancellation:cyan
-item += potions? of.*cure mutation:lightcyan
-item += potions? of.*(magic|ambrosia):magenta
-item += potions? of.*(haste|resistance):lightmagenta
-
-### Scrolls ###
-item += scroll.*noise:blue
-item += scroll.*recharging:lightred
-item += scroll.*(amnesia|curse):lightgrey
-item += scroll.*acquirement:white
-: if you.race() == "Vampire" or you.race() == "Mummy"
-:  or you.race() == "Ghoul" then
-  item += scroll.*holy word:blue
-  item += scroll.*torment:brown
-: else
-  item += scroll.*holy word:brown
-  item += scroll.*torment:blue
-: end
-item += scroll.*(summoning):yellow
-item += scroll.*(silence|vulnerability|immolation):green
-item += scroll.*(enchant|brand weapon):lightgreen
-item += scroll.*identify:cyan
-item += scroll.*magic mapping:lightcyan
-item += scroll.*(fog|teleport):magenta
-item += scroll.*(fear|blink):lightmagenta
-
-### Wands ###
-item += wand of.*random effects:blue
-item += wand of.*heal wounds:lightred
-## 0.17
-item += wand of.*(flame|frost|magic dart):lightgrey
-item += wand of.*iceblast:white
-## 0.17
-item += wand of.*(acid|fire|cold|drain):yellow
-## 0.17
-item += wand of.*(lightning|fireball):brown
-item += wand of.*(slowing|confusion|polymorph):green
-item += wand of.*(invisibility|paralysis|enslavement):lightgreen
-item += wand of.*(digging|disintegration):cyan
-item += wand of.*teleportation:magenta
-item += wand of.*hasting:lightmagenta
-
-### General Identification ###
-item += ( rod ):yellow
-item += (identified|known).*(jewellery|magical staff):brown
-item += identified.*spellbook:magenta
-item += unidentified.*(potion|scroll|jewellery|wand|rod|magical staff).*:lightblue
-item += unidentified.*book:lightmagenta
-item += manual:lightcyan
-item += manual of:cyan
-
-# Jewelry types
-item += known.*(ring of (dexterity|strength|intelligence|slaying|evasion|protection(?! from))|amulet of reflection):magenta
-item += identified.*artefact.*(jewellery):white
-item += unidentified.*artefact.*(jewellery).*:lightmagenta
-item += (a )?stones?$:lightgray
-
-### Food ###
-item += chunks?.*flesh:lightgrey
-: if you.race() == "Vampire" then
-  item += potions? of blood:lightgrey
-: end
-item += mutagenic.*chunk:blue
-item += evil_eating.*chunk:red
-item += inedible.*chunk:darkgrey
-item += fruit:brown
-item += (pizza|jerky|jerkies):yellow
-item += royal jell:green
-item += bread ration:lightgreen
-item += meat ration:lightred
-
-# Want this to override anything above
-item += useless:darkgrey
-# Only mark these types when forbidden; for other types it looks odd.
-item += forbidden.*(potion|scroll|food):red
-
-## Monsters that can be easy to miss
-mons := mon_glyph
-mons ^= dancing weapon : cyan {
-mons ^= spectral weapon : lightcyan {
-mons ^= * : ✱
-
-## Wall glyphs, requires a font and terminal that can render these.
-feature += crystal wall {░}
-
-feature += stone wall {▒}
-feature += metal wall {▓}
-feature += unnaturally hard rock wall {█}
-
-feature += altar {⚑}
-
-#########################
-### Interface options ###
-#########################
-
-ability_menu = false
 default_manual_training = true
-allow_self_target = prompt
+easy_eat_chunks = true
+equip_unequip = true
+sort_menus = true:equipped,identified,basename,art,ego,glowing,qualname,curse,charged,slot
+ability_menu = false
 
-########################
-### Auotpick options ###
-########################
+autofight_stop  = 50
+autofight_caught = true
+autofight_wait = false
 
-# Add staves and rods; note you can't use += with this option.
-autopickup = $?!+"/%|\
+##########################
+### Messages & Display ###
+##########################
 
-# I use immolation somewhat early on, and vulnerability is useful the entire
-# game.
-autopickup_exceptions += <vulnerability|immolation
-# Tend not to use this.
-autopickup_exceptions += >silence
+view_delay = 300
+hp_colour = 100:green, 99:lightgray, 75:yellow, 50:lightred, 25:red
+mp_colour = 100:green, 99:lightgray, 75:yellow, 50:lightred, 25:red
+hp_warning = 50
+
+monster_list_colour =
+monster_list_colour += friendly:green,neutral:brown
+monster_list_colour += good_neutral:brown,strict_neutral:brown
+monster_list_colour += trivial:darkgrey,easy:lightgrey
+monster_list_colour += tough:yellow,nasty:lightred
+
+more := force_more_message
+: if you.god() == "Ashenzari" then
+more += You have a vision of.*gates?
+: end
+
+more += The mighty Pandemonium lord .* resides here
+
+# Interrupts
+more += You don't .* that spell
+more += You fail to use your ability
+more += You miscast.*(Blink|Borgnjor|Door|Haste|Invisibility)
+more += You can't (read|drink|do)
+more += You cannot .* while unable to breathe
+more += You cannot .* in your current state
+more += when .*silenced
+more += too confused
+more += There's something in the way
+more += There's nothing to (close|open) nearby
+more += not good enough to have a special ability
+more += You are too berserk
+more += no means to grasp
+more += That item cannot be evoked
+more += This wand has no charges
+more += You are held in a net
+more += You don't have any such object
+more += You can't unwield
+more += enough magic points
+more += You don't have the energy to cast that spell
+
+# Bad things
+more += Your surroundings flicker
+more += You cannot teleport right now
+more += A sentinel's mark forms upon you
+more += (blundered into a|invokes the power of) Zot
+more += enter a teleport trap
+more += Ouch! That really hurt!
+more += dispelling energy hits you
+more += You are blasted by holy energy!
+more += You are (blasted|electrocuted)!
+more += You are.*(confused|poisoned)
+more += flesh rotting
+more += (starving|devoid of blood)
+more += god:(sends|finds|silent|anger)
+more += You feel a surge of divine spite
+more += disloyal to dabble
+more += lose consciousness
+more += You are too injured to fight blindly
+more += calcifying dust hits
+more += Space warps.*around you
+more += Space bends around you
+more += watched by something
+more += flickers and vanishes!
+more += doesn't seem very happy
+more += is no longer charmed
+
+# Hell effects
+more += hell_effect:
+
+# Expiring effects
+more += You feel yourself slow down
+more += You are starting to lose your buoyancy
+more += Your hearing returns
+more += Your transformation is almost over
+more += You have a feeling this form
+more += You feel yourself come back to life
+more += time is quickly running out
+more += life is in your own hands
+more += Your shroud falls apart
+more += You start to feel a little slower
+more += You feel less protected from missiles
+
+# Others
+more += You have reached level
+more += You rejoin the land of the living
+more += You have finished (your manual|forgetting about)
+more += Your scales start
+more += You feel monstrous
+more += Jiyva alters your body
+: if you.god() == "Xom" then
+more += god:
+: end
+
+# Problematic monsters
+more += (giant eyeball|shining eye|cacodemon|neqoxec|guardian serpent|flayed ghost|greater mummy|mummy priest|hell sentinel|fiend|tzitzimitl|tormentor|hellion|lich|executioner|orb of fire|death cob|juggernaut|moth of wrath|ghost moth|curse toe|curse skull|draconian shifter).*into view
+
+## Any uniques and any pan lords
+more += (?-i:[A-Z]).* comes? into view
+
+## 0.17
+more += the royal jelly.* comes? into view
+
+##########################
+### Autopickup options ###
+##########################
+
+# Add staves, rods, misc; note you can't use += with this option.
+autopickup = $?!:"/%}|\
 
 ae := autopickup_exceptions
-## Don't ever need a second stave
+# Inclusions
+ae += <throwing net
+ae += <curare
+
+# Exceptions
+# I use immolation somewhat early on, and vulnerability is useful the entire
+# game.
+ae += <vulnerability|immolation
+# 0.18
+# Sometimes use these, but it varies by char/location/deck type
+: if you.god() ~= "Nemelex Xobeh" then
+ae += >deck
+: end
+# Tend to not use these.
+ae += >scrolls? of silence
+ae += >(crystal ball of energy|disc of storm)
+# Don't ever need a second stave
 ae += staff of .*
 
-####################
-### Autoinscribe ###
-####################
+{
+-- Equipment autopickup (by Medar and various others)
+local function pickup_equipment(it, name)
+  if it.is_useless then return end
+
+  local class = it.class(true)
+  if class == "armour" then
+    local good_slots = {cloak="Cloak", helmet="Helmet",
+                        gloves="Gloves", boots="Boots"}
+    st, _ = it.subtype()
+
+    -- Autopickup found aux armour if 1) we don't have any or 2) it's artefact,
+    -- or 3) if we don't have artefact or ego armour, and the found armour is
+    -- ego.
+    if good_slots[st] ~= nil then
+      if good_slots[st] == "Gloves" and you.has_claws() > 0 then return end
+
+      if it.artefact then return true end
+
+      local cur = items.equipped_at(good_slots[st])
+      if cur == nil then return true end
+
+      if cur.branded or cur.artefact then return end
+      if it.branded then return true end
+      -- Autopickup found body armour of the same kind we're wearing, according
+      -- to conditions (2) and (3) above used for aux slots.
+    elseif st == "body" then
+      local cur = items.equipped_at("armour")
+      if cur == nil then return end
+      if cur.name("qual") ~= it.name("qual") then return end
+
+      if it.artefact then return true end
+
+      if cur.branded or cur.artefact then return end
+      if it.branded then return true end
+    end
+  end
+  return
+end
+
+add_autopickup_func(pickup_equipment)
+}
+
+########################
+### Autoinscriptions ###
+########################
+
+show_god_gift = unident
 
 ai := autoinscribe
 
 ai += (bad|dangerous)_item.*potion:!q
 ai += (bad|dangerous)_item.*scroll:!r
-ai += potion.*(berserk rage):!q
+ai += potions? of berserk rage:!q
+ai += scrolls? of silence:!r
 
 ai += of faith:!P
 ai += ( rod ):!a
 ai += manual of:!d
 ai += staff of (Wucad Mu|energy|channeling|wizardry|power|conjuration|summoning):!a
+ai += (large rock|throwing net|curare|of dispersal):=f
 
-## from simm's rc
+# From simm's rc, helpful for realtime.
 ai += curing:@q1
 ai += potions? of heal wounds:@q2
 ai += wand of heal wounds:@v2
@@ -344,8 +234,6 @@ ai += wand of teleportation:@v4
 ai += identify:@r1
 ai += remove curse:@r2
 ai += blowgun:@w1
-ai += (curare|dispersal):!f
-
 ai += (meat|bread) ration:@e1
 ai += (beef jerk|fruit|pizza):@e2
 ai += royal jell:@e3
@@ -354,95 +242,88 @@ ai += royal jell:@e3
 # Notes #
 #########
 
-note_items    += acquirement, of Zot
+note_items += experience,of resistance, Archmagi
+note_items += crystal plate armour,dragon armour
+note_items += artefact,wand of (heal wounds|hasting|teleportation)
+note_messages += You feel monstrous
 note_messages += You pass through the gate
 note_messages += cast .* Abyss
-note_messages += Your scales start
-note_messages += protects you from harm
-note_messages += You fall through a shaft
-## Nasty undead from Vaults and Tomb
-note_monster  += lich,ancient lich,curse skull,greater mummy
-## Some enemies it's good to note for Vaults:5
+
+# Nasty undead.
+note_monsters += lich,curse skull,greater mummy
+# Some enemies it's good to note for Vaults
 note_monsters += tengu reaver,storm dragon,titan
-## Depths
-## 0.17
+# Depths
+# 0.17
 note_monsters += octopode crusher
 note_monsters += juggernaut,irong giant,caustic shrike
-## Zot
-note_monsters += killer klown,electric golem,curse toe,orb of fire
+# Zot
+note_monsters += killer klown,electric golem,curse toe
 
-#####################
-### More messages ###
-#####################
+note_hp_percent = 10
+note_all_skill_levels = true
 
-more := force_more_message
+############################
+### Travel & Exploration ###
+############################
 
-# Important features
-: if you.god() == "Ashenzari" then
-more += You have a vision of.*gates?
-: else
-more += interdimensional caravan
-more += distant snort
-more += Found a gateway leading out of the Abyss
-: end
-more += Found .* abyssal rune of Zot
-more += You feel a terrible weight on your shoulders
+rest_wait_both = true
+auto_sacrifice = true
+travel_delay = -1
+explore_delay = -1
+rest_delay = -1
 
-# Interrupts
-more += You don't.* that spell
-more += You fail to use your ability
-more += You miscast
-more += You can't (read|drink|do) that
-more += That item cannot be evoked
-more += This wand has no charges
-more += You are held in a net
-more += You don't have any such object
-more += do not work when you're silenced
-more += You can't unwield
-more += enough magic points
-more += You feel your control is inadequate
+show_travel_trail = false
+explore_stop += greedy_items
+
+################
+### Messages ###
+################
+
+stop := runrest_stop_message
+ignore := runrest_ignore_message
+
+:if you.god() == "Xom" then
+stop += god:
+:else
+ignore += god:
+:end
 
 # Bad things
-more += Your surroundings flicker
-more += sense of stasis
-more += You cannot teleport right now
-more += The writing blurs in front of your eyes
-more += (blundered into a|invokes the power of) Zot
-more += Ouch! That really hurt!
-more += dispelling energy hits you
-more += You convulse
-more += You are (blasted|electrocuted)!
-more += You are (more )?confused
-more += You are (more |lethally )?poisoned
-more += wrath finds you
-more += lose consciousness
-more += Space warps horribly around you
-more += hits you.*distortion
-more += Space bends around you
-more += watched by something
-more += The dungeon rumbles around
-more += The air twists around and violently strikes you in flight
+stop += A huge blade swings out and slices into you
+stop += (starving|devoid of blood)
+stop += wrath finds you
+stop += lose consciousness
+stop += hell_effect:
 
 # Expiring effects
-more += You feel yourself slow down
-more += You are starting to lose your buoyancy
-more += Your hearing returns
-more += Your transformation is almost over
-more += You feel yourself come back to life
+stop += You feel yourself slow down
+stop += You are starting to lose your buoyancy
+stop += Your hearing returns
+stop += Your transformation is almost over
+stop += back to life
+stop += time is quickly running out
+stop += life is in your own hands
+stop += is no longer charmed
 
-# Others
-more += You have reached level
-more += You have finished your manual of
-more += Deactivating autopickup
+: if you.race() == "Ghoul" then
+stop += smell.*(rott(ing|en)|decay)
+stop += something tasty in your inventory
+: end
 
-## Problematic monsters
-more += (giant eyeball|shining eye|cacodemon|neqoxec|guardian serpent|flayed ghost|greater mummy|mummy priest|hell sentinel|fiend|tzitzimitl|tormentor|hellion|lich|executioner|orb of fire|death cob|juggernaut|moth of wrath|ghost moth|curse toe|curse skull|draconian shifter).*into view
+# Annoyances
+ignore += grinding sound
+ignore += contamination has completely
+ignore += rod.*has recharged
+ignore += your breath back
 
-## Any uniques and any pan lords
-more += (?-i:[A-Z]).* comes? into view
-
-## 0.17
-more += the royal jelly.* comes? into view
+ignore += pray:
+ignore += talk:
+ignore += talk_visual:
+ignore += friend_spell:
+ignore += friend_enchant:
+ignore += friend_action:
+ignore += sound:
 
 ###########################
 ### Spell/Ability slots ###
@@ -643,10 +524,11 @@ item_slot += \+[0-9]+ ring of dexterity : Xx
 item_slot += \+[0-9]+ ring of slaying : Yy
 item_slot += ring of wizardry : Zz
 
-
 ############
 ## Macros ##
 ############
+
+bindkey = [~] CMD_LUA_CONSOLE
 
 macros += M e ===safe_eat
 macros += M S ===save_with_message
@@ -666,11 +548,291 @@ macros += M ] ===set_target_skill
 
 dump_message_count = 30
 dump_order  = header,hiscore,stats,misc,mutations,skills,spells,inventory
-dump_order += screenshot,monlist,messages,action_counts,vaults,notes,kills
+dump_order += overview,screenshot,monlist,messages,skill_gains,action_counts
+dump_order += vaults,notes,kills
 note_hp_percent = 10
 note_all_skill_levels = true
 note_chat_messages = false
 user_note_prefix = >>
+
+###############################
+### Menu and Message colors ###
+###############################
+
+# These should match the item_glyph colours exactly when possible.
+# For menu_colour, the first match ignores subsequent matches.
+menu := menu_colour
+menu =
+
+# Many of the entries below come from dat/defaults/menu_colours.txt,
+# which we have to duplicate here since we want only some of the
+# entries from that file.
+menu += notes:white:Reached XP level
+
+### General Inventory###
+# Items currently not affecting you.
+menu += darkgrey:(melded)
+# Items disliked by your god.
+menu += red:forbidden
+# Useless items, comes here to override artefacts etc.
+menu += darkgrey:.*useless.*
+# Handle cursed and equipped items early to override other colour settings.
+menu += lightred:.*equipped.* cursed
+menu += red: (a|the) cursed
+menu += inventory:lightgreen:.*equipped.*
+# Colouring of autoinscribed god gifts
+menu += pickup:lightred:god gift
+# Highlight (partly) selected items
+menu_colour += inventory:white:\w \+\s
+menu_colour += inventory:white:\w \#\s
+
+### Food ###
+# Color chunks, put ordinary ones on lightgrey.
+menu += red:evil_eating.*chunk
+menu += blue:mutagenic.*chunk
+menu += darkgrey:inedible
+menu += lightgrey: +(chunks?$|chunks? +)
+# These are analogous to chunks
+: if you.race() == "Vampire" then
+  menu += lightgrey:potions? of blood
+: end
+
+# Other food
+menu += brown:fruit
+menu += yellow:(pizza|jerky|jerkies)
+menu += green:royal jell
+menu += lightgreen:bread ration
+menu += lightred:meat ration
+
+### Potions ###
+# Generally harmful
+menu += blue:potions? of.*(lignification|(?<!cure|beneficial) mutation)
+# Heal wounds
+menu += lightred:potions? of.*heal wounds
+# Mundane and ultra-rare
+menu += lightgrey:potions? of.*(curing|flight)
+menu += white:potions? of.*(experience|beneficial mutation)
+# Damage buffs
+menu += brown:potions? of.*berserk
+menu += yellow:potions? of.*might
+# Other buffs
+menu += green:potions? of.*brilliance
+menu += lightgreen:potions? of.*(invisibility|agility)
+# Curing/avoiding mutations
+menu += cyan:potions? of.*cancellation
+menu += lightcyan:potions? of.*cure mutation
+# Emergency/escape
+menu += magenta:potions? of.*(magic|ambrosia)
+menu += lightmagenta:potions? of.*(haste|resistance)
+
+### Scrolls ###
+# Mostly harmful
+menu += blue:scroll.*noise
+# Recharging
+menu += lightred:scroll.*recharging
+# Mundane and ultra-rare
+menu += grey:scroll.*(amnesia|curse)
+menu += white:scroll.*acquirement
+# Damaging scrolls
+: if you.race() == "Vampire" or you.race() == "Mummy"
+:   or you.race() == "Ghoul" then
+  menu += blue:scroll.*holy word
+  menu += brown:scroll.*torment
+: else
+  menu += brown:scroll.*holy word
+  menu += blue:scroll.*torment
+: end
+menu += yellow:scroll.*summoning
+# Hexes and Enchantments
+menu += green:scroll.*(silence|immolation|vulnerability)
+menu += lightgreen:scroll.*(enchant|brand)
+# Dungeon info
+menu += cyan:scroll.*identify
+menu += lightcyan:scroll.*magic map
+# Escape
+menu += magenta:scroll.*(fog|teleport)
+menu += lightmagenta:scroll.*(fear|blink)
+
+### Wands ###
+# Can be harmful, only useful early
+menu += blue:wand of.*random effects
+# Heal wounds
+menu += lightred:wand of.*heal wounds
+# Lowest-level damage and strong AOE
+# 0.17
+menu += lightgrey:wand of.*(flame|frost|magic dart)
+menu += white:wand of.*iceblast
+# High level damage
+# 0.17, keep before wand of fire to avoid matching fireball
+menu += brown:wand of.*(lightning|fireball)
+# 0.17
+menu += yellow:wand of.*(draining|cold|fire|acid)
+# Hexes
+menu += green:wand of.*(slowing|confusion|polymorph)
+menu += lightgreen:wand of.*(invisibility|paralysis|enslavement)
+# Dig/disint
+menu += cyan:wand of.*(digging|disintegration)
+# Escape
+menu += magenta:wand of.*teleportation
+menu += lightmagenta:wand of.*hasting
+
+### General identification ###
+menu += cyan:manual of
+menu += lightcyan:manual
+menu += lightmagenta:unidentified.*artefact.*
+menu += white:.*artefact.*
+menu += lightblue:unidentified .*(potion|scroll|wand|jewellery|spellbook|rod|magical staff)
+menu += magenta:.*known .*(ring of (dexterity|strength|intelligence|slaying|evasion|protection(?! from))|amulet of reflection)
+menu += inventory:lightgray:.*(book|jewellery|magical staff)
+# Ego items
+menu += lightblue:unidentified.*weapon.*(runed|glowing|enchanted)
+menu += lightblue:unidentified.*armour.*(runed|glowing|embroidered|shiny|dyed)
+
+msc := message_colour
+msc += mute:returns to your side
+msc += mute:a demon appears
+msc += lightgrey:The deck of cards disappears
+msc += mute:puff of smoke
+msc += mute:carefully avoids
+msc += mute:is recalled
+msc += mute:wall.*burn.*your
+msc += mute:dissolves? into (sparkling lights|shadows)
+msc += mute:(crumbles|melts) away\.
+msc += mute:(merges|forms) itself .* the air
+msc += mute:you swap places
+msc += mute:your.*(looks stronger|shudders|resists)
+msc += mute:your.*(stumbles backwards|holds.*ground)
+msc += mute:your.*(blinks|safely over)
+msc += mute:(phases out.*|misses) (your|something).*
+msc += mute:your.*(picks up|drops)
+msc += mute:your.*basks in the mutagenic energy
+msc += mute:your.*(struggles|tears|pulls away).*(web|net)
+
+########################
+### Message Channels ###
+########################
+
+channel.multiturn = mute
+
+##############
+### Glyphs ###
+##############
+
+## For item_glyph, subsequent matches override previous ones.
+item := item_glyph
+
+## Reasonable defaults
+item += potion:lightgrey
+item += scroll:lightgrey
+item += wand:lightgrey
+item += dangerous_item:blue
+item += useless_item:darkgrey
+
+### Potions ###
+item += potions? of.*(lignification|mutation):blue
+item += potions? of.*heal wounds:lightred
+item += potions? of.*(curing|flight):lightgrey
+item += potions? of.*(experience|beneficial mutation):white
+item += potions? of.*berserk:brown
+item += potions? of.*might:yellow
+item += potions? of.*brilliance:green
+item += potions? of.*(invisibility|agility):lightgreen
+item += potions? of.*cancellation:cyan
+item += potions? of.*cure mutation:lightcyan
+item += potions? of.*(magic|ambrosia):magenta
+item += potions? of.*(haste|resistance):lightmagenta
+
+### Scrolls ###
+item += scroll.*noise:blue
+item += scroll.*recharging:lightred
+item += scroll.*(amnesia|curse):lightgrey
+item += scroll.*acquirement:white
+: if you.race() == "Vampire" or you.race() == "Mummy"
+:  or you.race() == "Ghoul" then
+  item += scroll.*holy word:blue
+  item += scroll.*torment:brown
+: else
+  item += scroll.*holy word:brown
+  item += scroll.*torment:blue
+: end
+item += scroll.*(summoning):yellow
+item += scroll.*(silence|vulnerability|immolation):green
+item += scroll.*(enchant|brand weapon):lightgreen
+item += scroll.*identify:cyan
+item += scroll.*magic mapping:lightcyan
+item += scroll.*(fog|teleport):magenta
+item += scroll.*(fear|blink):lightmagenta
+
+### Wands ###
+item += wand of.*random effects:blue
+item += wand of.*heal wounds:lightred
+## 0.17
+item += wand of.*(flame|frost|magic dart):lightgrey
+item += wand of.*iceblast:white
+## 0.17
+item += wand of.*(acid|fire|cold|drain):yellow
+## 0.17
+item += wand of.*(lightning|fireball):brown
+item += wand of.*(slowing|confusion|polymorph):green
+item += wand of.*(invisibility|paralysis|enslavement):lightgreen
+item += wand of.*(digging|disintegration):cyan
+item += wand of.*teleportation:magenta
+item += wand of.*hasting:lightmagenta
+
+### General Identification ###
+item += ( rod ):yellow
+item += (identified|known).*(jewellery|magical staff):brown
+item += identified.*spellbook:magenta
+item += unidentified.*(potion|scroll|jewellery|wand|rod|magical staff).*:lightblue
+item += unidentified.*book:lightmagenta
+item += manual:lightcyan
+item += manual of:cyan
+
+# Jewelry types
+item += known.*(ring of (dexterity|strength|intelligence|slaying|evasion|protection(?! from))|amulet of reflection):magenta
+item += identified.*artefact.*(jewellery):white
+item += unidentified.*artefact.*(jewellery).*:lightmagenta
+item += (a )?stones?$:lightgray
+
+### Food ###
+item += chunks?.*flesh:lightgrey
+: if you.race() == "Vampire" then
+  item += potions? of blood:lightgrey
+: end
+item += mutagenic.*chunk:blue
+item += evil_eating.*chunk:red
+item += inedible.*chunk:darkgrey
+item += fruit:brown
+item += (pizza|jerky|jerkies):yellow
+item += royal jell:green
+item += bread ration:lightgreen
+item += meat ration:lightred
+
+# Want this to override anything above
+item += useless:darkgrey
+# Only mark these types when forbidden; for other types it looks odd.
+item += forbidden.*(potion|scroll|food):red
+
+
+mons := mon_glyph
+# Monsters that can be easy to miss
+mons ^= * : ✱
+mons ^= dancing weapon : cyan {
+mons ^= spectral weapon : lightcyan {
+# Classed Demonspawn
+mon += blood saint:9
+mon += chaos champion:9
+mon += warmonger:9
+mon += corrupter:9
+mon += black sun:9
+
+# Wall glyphs; requires a font and terminal that can render these.
+feature += crystal wall {░}
+feature += stone wall {▒}
+feature += metal wall {▓}
+feature += unnaturally hard rock wall {█}
+
+feature += altar {⚑}
 
 ###################
 ## Debug Options ##
