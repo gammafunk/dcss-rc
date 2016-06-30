@@ -699,27 +699,6 @@ function force_cast_spell()
   generic_cast_spell('Z')
 end
 
--- Some simple options for turncount and realtime runs. Note I don't play much
--- of the latter, and these options are taken from the RCs of players who do.
--- Uses the toggle_options lua:
---   https://github.com/gammafunk/dcss-rc#toggle_options
-option_groups = {
-  ["turncount"] = {
-    {option = "confirm_butcher = %t", on="never", off="auto"},
-    {option = "ai %t= (bread|meat) ration:!e", on="+", off="-"},
-    {option = "ai %t= scroll.+of.*(acquirement|summoning|teleportation" ..
-       "|fear|magic mapping):!r", on="+", off="-"},
-    {option = "ai %t= potion.+of(curing|heal wounds|might|agility" ..
-       "|brilliance|magic|invisibility):!q", on="+", off="-"}
-  },
-  ["realtime"] = {
-    {option = "ae %t= >wand of (magic darts|flame|frost)", on="+", off="-"},
-    {option = "ae %t= >wand of (slowing|polymorph|confusion|paralysis)",
-     on="+", off="-"},
-    {option = "use_animations = %t", on="", off="beam, range, hp, " ..
-       "monster_in_sight, pickup, monster, player, branch_entry"},
-  },
-} -- end option groups
 
 -- Note: My final rc file has the lua files from
 -- https://github.com/gammafunk/dcss-rc included starting on the next line.
