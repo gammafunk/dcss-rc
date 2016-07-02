@@ -31,8 +31,8 @@ Next add a call to the function `random_tile()` in your
 ##### Macros
 
 See [macro installation section](#3-make-any-necessary-or-desired-macros) for
-details on creating any of these macros. None are required, but they make
-enabling/disabling RandomTiles and changing your tile
+details on creating any of these macros. None are required, but they let you
+control RandomTiles without editing your rc.
 
 ###### Changing the tile entry
 
