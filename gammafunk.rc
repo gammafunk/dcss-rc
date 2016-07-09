@@ -71,6 +71,7 @@ more += You don't have any such object
 more += You can't unwield
 more += enough magic points
 more += You don't have the energy to cast that spell
+more += You are unable to access your magic
 
 # Bad things
 more += Your surroundings flicker
