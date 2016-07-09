@@ -18,8 +18,7 @@ fm_patterns = {
   {pattern = "adder|gnoll|hound", cond = "xl", cutoff = 2,
    name = "XL1"},
   -- Problems for chars with 20, 60, 90, or 120 mhp
-  {pattern = "orc|Ogre", cond = "20mhp",
-   cutoff = 20, name = "20hp"},
+  {pattern = "orc|Ogre", cond = "maxhp", cutoff = 20, name = "20mhp"},
   {pattern = "orc priest", cond = "maxhp", cutoff = 40, name = "40mhp"},
   {pattern = "centaur [^wzs]|drake|blink frog|spiny frog|basilisk" ..
      "|raven|komodo dragon|blink frog|snapping turtle|black mamba" ..
