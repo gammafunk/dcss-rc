@@ -27,6 +27,7 @@ ability_menu = false
 autofight_stop  = 50
 autofight_caught = true
 autofight_wait = false
+auto_butcher = true
 
 ##########################
 ### Messages & Display ###
