@@ -11,7 +11,9 @@ offline play.
 Automatically and randomly change the player tile to that of various
 monsters. This code works in DCSS versions 0.16 and later.
 
-##### Step 1: Including RandomTiles in your RC
+##### Installation
+
+###### Step 1: Including RandomTiles in your RC
 
 If you play on the servers CAO, CBRO, CJR, CPO, CUE, or CXC, you can
 add the following to your rc:
@@ -25,7 +27,7 @@ tiles used, copy the contents of
 [RandomTiles.rc](https://github.com/gammafunk/dcss-rc/blob/master/RandomTiles.rc)
 into your rc directly.
 
-##### Step 2: Enable RandomTiles in your ready() function
+###### Step 2: Enable RandomTiles in your ready() function
 Add a call to the function `random_tile()` in your [ready()](#2-update-the-ready-function-in-your-rc) function. This is necessary for your tiles to actually change.
 
 ##### Macros
@@ -34,7 +36,7 @@ See [macro installation section](#3-make-any-necessary-or-desired-macros) for
 details on creating any of these macros. None are required, but they let you
 control RandomTiles without editing your rc.
 
-###### Changing the tile entry
+###### Changing your tile in-game
 
 The function `set_tile_by_name()` will prompt for a monster name defined in
 PlayerTiles.rc and then change your tile to the matching monster. Note that
@@ -71,7 +73,7 @@ definition into a lua code block in your rc and change e.g. the number of turns
 before a tile change, the setting to use when RandomTiles is disabled, and
 customize the tile change messages.
 
-To change the tileset used, you'll have to copy
+To customize the tilesets used, you'll have to copy
 [RandomTiles.rc](https://github.com/gammafunk/dcss-rc/blob/master/RandomTiles.rc)
 directly into your rc instead of using `include`. See the
 [installation section]() for details about this.
