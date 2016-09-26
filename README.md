@@ -11,7 +11,7 @@ offline play.
 Automatically and randomly change the player tile to that of various
 monsters. This code works in DCSS versions 0.16 and later.
 
-##### Including and enabling RandomTiles
+##### Step 1: Including RandomTiles in your RC
 
 If you play on the servers CAO, CBRO, CJR, CPO, CUE, or CXC, you can
 add the following to your rc:
@@ -25,8 +25,8 @@ tiles used, copy the contents of
 [RandomTiles.rc](https://github.com/gammafunk/dcss-rc/blob/master/RandomTiles.rc)
 into your rc directly.
 
-Next add a call to the function `random_tile()` in your
-[ready()](#2-update-the-ready-function-in-your-rc) function.
+##### Step 2: Enable RandomTiles in your ready() function
+Add a call to the function `random_tile()` in your [ready()](#2-update-the-ready-function-in-your-rc) function. This is necessary for your tiles to actually change.
 
 ##### Macros
 
@@ -44,7 +44,7 @@ case-insensitive with partial matches allowed.
 The function `new_random_tile()` will switch your current tile to a new,
 randomly chosen one.
 
-###### Toggling RandomTiles
+###### Toggling RandomTiles on and off
 
 The function `toggle_random_tile()` will toggle RandomTiles between enabled
 and disabled states. When disabled, RandomTiles sets `tile_player_tile` to the
@@ -57,7 +57,7 @@ animations within an entry (e.g. boulder beetle changing its animation every UI
 action) will continue. You can still use macros for `set_tile_by_name()` and
 `new_random_tile()` to change your tile entry while the timer is disabled.
 
-##### Settings and changing the tile sets.
+##### Other settings and customizing the tile sets.
 
 Note that the tile changes you make using the functions above are saved across
 sessions. So if you want to use a fixed tile, select the tile you want with
