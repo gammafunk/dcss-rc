@@ -79,11 +79,12 @@
   --     {mons = "butterfly", tile = "mons_butterfly", num_var=11},
   --
   -- By default RandomTiles chooses a new variant with each UI action (i.e. any
-  -- keystroke that's not in a menu or prompt), even if the player's turn didn't
-  -- change. Set the field `var_type' to either "fixed" or "sequence" to change
-  -- this behavior. With "fixed" a single variant is chosen when the entry is
-  -- chosen, and with "sequence" variants are progressed through in order with
-  -- each UI action.
+  -- keystroke that's not in a menu or prompt), even if the player's turn
+  -- didn't change. Set the field `var_type' to "fixed", "sequence", or
+  -- "oscillate" to change this behavior. With "fixed" a single variant is
+  -- chosen when the entry is chosen, and with "sequence" and "oscillate",
+  -- variants are progressed through in order (sequence) or forward-reverse
+  -- order (oscillate) with each UI action.
   --
   -- You can define a custom set of variants for use in an entry using the
   -- `tileset' field. For example, here's an entry for the Serpent of Hell that
@@ -376,7 +377,7 @@
        tileset = {"mons_hell_wizard_1",
                   "mons_hell_wizard_2",
                   "mons_hell_wizard_3"},
-       var_type = "sequence"},
+       var_type = "oscillate"},
       {mons = "hexer", min_version = 0.19},
       {mons = "hill giant"},
       {mons = "hippogriff"},
@@ -388,7 +389,7 @@
       {mons = "howler monkey", min_version = 0.18},
       {mons = "human"},
       {mons = "hungry ghost"},
-      {mons = "hydra", tile = "mons_hydra", num_var = 5, var_type = "sequence"},
+      {mons = "hydra", tile = "mons_hydra", num_var = 5, var_type = "oscillate"},
       {mons = "ice beast"},
       {mons = "ice fiend"},
       {mons = "ice devil"},
@@ -437,7 +438,8 @@
        num_var = 7, var_type = "fixed"},
       {mons = "lava snake", weapon_offsets = "0,0", shield_offsets = "-10,4"},
       {mons = "leopard gecko", min_version = 0.19},
-      {mons = "Lernaean Hydra", tile = "mons_lernaean_hydra_9"},
+      {mons = "Lernaean Hydra", tile = "mons_lernaean_hydra",
+       var_type = "oscillate", num_var = 10},
       {mons = "lich"},
       {mons = "lightning spire"},
       {mons = "lindwurm", weapon_offsets = "-3,-2", shield_offsets = "0,0"},
@@ -491,9 +493,9 @@
       {mons = "Murray"},
       {mons = "mutant beast", max_version = 0.17},
       {mons = "mutant beast", tile = "mutant_beast_base", num_var = 5,
-       var_type = "fixed", min_version = 0.18},
+       var_type = "oscillate", min_version = 0.18},
       {mons = "mutant fire beast", tile = "mutant_beast_fire", num_var = 5,
-       var_type = "fixed", min_version = 0.18},
+       var_type = "oscillate", min_version = 0.18},
       {mons = "naga"},
       {mons = "nagaraja", min_version = 0.19},
       {mons = "naga mage"},
@@ -625,7 +627,7 @@
       {mons = "skeletal warrior"},
       {mons = "sky beast"},
       {mons = "slave"},
-      {mons = "slime creature", num_var = 5, var_type = "sequence",
+      {mons = "slime creature", num_var = 5, var_type = "oscillate",
        tile = "mons_slime_creature"},
       {mons = "small abomination"},
       {mons = "smoke demon"},
@@ -771,15 +773,25 @@
     end
 
     -- state data
+    local default_state = {index = 1 + crawl.random2(#valid_tiles),
+                           last_index_change = you.turns(),
+                           last_variant = -1,
+                           forward_direction = true,
+                           last_xl = tonumber(you.xl()),
+                           enabled = true,
+                           timer_enabled = true}
+
     if not c_persist.randomtile_state then
-      c_persist.randomtile_state = {index = 1 + crawl.random2(#valid_tiles),
-                                    last_index_change = you.turns(),
-                                    last_variant = -1,
-                                    last_xl = tonumber(you.xl()),
-                                    enabled = true,
-                                    timer_enabled = true }
+      c_persist.randomtile_state = {}
     end
+
     rtdat = c_persist.randomtile_state
+    for key,val in pairs(default_state) do
+      if rtdat[key] == nil then
+        rtdat[key] = val
+      end
+    end
+
     if rtdat.enabled then
       enable_random_tile(true)
     else
@@ -861,6 +873,15 @@
         and rtdat.last_variant >= 1
       and rtdat.last_variant < num_var then
         variant = rtdat.last_variant + 1
+      elseif var_type == "oscillate"
+        and not change_index
+        and rtdat.last_variant >= 1 then
+        if rtdat.forward_direction and rtdat.last_variant == num_var then
+          rtdat.forward_direction = false
+        elseif not rtdat.forward_direction and rtdat.last_variant == 1 then
+          rtdat.forward_direction = true
+        end
+        variant = rtdat.last_variant + (rtdat.forward_direction and 1 or -1)
       elseif var_functions[var_type] ~= nil then
         local comp_value = var_functions[var_type]()
         local comp_string = true
