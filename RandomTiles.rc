@@ -31,7 +31,8 @@
         ["default"] = "%g says: Become %am!",
         ["Sif Muna"] = "%g whispers: Become %am.",
         ["Trog"] = "%g roars: Now %m!!!",
-        ["Xom"] = "%g titters: I'd like %am!"},
+        ["Xom"] = "%g titters: I'd like %am!",
+        ["Nemelex Xobeh"] = "%g says: Let's draw a card...%m!"},
       -- Colour of tile change message.
       message_colour = "lightblue" }
   end
