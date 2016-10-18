@@ -716,7 +716,7 @@
       {mons = "water moccasin"},
       {mons = "water nymph"},
       {mons = "warg"},
-      {mons = "wasp"},
+      {mons = "wasp", max_version = 0.18},
       {mons = "white draconian"},
       {mons = "white imp"},
       {mons = "wind drake"},
