@@ -12,7 +12,9 @@ tile_map_pixels = 3
 ## To set up RandomTiles, you need (1) the include below and (2) to add/modify
 ## the ready() function in your rc. See my ready() section below and the
 ## project page: https://github.com/gammafunk/dcss-rc#randomtiles
+: if you.name() == "gammafunk" then
 include += RandomTiles.rc
+: end
 
 ############################
 ### Interface & Commands ###
@@ -532,17 +534,21 @@ item_slot += ring of wizardry : Zz
 
 bindkey = [~] CMD_LUA_CONSOLE
 
-macros += M e ===safe_eat
-macros += M S ===save_with_message
+macros += M ] ===set_target_skill
+
+# Only want these defined for myself
+: if you.name() == "gammafunk" then
 macros += M 1 aa
 macros += M 3 zz
+macros += M e ===safe_eat
+macros += M S ===save_with_message
 macros += M 6 ===one_turn_rest
 macros += M 7 ===start_resting
 macros += M 8 ===new_random_tile
 macros += M 9 ===set_tile_by_name
 macros += M 0 ===toggle_tile_timer
 macros += M - ===toggle_random_tile
-macros += M ] ===set_target_skill
+: end
 
 ######################
 ### Morgue options ###
@@ -871,26 +877,30 @@ end
 
 function ready()
 
-  -- Enable char default skills; this must come before target_skill().
-  char_defaults()
-
   -- Enable skill target settings.
   target_skill()
-
-  -- Enable speedrun resting.
-  speedrun_rest()
-
-  -- Enable persistent messages.
-  load_message()
-
-  -- Dynamic force-mores.
-  force_mores()
 
   -- Char dumps every 1k turns.
   char_dump()
 
-  -- Enable RandomTiles.
-  random_tile()
+  -- Dynamic force-mores.
+  force_mores()
+
+  -- Only enable these for myself
+  if you.name() == "gammafunk" then
+    -- Enable char default skills; this must come before target_skill().
+    char_defaults()
+
+    -- Enable speedrun resting.
+    speedrun_rest()
+
+    -- Enable persistent messages.
+    load_message()
+
+    -- Enable RandomTiles.
+    random_tile()
+  end
+
 end
 
 }
