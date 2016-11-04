@@ -246,22 +246,19 @@ ai += royal jell:@e3
 #########
 
 note_items += experience,of resistance, Archmagi
-note_items += crystal plate armour,dragon armour
+# 0.18
+note_items += crystal plate armour,pearl dragon (armour|scales)
 note_items += artefact,wand of (heal wounds|hasting|teleportation)
 note_messages += You feel monstrous
 note_messages += You pass through the gate
 note_messages += cast .* Abyss
 
 # Nasty undead.
-note_monsters += lich,curse skull,greater mummy
-# Some enemies it's good to note for Vaults
-note_monsters += tengu reaver,storm dragon,titan
+note_monsters += ancient lich,curse skull,curse toe,greater mummy
 # Depths
-# 0.17
-note_monsters += octopode crusher
-note_monsters += juggernaut,irong giant,caustic shrike
+note_monsters += juggernaut,caustic shrike
 # Zot
-note_monsters += killer klown,electric golem,curse toe
+note_monsters += killer klown,electric golem,orb of fire
 
 note_hp_percent = 10
 note_all_skill_levels = true
