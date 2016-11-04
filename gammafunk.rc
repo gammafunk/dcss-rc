@@ -54,6 +54,7 @@ more += The mighty Pandemonium lord .* resides here
 # Interrupts
 more += You don't .* that spell
 more += You fail to use your ability
+# 0.18 (Haste)
 more += You miscast.*(Blink|Borgnjor|Door|Haste|Invisibility)
 more += You can't (read|drink|do)
 more += You cannot .* while unable to breathe
@@ -401,6 +402,7 @@ spell_slot += Freeze:zfc
 spell_slot += Fulminant prism:fpt
 spell_slot += Gell's Gravitas:gvt
 spell_slot += Glaciate:gct
+# 0.18
 spell_slot += Haste:eas
 spell_slot += Haunt:hnt
 spell_slot += Hydra form:hym
@@ -414,6 +416,7 @@ spell_slot += Iskenderun's battlesphere:kdp
 spell_slot += Iskenderun's mystic blast:byd
 spell_slot += Leda's Liquefaction:lqd
 spell_slot += Lee's rapid deconstruction:ldt
+spell_slot += Lesser Beckoning:lgk
 spell_slot += Lehudib's crystal spear:bly
 spell_slot += Lightning bolt:lbt
 spell_slot += Magic dart:zdt
@@ -823,6 +826,7 @@ mons ^= dancing weapon : cyan {
 mons ^= spectral weapon : lightcyan {
 # Classed Demonspawn
 mon += blood saint:9
+# 0.18
 mon += chaos champion:9
 mon += warmonger:9
 mon += corrupter:9
