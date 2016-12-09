@@ -207,7 +207,7 @@ menu += lightred:meat ration
 
 ### Potions ###
 # Mostly harmful
-menu += blue:potions? of.*(lignification|(?<!cure|beneficial)mutation)
+menu += blue:potions? of.*(lignification|(?<!cure |beneficial )mutation)
 # Heal wounds
 menu += lightred:potions? of.*heal wounds
 # Mundane and ultra-rare
