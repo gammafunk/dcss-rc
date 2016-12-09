@@ -19,12 +19,9 @@ monster_list_colour += tough:yellow,nasty:lightred
 ### Console ###
 ###############
 
-# Enable use of lightgrey-on-black.
+# Enable use of darkgrey.
 # needed in 0.20
-allow_extended_colours=true
-no_dark_brand=false
 bold_brightens_foreground=true
-blink_brightens_background=false
 best_effort_brighten_background=false
 
 ## For item_glyph, subsequent matches override previous ones.
