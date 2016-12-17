@@ -47,11 +47,11 @@
   -- defined, then `mons' must be the monster name as seen under xv in-game (and
   -- as defined in the source file mon-data.h). For example, the entry:
   --
-  --     {mons = "hell sentinel"},
+  --   {mons = "hell sentinel"},
   --
   -- is equivalent to the rc option:
   --
-  --     tile_player_tile = mons:hell sentinel
+  --   tile_player_tile = mons:hell sentinel
   --
   -- If the `mons' field isn't the monster's name, either because you've renamed
   -- it or because the corresponding monster doesn't exist, set the `tile' field
@@ -62,11 +62,11 @@
   --
   -- For example, the following entry:
   --
-  --     {mons = "a Zot statue", tile = "mons_zot_statue"},
+  --   {mons = "a Zot statue", tile = "mons_zot_statue"},
   --
   -- is equivalent to the rc option:
   --
-  --     tile_player_tile = tile:mons_zot_statue
+  --   tile_player_tile = tile:mons_zot_statue
   --
   -- For monsters like butterflies that have variant tiles, you can set the field
   -- `num_var' to the number of variants in order to use them. The array
@@ -76,7 +76,7 @@
   -- tile has. Since rltiles/mon/animals has butterfly.png through
   -- butterfly10.png, which means 11 variants, the entry is:
   --
-  --     {mons = "butterfly", tile = "mons_butterfly", num_var=11},
+  --   {mons = "butterfly", tile = "mons_butterfly", num_var=11},
   --
   -- By default RandomTiles chooses a new variant with each UI action (i.e. any
   -- keystroke that's not in a menu or prompt), even if the player's turn
@@ -90,24 +90,24 @@
   -- `tileset' field. For example, here's an entry for the Serpent of Hell that
   -- randomly chooses a Hell variant with every UI action:
   --
-  --     {mons = "The Serpent of Hell",
-  --      tileset = {"mons_serpent_of_hell_tartarus",
-  --                 "mons_serpent_of_hell_cocytus",
-  --                 "mons_serpent_of_hell_dis",
-  --                 "mons_serpent_of_hell_gehenna"}},
+  --   {mons = "The Serpent of Hell",
+  --    tileset = {"mons_serpent_of_hell_tartarus",
+  --               "mons_serpent_of_hell_cocytus",
+  --               "mons_serpent_of_hell_dis",
+  --               "mons_serpent_of_hell_gehenna"}},
   --
-  -- These variants are used will be chosen according to the same rules above.
+  -- Custom tilesets can use any of the `var_type' values described above.
   --
   -- When the `tileset' field is used, there are special `var_type' values of
   -- "terrain", "status", "percent_hp", and "xl" available, which will change
-  -- the tile conditioned on one of these values. To use one of these, make the
+  -- the tile based on a condition. To use one of these, make the
   -- tileset field into an an array of arrays, with the first entry in the
   -- inner array giving the condition value and the second giving the
   -- corresponding tile applied under that condition. The first entry in
-  -- `tileset' must have a value of "default" for when no other entry
-  -- matches.
-
-  -- For numeric var_type values like "percent_hp" and "xl", the first
+  -- `tileset' must have an inner array value of "default" for when no other
+  -- entry matches.
+  --
+  -- For numeric `var_type' values like "percent_hp" and "xl", the first
   -- condition value for each non-default entries must be a number, and the
   -- tile of an entry is used if the player's current value is in less than or
   -- equal to the entry's condition value and greater than any other
@@ -116,19 +116,19 @@
   -- against the player's current value. For "status", multiple status values
   -- can be active for the player, so we always use the first matching entry,
   -- and they should be listed in tileset in order of preference.
-
+  --
   -- See the entry for Ilsiuw to see a var_type example of "terrain", and the
-  -- entry for "Bai Suzhen" to see an example of "percent_hp". Here is an
+  -- entry for Bai Suzhen to see an example of "percent_hp". Here is an
   -- example entry using a var_type of "status" that will use the Purgy tile
   -- normally, the Snorg tile when berserking, and the torpor snail tile when
   -- slowed (but not fast+slow):
   --
-  --     {mons = "Snorgy Snail", tileset = {{"default", "mons_purgy"},
-  --                                        {"berserk", "mons_snorg"},
-  --                                        -- covers fast and fast+slow
-  --                                        {"fast",    "mons_purgy"},
-  --                                        {"slow",   "mons_torpor_snail"}},
-  --      var_type = "status"},
+  --   {mons = "Snorgy Snail", tileset = {{"default", "mons_purgy"},
+  --                                      {"berserk", "mons_snorg"},
+  --                                -- entry below matches fast and fast+slow
+  --                                      {"fast",    "mons_purgy"},
+  --                                      {"slow",   "mons_torpor_snail"}},
+  --    var_type = "status"},
   --
   -- The status names can be seen under the @ listing on the % screen, and
   -- these are the short_text values from the duration_data[] array defined in
@@ -141,6 +141,7 @@
   if not player_tiles then
     player_tiles = {
       {mons = "acid blob"},
+      {mons = "acid dragon", min_version = 0.20},
       {mons = "adder"},
       {mons = "Agnes"},
       {mons = "air elemental"},
@@ -480,14 +481,18 @@
          {"default", "mons_merfolk_javelineer"},
          {"water", "mons_merfolk_javelineer_water"}},
        var_type = "terrain"},
+      {mons = "merfolk siren", tileset = {
+         {"default", "mons_merfolk_siren"},
+         {"water", "mons_merfolk_siren_water"}},
+       min_version = 0.20, var_type = "terrain"},
       {mons = "minotaur"},
       {mons = "Mnoleg"},
       {mons = "molten gargoyle"},
       {mons = "moon troll", weapon_offsets = "-3,6", shield_offsets = "0,0",
        min_version = 0.17},
       {mons = "moth of wrath"},
-      {mons = "mottled draconian"},
-      {mons = "mottled dragon"},
+      {mons = "mottled draconian", max_version = 0.19},
+      {mons = "mottled dragon", max_version = 0.19},
       {mons = "mummy"},
       {mons = "mummy priest"},
       {mons = "Murray"},
@@ -621,7 +626,7 @@
       {mons = "siren", tileset = {
          {"default", "mons_siren"},
          {"water", "mons_siren_water"}},
-       var_type = "terrain"},
+       max_version = 0.19, var_type = "terrain"},
       {mons = "siren"},
       {mons = "sixfirhy"},
       {mons = "skeletal warrior"},
