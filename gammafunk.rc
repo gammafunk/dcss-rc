@@ -70,15 +70,14 @@ item += scroll.*(fog|teleport):magenta
 item += scroll.*(fear|blink):lightmagenta
 
 ### Wands ###
+
+# Sometimes dangerous
 item += wand of.*random effects:blue
 item += wand of.*heal wounds:lightred
-# frost/mdart not needed in 0.18
-item += wand of.*(flame|frost|magic dart):lightgrey
+
+item += wand of.*flame:lightgrey
 item += wand of.*iceblast:white
-# fire/cold/drain not needed in 0.18
-item += wand of.*(acid|fire|cold|drain):yellow
-# fireball not needed in 0.18
-item += wand of.*(lightning|fireball):brown
+
 item += wand of.*(slowing|confusion|polymorph):green
 item += wand of.*(invisibility|paralysis|enslavement):lightgreen
 item += wand of.*(digging|disintegration):cyan
@@ -86,9 +85,13 @@ item += wand of.*teleportation:magenta
 item += wand of.*hasting:lightmagenta
 
 ### General Identification ###
+# rods gone in 0.20
+: if tonumber(crawl.version("major")) < 0.20 then
 item += ( rod ):yellow
+: end
 item += (identified|known).*(jewellery|magical staff):brown
 item += identified.*spellbook:magenta
+# rods gone in 0.20
 item += unidentified.*(potion|scroll|jewellery|wand|rod|magical staff).*:lightblue
 item += unidentified.*book:lightmagenta
 item += manual:lightcyan
@@ -126,8 +129,6 @@ mons ^= dancing weapon : cyan {
 mons ^= spectral weapon : lightcyan {
 # Classed Demonspawn
 mon += blood saint:9
-# not needed in 0.18
-mon += chaos champion:9
 mon += warmonger:9
 mon += corrupter:9
 mon += black sun:9
@@ -255,26 +256,21 @@ menu += magenta:scroll.*(fog|teleport)
 menu += lightmagenta:scroll.*(fear|blink)
 
 ### Wands ###
+
 # Can be harmful
 menu += blue:wand of.*random effects
 # Heal wounds
 menu += lightred:wand of.*heal wounds
-# Lowest-level damage and strong AOE
-# frost/mdart not needed in 0.18
-menu += lightgrey:wand of.*(flame|frost|magic dart)
+
+menu += lightgrey:wand of.*flame
 menu += white:wand of.*iceblast
-# High level damage
-# Not needed in 0.18
-# keep before wand of fire to avoid matching fireball
-menu += brown:wand of.*(lightning|fireball)
-# cold/fire/draining not needed in 0.18
-menu += yellow:wand of.*(draining|cold|fire|acid)
-# Hexes
+
 menu += green:wand of.*(slowing|confusion|polymorph)
-menu += lightgreen:wand of.*(invisibility|paralysis|enslavement)
-# Dig/disint
-menu += cyan:wand of.*(digging|disintegration)
-# Escape
+menu += lightgreen:wand of.*(paralysis|enslavement)
+
+menu += cyan:wand of.*disintegration
+menu += lightcyan:wand of.*digging
+
 menu += magenta:wand of.*teleportation
 menu += lightmagenta:wand of.*hasting
 
@@ -334,11 +330,6 @@ ae += <throwing net
 # I use immolation somewhat early on, and vulnerability is useful the entire
 # game.
 ae += <vulnerability|immolation
-# 0.18
-# Sometimes use these, but it varies by char/location/deck type
-: if you.god() ~= "Nemelex Xobeh" then
-ae += >deck
-: end
 # Tend to not use these.
 ae += >scrolls? of silence
 ae += >(crystal ball of energy|disc of storm)
@@ -381,8 +372,7 @@ more += The mighty Pandemonium lord .* resides here
 # Interrupts
 more += You don't .* that spell
 more += You fail to use your ability
-# 0.18 (Haste)
-more += You miscast.*(Blink|Borgnjor|Door|Haste|Invisibility)
+more += You miscast.*(Blink|Borgnjor|Door|Invisibility)
 more += You can't (read|drink|do)
 more += You cannot .* while unable to breathe
 more += You cannot .* in your current state
@@ -457,8 +447,7 @@ more += god:
 
 # Dangerous monsters we force_more when first seen.
 # Eyes and bugs with ranged, irresistable effects.
-# 0.18
-more += ((giant|floating|shining) eye|eye of draining).*into view
+more += ((floating|shining) eye|eye of draining).*into view
 more += (moth of wrath|ghost moth|torpor snail).*into view
 # Convokers/encirclers
 more += (guardian serpent|draconian shifter|convoker).*into view
@@ -473,9 +462,6 @@ more += (ancient lich|orb of fire|executioner|juggernaut|shrike).*into view
 
 # Any uniques and any pan lords
 more += (?-i:[A-Z]).* comes? into view
-
-# not needed in 0.18
-more += the royal jelly.* comes? into view
 
 stop := runrest_stop_message
 ignore := runrest_ignore_message
@@ -566,8 +552,6 @@ spell_slot += Controlled blink:oie
 spell_slot += Corona:zcn
 spell_slot += Chain lightning:cn
 spell_slot += Cigutovi's embrace:eio
-# not needed in 0.18
-spell_slot += Condensation shield:eio
 spell_slot += Confusing touch:oxc
 spell_slot += Confuse:cfn
 spell_slot += Conjure flame:cfj
@@ -596,8 +580,6 @@ spell_slot += Freeze:zfc
 spell_slot += Fulminant prism:fpt
 spell_slot += Gell's Gravitas:gvt
 spell_slot += Glaciate:gct
-# not needed in 0.19
-spell_slot += Haste:eas
 spell_slot += Haunt:hnt
 spell_slot += Hydra form:hym
 spell_slot += Ice form:cfm
@@ -615,8 +597,6 @@ spell_slot += Lehudib's crystal spear:bly
 spell_slot += Lightning bolt:lbt
 spell_slot += Magic dart:zdt
 spell_slot += Malign gateway:wyt
-# Not needed in 0.18
-spell_slot += Mass confusion:mcf
 spell_slot += Mephitic cloud:mpc
 spell_slot += Metabolic englaciation:mgt
 spell_slot += Monstrous menagerie:mgt
@@ -629,8 +609,6 @@ spell_slot += Pain:zpn
 spell_slot += Passage of golubria:uoi
 spell_slot += Passwall:wpP
 spell_slot += Petrify:pyt
-# Not needed in 0.18
-spell_slot += Phase shift:eai
 spell_slot += Poison arrow:pwn
 spell_slot += Poisonous cloud:pcd
 spell_slot += Portal projectile:oei
@@ -657,8 +635,6 @@ spell_slot += Sticks to snakes:tkc
 spell_slot += Sticky flame:yfk
 spell_slot += Sting:zpt
 spell_slot += Stone arrow:wtn
-# not needed in 0.18
-spell_slot += Stoneskin:ieo
 spell_slot += Summon butterflies:UEI
 spell_slot += Summon demon:dmn
 spell_slot += Summon forest:ftm
@@ -690,8 +666,7 @@ spell_slot += .*:XYZ
 ##################
 
 ## In order of letter used.
-# 0.18
-item_slot += amulet of (stasis|harm) : A
+item_slot += amulet of harm : A
 item_slot += amulet of rage : B
 item_slot += ring of (ice|protection from cold) : Cc
 item_slot += amulet of (warding|dismissal) : D
@@ -701,26 +676,18 @@ item_slot += amulet of regeneration : g
 item_slot += amulet of guardian spirit : G
 item_slot += amulet of faith : H
 item_slot += \+[0-9]+ ring of intelligence : Ii
-# 0.18
-item_slot += amulet of clarity : K
 item_slot += ring of flight : L
 item_slot += ring of protection from magic : Mm
 item_slot += ring of positive energy : Nn
 item_slot += \+[0-9]+ ring of protection : Oo
 item_slot += ring of poison resistance : P
 item_slot += ring of stealth : Qq
-# 0.18
-item_slot += (amulet|ring) of resist corrosion : R
+item_slot += ring of resist corrosion : R
 item_slot += amulet of mana regeneration : r
 item_slot += \+[0-9]+ ring of strength : Ss
 item_slot += ring of teleportation : t
-item_slot += ring of sustain attributes : T
 item_slot += amulet of gourmand : U
-# 0.18
-item_slot += amulet of resist mutation : u
 item_slot += ring of see invisible : v
-# 0.18
-item_slot += ring of invisibility : V
 item_slot += ring of magical power : Ww
 item_slot += \+[0-9]+ ring of dexterity : Xx
 item_slot += \+[0-9]+ ring of slaying : Yy
@@ -742,16 +709,19 @@ ai += scrolls? of silence:!r
 ai += of faith:!P
 ai += ( rod ):!a
 ai += manual of:!d
-ai += staff of (Wucad Mu|energy|channeling|wizardry|power|conjuration|summoning):!a
+ai += staff of (Wucad Mu|energy|wizardry|power|conjuration|summoning):!a
 ai += (large rock|throwing net|curare|of dispersal):=f
 
-# From simm's rc, helpful for realtime.
+# Convenient shortcuts
 ai += curing:@q1
 ai += potions? of heal wounds:@q2
+# /heal wounds removed in 0.20
 ai += wand of heal wounds:@v2
 ai += potions? of haste:@q3
+# /hasting emoved in 0.20
 ai += wand of hasting:@v3
 ai += scrolls? of teleportation:@r4
+# Removed in 0.20
 ai += wand of teleportation:@v4
 ai += identify:@r1
 ai += remove curse:@r2
@@ -770,8 +740,7 @@ note_chat_messages = false
 user_note_prefix = >>
 
 note_items += experience,of resistance, Archmagi
-# 0.18
-note_items += crystal plate armour,pearl dragon (armour|scales)
+note_items += crystal plate armour,pearl dragon scales
 note_items += artefact,wand of (heal wounds|hasting|teleportation)
 note_messages += You feel monstrous
 note_messages += You pass through the gate
