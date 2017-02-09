@@ -23,6 +23,7 @@ monster_list_colour += tough:yellow,nasty:lightred
 # needed in 0.20
 bold_brightens_foreground=true
 best_effort_brighten_background=false
+equip_bar = true
 
 ## For item_glyph, subsequent matches override previous ones.
 item := item_glyph
@@ -35,12 +36,19 @@ item += dangerous_item:blue
 item += useless_item:darkgrey
 
 ### Potions ###
-item += potions? of.*(lignification|mutation):blue
-item += potions? of.*heal wounds:lightred
+
 item += potions? of.*(curing|flight):lightgrey
-item += potions? of.*(experience|beneficial mutation):white
+: if you.race() == "Vampire" then
+  item += potions? of blood:lightgrey
+: end
 item += potions? of.*berserk:brown
 item += potions? of.*might:yellow
+item += potions? of.*cancellation:cyan
+
+: if tonumber(crawl.version("major")) <= 0.19 then
+
+item += potions? of.*heal wounds:lightred
+item += potions? of.*(experience|beneficial mutation):white
 item += potions? of.*brilliance:green
 item += potions? of.*(invisibility|agility):lightgreen
 item += potions? of.*cancellation:cyan
@@ -48,41 +56,96 @@ item += potions? of.*cure mutation:lightcyan
 item += potions? of.*(magic|ambrosia):magenta
 item += potions? of.*(haste|resistance):lightmagenta
 
+: else
+
+item += potions? of.*ambrosia:blue
+item += potions? of.*experience:lightred
+item += potions? of.*heal wounds:white
+item += potions? of.*(resistance|agility):green
+item += potions? of.*(haste|invisibility):lightgreen
+item += potions? of.*mutation:lightcyan
+item += potions? of.*brilliance:magenta
+item += potions? of.*magic:lightmagenta
+
+:end
+
 ### Scrolls ###
-item += scroll.*noise:blue
-item += scroll.*recharging:lightred
-item += scroll.*(amnesia|curse):lightgrey
-item += scroll.*acquirement:white
+
 : if you.race() == "Vampire" or you.race() == "Mummy"
 :  or you.race() == "Ghoul" then
-  item += scroll.*holy word:blue
+  item += scroll.*holy word:darkgrey
   item += scroll.*torment:brown
 : else
   item += scroll.*holy word:brown
-  item += scroll.*torment:blue
+  item += scroll.*torment:darkgrey
 : end
+
+item += scroll.*acquirement:white
 item += scroll.*(summoning):yellow
-item += scroll.*(silence|vulnerability|immolation):green
-item += scroll.*(enchant|brand weapon):lightgreen
 item += scroll.*identify:cyan
 item += scroll.*magic mapping:lightcyan
+
+: if tonumber(crawl.version("major")) <= 0.19 then
+
+item += scroll.*noise:blue
+item += scroll.*recharging:lightred
+item += scroll.*(amnesia|curse):lightgrey
+item += scroll.*(silence|vulnerability|immolation):green
+item += scroll.*(enchant|brand weapon):lightgreen
 item += scroll.*(fog|teleport):magenta
 item += scroll.*(fear|blink):lightmagenta
+
+:else
+
+item += scroll.*(silence|vulnerability|immolation):blue
+item += scroll.*remove curse:lightgrey
+item += scroll.*(fog|teleport):green
+item += scroll.*(fear|blink):lightgreen
+item += scroll.*(recharging):magenta
+item += scroll.*(enchant|brand weapon):lightmagenta
+
+:end
 
 ### Wands ###
 
 # Sometimes dangerous
 item += wand of.*random effects:blue
+
+# Single target piercing.
+item += wand of.*lightning:brown
+item += wand of.*acid:yellow
+
+: if tonumber(crawl.version("major")) <= 0.19 then
+
 item += wand of.*heal wounds:lightred
 
 item += wand of.*flame:lightgrey
 item += wand of.*iceblast:white
 
 item += wand of.*(slowing|confusion|polymorph):green
-item += wand of.*(invisibility|paralysis|enslavement):lightgreen
-item += wand of.*(digging|disintegration):cyan
+item += wand of.*(paralysis|enslavement):lightgreen
+
+item += wand of.*disintegration:cyan
+item += wand of.*digging:lightcyan
+
 item += wand of.*teleportation:magenta
 item += wand of.*hasting:lightmagenta
+
+: else
+
+item += wand of.*flame:lightgrey
+item += wand of.*clouds:white
+
+item += wand of.*digging:green
+
+# Single-turn AOE
+item += wand of.*iceblast:cyan
+item += wand of.*scattershot:lightcyan
+
+item += wand of.*(disintegration|confusion|polymorph):magenta
+item += wand of.*(paralysis|enslavement):lightmagenta
+
+: end
 
 ### General Identification ###
 # rods gone in 0.20
@@ -105,15 +168,23 @@ item += (a )?stones?$:lightgray
 
 ### Food ###
 item += chunks?.*flesh:lightgrey
-: if you.race() == "Vampire" then
-  item += potions? of blood:lightgrey
-: end
 item += mutagenic.*chunk:blue
 item += evil_eating.*chunk:red
 item += inedible.*chunk:darkgrey
+
+: if tonumber(crawl.version("major")) <= 0.19 then
+
 item += fruit:brown
 item += (pizza|jerky|jerkies):yellow
 item += royal jell:green
+
+:else
+
+item += fruit:green
+item += royal jell:yellow
+
+:end
+
 item += bread ration:lightgreen
 item += meat ration:lightred
 
@@ -185,8 +256,8 @@ menu += inventory:lightgreen:.*equipped.*
 # Colouring of autoinscribed god gifts
 menu += pickup:lightred:god gift
 # Highlight (partly) selected items
-menu_colour += inventory:white:\w \+\s
-menu_colour += inventory:white:\w \#\s
+menu += inventory:white:\w \+\s
+menu += inventory:white:\w \#\s
 
 ### Food ###
 # Color chunks, put ordinary ones on lightgrey.
@@ -194,72 +265,106 @@ menu += red:evil_eating.*chunk
 menu += blue:mutagenic.*chunk
 menu += darkgrey:inedible
 menu += lightgrey: +(chunks?$|chunks? +)
-# These are analogous to chunks
-: if you.race() == "Vampire" then
-  menu += lightgrey:potions? of blood
-: end
-
 # Other food
+
+: if tonumber(crawl.version("major")) <= 0.19 then
+
 menu += brown:fruit
 menu += yellow:(pizza|jerky|jerkies)
 menu += green:royal jell
+
+: else
+
+menu += green:fruit
+menu += yellow:royal jell
+
+: end
+
 menu += lightgreen:bread ration
 menu += lightred:meat ration
 
 ### Potions ###
-# Mostly harmful
-menu += blue:potions? of.*(lignification|(?<!cure |beneficial )mutation)
-# Heal wounds
-menu += lightred:potions? of.*heal wounds
-# Mundane and ultra-rare
+
+: if you.race() == "Vampire" then
+  menu += lightgrey:potions? of blood
+: end
 menu += lightgrey:potions? of.*(curing|flight)
-menu += white:potions? of.*(experience|beneficial mutation)
-# Damage buffs
 menu += brown:potions? of.*berserk
 menu += yellow:potions? of.*might
-# Other buffs
+menu += cyan:potions? of.*cancellation
+
+: if tonumber(crawl.version("major")) <= 0.19 then
+
+menu += blue:potions? of.*(lignification|mutation)
+menu += lightred:potions? of.*heal wounds
+menu += white:potions? of.*(experience|beneficial mutation)
 menu += green:potions? of.*brilliance
 menu += lightgreen:potions? of.*(invisibility|agility)
-# Curing/avoiding mutations
 menu += cyan:potions? of.*cancellation
 menu += lightcyan:potions? of.*cure mutation
-# Emergency/escape
 menu += magenta:potions? of.*(magic|ambrosia)
 menu += lightmagenta:potions? of.*(haste|resistance)
 
+: else
+
+menu += blue:potions? of.*(lignification|ambrosia)
+menu += lightred:potions? of.*experience
+menu += white:potions? of.*heal wounds
+menu += green:potions? of.*(resistance|agility)
+menu += lightgreen:potions? of.*(haste|invisibility)
+menu += lightcyan:potions? of.*mutation
+menu += magenta:potions? of.*brilliance
+menu += lightmagenta:potions? of.*magic
+
+:end
+
 ### Scrolls ###
-# Mostly harmful
-menu += blue:scroll.*noise
-# Recharging
-menu += lightred:scroll.*recharging
-# Mundane and ultra-rare
-menu += grey:scroll.*(amnesia|curse)
-menu += white:scroll.*acquirement
-# Damaging scrolls
+
 : if you.race() == "Vampire" or you.race() == "Mummy"
-:   or you.race() == "Ghoul" then
-  menu += blue:scroll.*holy word
+:  or you.race() == "Ghoul" then
+  menu += darkgrey:scroll.*holy word
   menu += brown:scroll.*torment
 : else
   menu += brown:scroll.*holy word
-  menu += blue:scroll.*torment
+  menu += darkgrey:scroll.*torment
 : end
-menu += yellow:scroll.*summoning
-# Hexes and Enchantments
-menu += green:scroll.*(silence|immolation|vulnerability)
-menu += lightgreen:scroll.*(enchant|brand)
-# Dungeon info
+
+menu += white:scroll.*acquirement
+menu += yellow:scroll.*(summoning)
 menu += cyan:scroll.*identify
-menu += lightcyan:scroll.*magic map
-# Escape
+menu += lightcyan:scroll.*magic mapping
+
+: if tonumber(crawl.version("major")) <= 0.19 then
+
+menu += blue:scroll.*noise
+menu += lightred:scroll.*recharging
+menu += lightgrey:scroll.*(amnesia|curse)
+menu += green:scroll.*(silence|vulnerability|immolation)
+menu += lightgreen:scroll.*(enchant|brand weapon)
 menu += magenta:scroll.*(fog|teleport)
 menu += lightmagenta:scroll.*(fear|blink)
+
+:else
+
+menu += blue:scroll.*(noise|silence|vulnerability|immolation)
+menu += lightgrey:scroll.*remove curse
+menu += green:scroll.*(fog|teleport)
+menu += lightgreen:scroll.*(fear|blink)
+menu += magenta:scroll.*(recharging)
+menu += lightmagenta:scroll.*(enchant|brand weapon)
+
+:end
 
 ### Wands ###
 
 # Can be harmful
 menu += blue:wand of.*random effects
-# Heal wounds
+
+# High level damage
+menu += brown:wand of.*lightning
+menu += yellow:wand of.*acid
+
+: if tonumber(crawl.version("major")) <= 0.19 then
 menu += lightred:wand of.*heal wounds
 
 menu += lightgrey:wand of.*flame
@@ -274,7 +379,23 @@ menu += lightcyan:wand of.*digging
 menu += magenta:wand of.*teleportation
 menu += lightmagenta:wand of.*hasting
 
+: else
+
+menu += lightgrey:wand of.*flame
+menu += white:wand of.*clouds
+
+menu += green:wand of.*digging
+
+menu += cyan:wand of.*iceblast
+menu += lightcyan:wand of.*scattershot
+
+menu += magenta:wand of.*(disintegration|confusion|polymorph)
+menu += lightmagenta:wand of.*(paralysis|enslavement)
+
+: end
+
 ### General identification ###
+
 menu += cyan:manual of
 menu += lightcyan:manual
 menu += lightmagenta:unidentified.*artefact.*
@@ -707,7 +828,10 @@ ai += potions? of berserk rage:!q
 ai += scrolls? of silence:!r
 
 ai += of faith:!P
+# Rods removed in 0.20
+: if tonumber(crawl.version("major")) < 0.20 then
 ai += ( rod ):!a
+: end
 ai += manual of:!d
 ai += staff of (Wucad Mu|energy|wizardry|power|conjuration|summoning):!a
 ai += (large rock|throwing net|curare|of dispersal):=f
