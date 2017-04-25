@@ -173,7 +173,7 @@ function wield_swing_item()
   rstate.wielding = true
   rstate.last_acted = you.turns()
   record_status()
-  crawl.sendkeys("w" .. c_persist.swing_slot)
+  crawl.sendkeys("w*" .. c_persist.swing_slot)
 end
 
 function find_swing_slot()
