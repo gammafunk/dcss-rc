@@ -5,7 +5,7 @@
 -- See README.md for documentation.
 
 -- How many turns to rest at max.
-num_rest_turns = 20
+num_rest_turns = 30
 
 -- If true, look for a foot item inventory slot and use fallback_slot if we
 -- can't find a ration. If false, always use fallback_slot.
@@ -188,9 +188,11 @@ function find_swing_slot()
       or item.class() == "Books"
       or item.class() == "Wands"
       or item.class() == "Missiles"
+      or item.class() == "Miscellaneous"
       or (item.class() == "Hand Weapons"
             and (item.subtype():find("bow")
-                   or item.subtype():find("sling")
+                 or item.subtype():find("sling")
+                 or item.subtype():find("crossbow")
                  or item.subtype():find("blowgun"))) then
         c_persist.swing_slot = items.index_to_letter(item.slot)
         break
@@ -244,6 +246,7 @@ function player_move_speed()
   local in_water = in_water()
   local walk_water = you.race() == "Merfolk"
     or you.race() == "Octopode"
+    or you.race() == "Barachi"
     or you.god() == "Beogh" and you.piety_rank() == 5
     or you.transform == "ice"
 
@@ -331,7 +334,8 @@ end
 function get_rest_type()
   if you.race() == "Naga" and naga_always_walk
     or you.god() == "Cheibriados"
-  or not weapon_can_swap() then
+    or (not swing_item_wielded()
+        and not weapon_can_swap()) then
     return "walk"
   else
     return "item"
