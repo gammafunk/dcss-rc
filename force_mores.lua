@@ -10,39 +10,34 @@ last_turn = you.turns()
 -- giving the regexp matching the appropriate monster(s), a cond field giving
 -- the condition type, and a cutoff field giving the max value where the
 -- force-more is active. Possible values for cond are xl and maxhp. Note that
--- the final pattern will be "(pattern).*into view" where pattern is the value
--- from the entry.
+-- the final force_more pattern will be "(PATTERN).*into view" where PATTERN is
+-- the value from the pattern field if that is a string, or if pattern is an
+-- array, a string made from joining the entries in pattern with '|'.
 
 fm_patterns = {
-  -- General early game threats
-  {pattern = "adder|gnoll|hound", cond = "xl", cutoff = 2,
-   name = "XL1"},
-  -- Problems for chars with 20, 60, 90, or 120 mhp
-  {pattern = "orc|Ogre", cond = "maxhp", cutoff = 20, name = "20mhp"},
-  {pattern = "orc priest", cond = "maxhp", cutoff = 40, name = "40mhp"},
-  {pattern = "centaur [^wzs]|drake|blink frog|spiny frog|basilisk" ..
-     "|raven|komodo dragon|blink frog|snapping turtle|black mamba" ..
-     "|(redback|trapdoor) spider|hill giant|deep elf (summoner|mage)" ..
-     "|gargoyle|sixfirhy|sun demon",
-   cond = "maxhp", cutoff = 60, name = "60mhp"},
-  {pattern = "hydra|death yak|tarantella|(wolf|orb|jumping) spider" ..
-     "|alligator|catoblepas|(fire|ice) dragon|spriggan (rider|druid)" ..
-     "|torpor|yaktaur|vault guard|manticore|harpy|faun|merfolk|siren" ..
-     "|water nymph|mana viper|a wizard|[0-9]+ wizards|ogre mage" ..
-     "|deep elf (knight|conjurer)|tengu conjurer|green death" ..
-     "|shadow demon",
-   cond = "maxhp", cutoff = 90, name = "90mhp"},
-  {pattern = "centaur warrior|yaktaur captain" ..
-     "|(quicksilver|storm|shadow|iron) dragon|alligator snapping turtle" ..
-     "|satyr|naga sharpshooter|merfolk avatar|anaconda|shock serpent" ..
-     "|emperor scorpion(stone|frost|fire) giant|titan|entropy weaver" ..
-     "|thorn hunter|sphinx|war gargoyle|preserver" ..
-     "|vault (warden|sentinel)|convoker|monstrosity|tengu reaver" ..
-     "|deep elf (master archer|blademaster|death mage" ..
-     "|sorcerer|demonologist|annihilator)" ..
-     "|octopode crusher|yaktaur captain|spriggan (defender|air mage)" ..
-     "|reaper|balrug",
-   cond = "maxhp", cutoff = 120, name = "120mhp"}
+  -- Fast, early game Dungeon problems for chars with low mhp.
+  {name = "30mhp", cond = "maxhp", cutoff = 30,
+   pattern = "adder|hound"},
+  -- Dungeon monsters that can damage you for close to 50% of your mhp with a
+  -- ranged attack.
+  {name = "40mhp", cond = "maxhp", cutoff = 40,
+   pattern = "orc priest|electric eel"},
+  {name = "60mhp", cond = "maxhp", cutoff = 60,
+   pattern = "acid dragon|steam dragon|manticore"},
+  {name = "70mhp", cond = "maxhp", cutoff = 70,
+   pattern = "centaur|meliai|yaktaur"},
+  {name = "80mhp", cond = "maxhp", cutoff = 80,
+   pattern = "gargoyle|orc (warlord|knight)"},
+  {name = "90mhp", cond = "maxhp", cutoff = 90,
+   pattern = "centaur warrior|efreet|molten gargoyle|tengu conjurer"},
+  {name = "110mhp", cond = "maxhp", cutoff = 110,
+   pattern = {"centaur warrior", "deep elf", "cyclops", "efreet",
+              "molten gargoyle", "tengu conjurer", "yaktaur captain",
+              "necromancer", "deep troll earth mage", "hell knight",
+              "stone giant"} },
+  {name = "160mhp", cond = "maxhp", cutoff = 160,
+   pattern = {"(fire|ice|quicksilver|shadow|storm) dragon",
+              "(fire|frost) giant", "war gargoyle"} },
 } -- end fm_patterns
 
 active_fm = {}
@@ -70,7 +65,19 @@ function update_force_mores()
   local deactivated = {}
   local hp, maxhp = you.hp()
   for i,v in ipairs(fm_patterns) do
-    local msg = "(" .. v.pattern .. ").*into view"
+    local msg = nil
+    if type(v.pattern) == "table" then
+      for j, p in ipairs(v.pattern) do
+        if msg == nil then
+          msg = p
+        else
+          msg = msg .. "|" .. p
+        end
+      end
+    else
+      msg = v.pattern
+    end
+    msg = "(" .. msg .. ").*into view"
     local action = nil
     local fm_name = v.pattern
     if v.name then

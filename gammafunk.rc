@@ -567,19 +567,24 @@ more += god:
 : end
 
 # Dangerous monsters we force_more when first seen.
-# Eyes and bugs with ranged, irresistable effects.
-more += ((floating|shining) eye|eye of draining).*into view
-more += (moth of wrath|ghost moth|torpor snail).*into view
-# Convokers/encirclers
-more += (guardian serpent|draconian shifter|convoker).*into view
-# Torment/flay
+# Things with ranged (or extremely fast), irresistable effects.
+more += ((floating|shining) eye|dream sheep|death drake).*into view
+more += (wretched star|apocalypse crab|death drake).*into view
+more += (entropy weaver|torpor snail|spriggan druid).*into view
+more += (vault (warden|sentinel)|merfolk (avatar|siren)).*into view
+more += (guardian serpent|draconian shifter|convoker|death cob).*into view
+more += (phantasmal warrior).*into view
+# Paralysis/Petrify/Banish
+more += (orc sorcerer|wizard|ogre mage|great orb of eyes|sphinx).*into view
+more += (vampire knight|basilisk|deep elf (sorcerer|demonologist)).*into view
+# Torment/flay or hellfire
 more += (flayed ghost|greater mummy|mummy priest|fiend|tzitzimitl).*into view
-more += (tormentor|curse toe|curse skull).*into view
-# Hellfire
-more += (hellion|hell sentinel|deep elf sorcerer).*into view
-more += (deep elf high priest|zealout|scorcher).*into view
-# Rare, high damage things.
-more += (ancient lich|orb of fire|executioner|juggernaut|shrike).*into view
+more += (tormentor|curse toe|curse skull|hell sentinel|hellion).*into view
+more += (deep elf (sorcerer|high priest)|draconian scorcher).*into view
+# Things that can hit for over 90+ damage in a turn that is either ranged or
+# very fast.
+more += ((deep elf|draconian) annihilator|tengu reaver).*into view
+more += (lich|orb of fire|executioner|juggernaut|shrike).*into view
 
 # Any uniques and any pan lords
 more += (?-i:[A-Z]).* comes? into view
