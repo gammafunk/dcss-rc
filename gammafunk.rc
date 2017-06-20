@@ -907,7 +907,6 @@ macros += M - ===toggle_random_tile
 ###########
 
 {
-
 -- Equipment autopickup (by Medar and various others)
 local function pickup_equipment(it, name)
   if it.is_useless then return end
@@ -963,40 +962,40 @@ end
 function force_cast_spell()
   generic_cast_spell('Z')
 end
-
+}
 
 -- Note: My final rc file has the lua files from
 -- https://github.com/gammafunk/dcss-rc included starting on the next line.
 --LUA INCLUDE--
 
+{
 function ready()
+
+  -- Only for myself
+  if you.name() == "gammafunk" then
+    -- char default skills; this must come before target_skill().
+    char_defaults()
+  end
 
   -- Enable skill target settings.
   target_skill()
 
-  -- Char dumps every 1k turns.
-  char_dump()
-
   -- Dynamic force-mores.
   force_mores()
 
-  -- Only enable these for myself
+  -- Only for myself
   if you.name() == "gammafunk" then
-    -- Enable char default skills; this must come before target_skill().
-    char_defaults()
-
-    -- Enable speedrun resting.
+    -- speedrun resting.
     speedrun_rest()
 
-    -- Enable persistent messages.
+    -- persistent messages.
     load_message()
 
-    -- Enable RandomTiles.
+    -- RandomTiles.
     random_tile()
   end
 
 end
-
 }
 
 #############
