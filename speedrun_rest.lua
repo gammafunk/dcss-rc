@@ -84,10 +84,6 @@ function delta_to_vi(dx, dy)
 end
 
 function reset_rest()
-  -- Clear out the now-unused persistant table in old versions
-  if c_persist.bread then
-    c_persist.bread = nil
-  end
   if not rstate then
     rstate = { }
     rstate.set_slot = false
@@ -205,7 +201,9 @@ end
 
 function swing_item_wielded()
   local weapon = items.equipped_at("Weapon")
-  return weapon and weapon.slot == items.letter_to_index(c_persist.swing_slot)
+  return weapon
+    and c_persist.swing_slot ~= nil
+    and weapon.slot == items.letter_to_index(c_persist.swing_slot)
 end
 
 function hostile_in_los()
