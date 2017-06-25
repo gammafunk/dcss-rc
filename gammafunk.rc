@@ -969,9 +969,9 @@ function force_cast_spell()
 end
 }
 
--- Note: My final rc file has the lua files from
--- https://github.com/gammafunk/dcss-rc included starting on the next line.
---LUA INCLUDE--
+# Note: My final rc file has the lua files from
+# https://github.com/gammafunk/dcss-rc included starting after the next line.
+# BEGIN LUA
 
 {
 function ready()
