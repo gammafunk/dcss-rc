@@ -109,8 +109,8 @@ end
 
 function have_defaults()
   return  you.class() ~= "Wanderer"
-    and c_persist.char_defaults
-    and c_persist.char_defaults[char_combo]
+    and c_persist.char_defaults ~= nil
+    and c_persist.char_defaults[char_combo] ~= nil
 end
 
 function load_char_defaults(quiet)
