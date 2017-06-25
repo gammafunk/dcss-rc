@@ -2,26 +2,34 @@
 # See the README for further details:
 # https://github.com/gammafunk/dcss-rc/blob/master/README.md
 
-# NOTE: This RC has things for RandomTiles.rc and speedrun lua enabled only for
-# my username. If you copy gammafunk.rc to your own RC file, it's a good idea
-# to find and remove sections in `if' statments that look like this:
+# NOTE: This RC has things for RandomTiles.rc and gammaspeed.rc enabled only
+# for my username. If you copy gammafunk.rc to your own RC file, it's a good
+# idea to find and remove sections in `if' statments that look like this:
 #
 # if you.name() == "gammafunk" then
 # ...
 # end
 #
 # and either remove these sections completely if you don't want
-# RandomTiles.rc/speedrun lua, or, if you do want those files, remove only the
+# RandomTiles.rc/gammaspeed.rc, or, if you do want those files, remove only the
 # containing if statments so that those files are loaded in your RC.
 
 ################
 ### RC files ###
 ################
 
-# Only load RandomTiles.rc for my username.
+# Only load RandomTiles.rc and gammaspeed.rc under my username.
 {
 if you.name() == "gammafunk" then
+    -- Prevent gammaspeed.rc from trying to load this file twice.
+    gammafunk_rc_loaded = true
+
     crawl.read_options("RandomTiles.rc")
+
+    -- Only load gammaspeed.rc if we haven't already.
+    if not gammaspeed_rc_loaded then
+        crawl.read_options("gammaspeed.rc")
+    end
 end
 }
 

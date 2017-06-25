@@ -1,0 +1,81 @@
+# Crawl Init file with some speedrun related things.
+# See the README for further details:
+# https://github.com/gammafunk/dcss-rc/blob/master/README.md
+# NOTE: This file includes gammafunk.rc automatically. If you're using this RC
+# as your RC file, see the notes at the top of gammafunk.rc about sections
+# conditioned on my username, as those apply to this RC file as well.
+
+################
+### RC files ###
+################
+
+{
+-- Prevent gammafunk.rc from attempting to load gammaspeed.rc twice.
+gammaspeed_rc_loaded = true
+
+-- Only load gammafunk.rc and RandomTiles.rc if we haven't already.
+if not gammafunk_rc_loaded then
+    crawl.read_options("gammafunk.rc")
+
+    -- Only load RandomTiles for myself.
+    if you.name() == "gammaspeed" then
+        crawl.read_options("RandomTiles.rc")
+    end
+end
+}
+
+############
+## Macros ##
+############
+
+macros += M 6 ===one_turn_rest
+macros += M 7 ===start_resting
+
+# Only make these macros for my username. Needs to be set in lua instead of
+# directly as RC statments for the name condition to work.
+{
+if you.name() == "gammaspeed" then
+    crawl.setopt("macros += M 1 zz")
+    crawl.setopt("macros += M S ===save_with_message")
+    crawl.setopt("macros += M 8 ===new_random_tile")
+    crawl.setopt("macros += M 9 ===set_tile_by_name")
+    crawl.setopt("macros += M 0 ===toggle_tile_timer")
+    crawl.setopt("macros += M - ===toggle_random_tile")
+end
+}
+
+###########
+### Lua ###
+###########
+
+# Note: My final rc file has the code from char_defaults.lua speedrun_rest.lua
+# starting from the line below.
+# BEGIN LUA
+
+# The ready() function  is needed for code that has to process each turn or UI
+# action.
+{
+function ready()
+
+  -- char_defaults.lua; this must come before the call to target_skill().
+  char_defaults()
+
+  -- target_skill.lua
+  target_skill()
+
+  -- force_mores.lua
+  force_mores()
+
+  -- speedrun_rest.lua
+  speedrun_rest()
+
+  -- Only use RandomTiles and load_message.lua under my username.
+  if you.name() == "gammaspeed" then
+      random_tile()
+
+      -- load_message.lua
+      load_message()
+  end
+
+end
+}
