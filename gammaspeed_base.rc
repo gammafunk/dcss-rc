@@ -24,6 +24,14 @@ if not gammafunk_rc_loaded then
 end
 }
 
+#################
+### Interface ###
+#################
+
+# This doesn't seem to work when included from another RC, so set it here as
+# well.
+default_manual_training = true
+
 ############
 ## Macros ##
 ############
