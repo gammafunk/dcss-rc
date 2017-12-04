@@ -38,6 +38,7 @@ default_manual_training = true
 
 macros += M 6 ===one_turn_rest
 macros += M 7 ===start_resting
+macros += M ] ===save_char_defaults
 
 # Only make these macros for my username. Needs to be set in lua instead of
 # directly as RC statments for the name condition to work.
@@ -56,8 +57,11 @@ end
 ### Lua ###
 ###########
 
-# Note: My final rc file has the code from char_defaults.lua speedrun_rest.lua
-# starting from the line below.
+# Note: My final RC file has code from lua files found at:
+#     https://github.com/gammafunk/dcss-rc/blob/master/README.md
+
+# starting from the line below. Some lua is in gammafunk.rc instead, which is
+# sourced by this RC.
 {
 -----------------------------
 ---- Begin char_defaults ----
@@ -85,17 +89,6 @@ if not mpr then
       color = "white"
     end
     crawl.mpr("<" .. color .. ">" .. msg .. "</" .. color .. ">")
-  end
-end
-
-function save_default_target_skill(quiet)
-  if not c_persist.target_skill or not have_defaults() then
-    return
-  end
-  c_persist.char_defaults[char_combo].target_skill = c_persist.target_skill
-  if not quiet then
-    mpr("Set default target skill for " .. char_combo .. ": "
-          .. c_persist.target_skill)
   end
 end
 
@@ -156,13 +149,6 @@ function save_char_defaults(quiet)
       chdat[sk] = nil
     end
   end
-  if target_skill then
-    chdat["target_skill"] = nil
-    if not need_target_skill and c_persist.target_skill then
-      chdat["target_skill"] = c_persist.target_skill
-      msg = skill_message(msg, "Target", nil, c_persist.target_skill)
-    end
-  end
   if not quiet then
     mpr("Saved default for " .. char_combo .. ": " .. msg)
   end
@@ -220,20 +206,6 @@ function load_char_defaults(quiet)
       you.train_skill(sk, 0)
     end
   end
-  if target_skill then
-    if chdat["target_skill"] then
-      c_persist.target_skill = chdat["target_skill"]
-      msg = skill_message(msg, "Target", nil, c_persist.target_skill)
-      need_target_skill = false
-      record_current_skills(c_persist.target_skill)
-    else
-      -- Called by target_skill() trigger setting a skill target. We call
-      -- it here here since setting it skips the skills menu, which we
-      -- don't want that. This means the call to char_defaults() should
-      -- come before target_skill() in ready()
-      init_target_skill()
-    end
-  end
   if not quiet and msg ~= "" then
     mpr("Loaded default for " .. char_combo .. ": " .. msg)
   end
@@ -247,12 +219,11 @@ function char_defaults(quiet)
   if not load_attempted then
     load_char_defaults(quiet)
     load_attempted = true
-  end
-  -- Save defaults if target_skill is loaded and has already been called
-  if need_target_skill ~= nil
-    and need_target_skill ~= true
-  and not have_defaults() then
-    save_char_defaults(quiet)
+
+    -- Open the skill menu if we don't have settings to load.
+    if not have_defaults() then
+      crawl.sendkeys("m")
+    end
   end
 end
 
@@ -836,11 +807,8 @@ reset_rest()
 {
 function ready()
 
-  -- char_defaults.lua; this must come before the call to target_skill().
+  -- char_defaults.lua
   char_defaults()
-
-  -- target_skill.lua
-  target_skill()
 
   -- force_mores.lua
   force_mores()
@@ -848,12 +816,14 @@ function ready()
   -- speedrun_rest.lua
   speedrun_rest()
 
-  -- Only use RandomTiles and load_message.lua under my username.
+  -- Enable these only for my usernames.
   if you.name() == "gammaspeed" then
-      random_tile()
-
       -- load_message.lua
       load_message()
+
+      -- RandomTiles
+      random_tile()
+
   end
 
 end

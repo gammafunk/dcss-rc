@@ -27,17 +27,6 @@ if not mpr then
   end
 end
 
-function save_default_target_skill(quiet)
-  if not c_persist.target_skill or not have_defaults() then
-    return
-  end
-  c_persist.char_defaults[char_combo].target_skill = c_persist.target_skill
-  if not quiet then
-    mpr("Set default target skill for " .. char_combo .. ": "
-          .. c_persist.target_skill)
-  end
-end
-
 function skill_message(prefix, skill, skill_type, value)
   local msg = ""
   if prefix then
@@ -93,13 +82,6 @@ function save_char_defaults(quiet)
       msg = skill_message(msg, sk, nil, skill_glyphs[chdat[sk]])
     else
       chdat[sk] = nil
-    end
-  end
-  if target_skill then
-    chdat["target_skill"] = nil
-    if not need_target_skill and c_persist.target_skill then
-      chdat["target_skill"] = c_persist.target_skill
-      msg = skill_message(msg, "Target", nil, c_persist.target_skill)
     end
   end
   if not quiet then
@@ -159,20 +141,6 @@ function load_char_defaults(quiet)
       you.train_skill(sk, 0)
     end
   end
-  if target_skill then
-    if chdat["target_skill"] then
-      c_persist.target_skill = chdat["target_skill"]
-      msg = skill_message(msg, "Target", nil, c_persist.target_skill)
-      need_target_skill = false
-      record_current_skills(c_persist.target_skill)
-    else
-      -- Called by target_skill() trigger setting a skill target. We call
-      -- it here here since setting it skips the skills menu, which we
-      -- don't want that. This means the call to char_defaults() should
-      -- come before target_skill() in ready()
-      init_target_skill()
-    end
-  end
   if not quiet and msg ~= "" then
     mpr("Loaded default for " .. char_combo .. ": " .. msg)
   end
@@ -186,12 +154,11 @@ function char_defaults(quiet)
   if not load_attempted then
     load_char_defaults(quiet)
     load_attempted = true
-  end
-  -- Save defaults if target_skill is loaded and has already been called
-  if need_target_skill ~= nil
-    and need_target_skill ~= true
-  and not have_defaults() then
-    save_char_defaults(quiet)
+
+    -- Open the skill menu if we don't have settings to load.
+    if not have_defaults() then
+      crawl.sendkeys("m")
+    end
   end
 end
 

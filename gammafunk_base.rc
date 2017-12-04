@@ -919,9 +919,6 @@ dump_order += vaults,notes,kills
 ## Macros ##
 ############
 
-# To set the target skill manually.
-macros += M ] ===set_target_skill
-
 # Only make these macros for my username. Needs to be set in lua instead of
 # directly as RC statments for the name condition to work.
 {
@@ -997,8 +994,9 @@ function force_cast_spell()
 end
 }
 
-# Note: My final rc file has the code from foce_mores.lua, load_message.lua,
-# and target_skill.lua starting from the line below.
+# Note: My final RC file has code from lua files found at:
+#     https://github.com/gammafunk/dcss-rc/blob/master/README.md
+# starting from the line below.
 # BEGIN LUA
 
 # The ready() function  is needed for code that has to process each turn or UI
@@ -1006,20 +1004,21 @@ end
 {
 function ready()
 
-  -- char_defaults.lua; this must come before the call to target_skill().
-  -- Enabled only for my username.
-  if you.name() == "gammafunk" then
-    char_defaults()
+  -- Open skill screen on turn 0. When using char_defaults, this is handled by
+  -- that function.
+  if you.name() ~= "gammafunk" and not skills_set and you.turns() == 0 then
+      crawl.sendkeys("m")
+      skills_set = true
   end
-
-  -- target_skill.lua
-  target_skill()
 
   -- force_mores.lua
   force_mores()
 
   -- Enable these only for my username.
   if you.name() == "gammafunk" then
+    -- char_defaults.lua
+    char_defaults()
+
     -- speedrun rest.lua
     speedrun_rest()
 
