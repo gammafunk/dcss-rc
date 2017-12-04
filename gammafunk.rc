@@ -913,7 +913,7 @@ note_monsters += killer klown,electric golem,orb of fire
 dump_message_count = 30
 dump_order  = header,hiscore,stats,misc,mutations,skills,spells,inventory
 dump_order += overview,screenshot,monlist,messages,skill_gains,action_counts
-dump_order += vaults,notes,kills
+dump_order += vaults,notes,kills,turns_by_place,xp_by_level
 
 ############
 ## Macros ##
