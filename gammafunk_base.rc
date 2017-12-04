@@ -53,9 +53,7 @@ monster_list_colour += tough:yellow,nasty:lightred
 ###############
 
 # Enable use of darkgrey.
-# needed in 0.20
 bold_brightens_foreground=true
-best_effort_brighten_background=false
 equip_bar = true
 
 ## For item_glyph, subsequent matches override previous ones.
@@ -78,19 +76,6 @@ item += potions? of.*berserk:brown
 item += potions? of.*might:yellow
 item += potions? of.*cancellation:cyan
 
-: if tonumber(crawl.version("major")) <= 0.19 then
-
-item += potions? of.*heal wounds:lightred
-item += potions? of.*(experience|beneficial mutation):white
-item += potions? of.*brilliance:green
-item += potions? of.*(invisibility|agility):lightgreen
-item += potions? of.*cancellation:cyan
-item += potions? of.*cure mutation:lightcyan
-item += potions? of.*(magic|ambrosia):magenta
-item += potions? of.*(haste|resistance):lightmagenta
-
-: else
-
 item += potions? of.*ambrosia:blue
 item += potions? of.*experience:lightred
 item += potions? of.*heal wounds:white
@@ -99,8 +84,6 @@ item += potions? of.*(haste|invisibility):lightgreen
 item += potions? of.*mutation:lightcyan
 item += potions? of.*brilliance:magenta
 item += potions? of.*magic:lightmagenta
-
-:end
 
 ### Scrolls ###
 
@@ -118,26 +101,12 @@ item += scroll.*(summoning):yellow
 item += scroll.*identify:cyan
 item += scroll.*magic mapping:lightcyan
 
-: if tonumber(crawl.version("major")) <= 0.19 then
-
-item += scroll.*noise:blue
-item += scroll.*recharging:lightred
-item += scroll.*(amnesia|curse):lightgrey
-item += scroll.*(silence|vulnerability|immolation):green
-item += scroll.*(enchant|brand weapon):lightgreen
-item += scroll.*(fog|teleport):magenta
-item += scroll.*(fear|blink):lightmagenta
-
-:else
-
 item += scroll.*(silence|vulnerability|immolation):blue
 item += scroll.*remove curse:lightgrey
 item += scroll.*(fog|teleport):green
 item += scroll.*(fear|blink):lightgreen
 item += scroll.*(recharging):magenta
 item += scroll.*(enchant|brand weapon):lightmagenta
-
-:end
 
 ### Wands ###
 
@@ -147,24 +116,6 @@ item += wand of.*random effects:blue
 # Single target piercing.
 item += wand of.*lightning:brown
 item += wand of.*acid:yellow
-
-: if tonumber(crawl.version("major")) <= 0.19 then
-
-item += wand of.*heal wounds:lightred
-
-item += wand of.*flame:lightgrey
-item += wand of.*iceblast:white
-
-item += wand of.*(slowing|confusion|polymorph):green
-item += wand of.*(paralysis|enslavement):lightgreen
-
-item += wand of.*disintegration:cyan
-item += wand of.*digging:lightcyan
-
-item += wand of.*teleportation:magenta
-item += wand of.*hasting:lightmagenta
-
-: else
 
 item += wand of.*flame:lightgrey
 item += wand of.*clouds:white
@@ -178,17 +129,10 @@ item += wand of.*scattershot:lightcyan
 item += wand of.*(disintegration|confusion|polymorph):magenta
 item += wand of.*(paralysis|enslavement):lightmagenta
 
-: end
-
 ### General Identification ###
-# rods gone in 0.20
-: if tonumber(crawl.version("major")) < 0.20 then
-item += ( rod ):yellow
-: end
 item += (identified|known).*(jewellery|magical staff):brown
 item += identified.*spellbook:magenta
-# rods gone in 0.20
-item += unidentified.*(potion|scroll|jewellery|wand|rod|magical staff).*:lightblue
+item += unidentified.*(potion|scroll|jewellery|wand|magical staff).*:lightblue
 item += unidentified.*book:lightmagenta
 item += manual:lightcyan
 item += manual of:cyan
@@ -201,25 +145,9 @@ item += (a )?stones?$:lightgray
 
 ### Food ###
 item += chunks?.*flesh:lightgrey
-item += mutagenic.*chunk:blue
 item += evil_eating.*chunk:red
-item += inedible.*chunk:darkgrey
 
-: if tonumber(crawl.version("major")) <= 0.19 then
-
-item += fruit:brown
-item += (pizza|jerky|jerkies):yellow
-item += royal jell:green
-
-:else
-
-item += fruit:green
-item += royal jell:yellow
-
-:end
-
-item += bread ration:lightgreen
-item += meat ration:lightred
+item += ( ration):green
 
 # Want this to override anything above
 item += useless:darkgrey
@@ -290,25 +218,10 @@ menu += inventory:white:\w \#\s
 # Color chunks, put ordinary ones on lightgrey.
 menu += red:evil_eating.*chunk
 menu += blue:mutagenic.*chunk
-menu += darkgrey:inedible
 menu += lightgrey: +(chunks?$|chunks? +)
 # Other food
 
-: if tonumber(crawl.version("major")) <= 0.19 then
-
-menu += brown:fruit
-menu += yellow:(pizza|jerky|jerkies)
-menu += green:royal jell
-
-: else
-
-menu += green:fruit
-menu += yellow:royal jell
-
-: end
-
-menu += lightgreen:bread ration
-menu += lightred:meat ration
+menu += green:( ration)
 
 ### Potions ###
 
@@ -320,20 +233,6 @@ menu += brown:potions? of.*berserk
 menu += yellow:potions? of.*might
 menu += cyan:potions? of.*cancellation
 
-: if tonumber(crawl.version("major")) <= 0.19 then
-
-menu += blue:potions? of.*(lignification|mutation)
-menu += lightred:potions? of.*heal wounds
-menu += white:potions? of.*(experience|beneficial mutation)
-menu += green:potions? of.*brilliance
-menu += lightgreen:potions? of.*(invisibility|agility)
-menu += cyan:potions? of.*cancellation
-menu += lightcyan:potions? of.*cure mutation
-menu += magenta:potions? of.*(magic|ambrosia)
-menu += lightmagenta:potions? of.*(haste|resistance)
-
-: else
-
 menu += blue:potions? of.*(lignification|ambrosia)
 menu += lightred:potions? of.*experience
 menu += white:potions? of.*heal wounds
@@ -342,8 +241,6 @@ menu += lightgreen:potions? of.*(haste|invisibility)
 menu += lightcyan:potions? of.*mutation
 menu += magenta:potions? of.*brilliance
 menu += lightmagenta:potions? of.*magic
-
-:end
 
 ### Scrolls ###
 
@@ -361,26 +258,12 @@ menu += yellow:scroll.*(summoning)
 menu += cyan:scroll.*identify
 menu += lightcyan:scroll.*magic mapping
 
-: if tonumber(crawl.version("major")) <= 0.19 then
-
-menu += blue:scroll.*noise
-menu += lightred:scroll.*recharging
-menu += lightgrey:scroll.*(amnesia|curse)
-menu += green:scroll.*(silence|vulnerability|immolation)
-menu += lightgreen:scroll.*(enchant|brand weapon)
-menu += magenta:scroll.*(fog|teleport)
-menu += lightmagenta:scroll.*(fear|blink)
-
-:else
-
 menu += blue:scroll.*(noise|silence|vulnerability|immolation)
 menu += lightgrey:scroll.*remove curse
 menu += green:scroll.*(fog|teleport)
 menu += lightgreen:scroll.*(fear|blink)
 menu += magenta:scroll.*(recharging)
 menu += lightmagenta:scroll.*(enchant|brand weapon)
-
-:end
 
 ### Wands ###
 
@@ -390,23 +273,6 @@ menu += blue:wand of.*random effects
 # High level damage
 menu += brown:wand of.*lightning
 menu += yellow:wand of.*acid
-
-: if tonumber(crawl.version("major")) <= 0.19 then
-menu += lightred:wand of.*heal wounds
-
-menu += lightgrey:wand of.*flame
-menu += white:wand of.*iceblast
-
-menu += green:wand of.*(slowing|confusion|polymorph)
-menu += lightgreen:wand of.*(paralysis|enslavement)
-
-menu += cyan:wand of.*disintegration
-menu += lightcyan:wand of.*digging
-
-menu += magenta:wand of.*teleportation
-menu += lightmagenta:wand of.*hasting
-
-: else
 
 menu += lightgrey:wand of.*flame
 menu += white:wand of.*clouds
@@ -418,8 +284,6 @@ menu += lightcyan:wand of.*scattershot
 
 menu += magenta:wand of.*(disintegration|confusion|polymorph)
 menu += lightmagenta:wand of.*(paralysis|enslavement)
-
-: end
 
 ### General identification ###
 
@@ -650,7 +514,6 @@ stop += something tasty in your inventory
 # Annoyances
 ignore += grinding sound
 ignore += contamination has completely
-ignore += rod.*has recharged
 ignore += your breath back
 
 ignore += pray:
@@ -860,10 +723,6 @@ ai += potions? of berserk rage:!q
 ai += scrolls? of silence:!r
 
 ai += of faith:!P
-# Rods removed in 0.20
-: if tonumber(crawl.version("major")) < 0.20 then
-ai += ( rod ):!a
-: end
 ai += manual of:!d
 ai += staff of (Wucad Mu|energy|wizardry|power|conjuration|summoning):!a
 ai += (large rock|throwing net|curare|of dispersal):=f
@@ -871,20 +730,12 @@ ai += (large rock|throwing net|curare|of dispersal):=f
 # Convenient shortcuts
 ai += curing:@q1
 ai += potions? of heal wounds:@q2
-# /heal wounds removed in 0.20
-ai += wand of heal wounds:@v2
 ai += potions? of haste:@q3
-# /hasting emoved in 0.20
-ai += wand of hasting:@v3
 ai += scrolls? of teleportation:@r4
-# Removed in 0.20
-ai += wand of teleportation:@v4
 ai += identify:@r1
 ai += remove curse:@r2
 ai += blowgun:@w1
-ai += (meat|bread) ration:@e1
-ai += (beef jerk|fruit|pizza):@e2
-ai += royal jell:@e3
+ai += ( ration):@e1
 
 ##############
 ### Morgue ###
