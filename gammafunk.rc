@@ -464,7 +464,7 @@ more += (wretched star|apocalypse crab|death drake).*into view
 more += (entropy weaver|torpor snail|spriggan druid).*into view
 more += (vault (warden|sentinel)|merfolk (avatar|siren)).*into view
 more += (guardian serpent|draconian shifter|convoker|death cob).*into view
-more += (phantasmal warrior).*into view
+more += (phantasmal warrior|air elemental).*into view
 # Paralysis/Petrify/Banish
 more += (orc sorcerer|wizard|ogre mage|great orb of eyes|sphinx).*into view
 more += (vampire knight|basilisk|deep elf (sorcerer|demonologist)).*into view
