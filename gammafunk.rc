@@ -327,6 +327,7 @@ rest_delay = -1
 
 show_travel_trail = false
 explore_stop += greedy_items
+wall_jump_move = false
 
 ##################
 ### Autopickup ###
