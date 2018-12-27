@@ -6,14 +6,20 @@
 
 last_turn = you.turns()
 
--- Each entry must have a name field with a descriptive name, a pattern field
--- giving the regexp matching the appropriate monster(s), a cond field giving
--- the condition type, and a cutoff field giving the max value where the
--- force-more is active. Possible values for cond are xl and maxhp. Note that
--- the final force_more pattern will be "(PATTERN).*into view" where PATTERN is
--- the value from the pattern field if that is a string, or if pattern is an
--- array, a string made from joining the entries in pattern with '|'.
-
+-- Each entry must have a 'name' field with a descriptive name, a 'pattern'
+-- field, a 'cond' field giving the condition type, and a 'cutoff' field giving
+-- the max value for where the force_more will apply. Possible values for
+-- 'cond' are xl and maxhp.
+--
+-- The 'pattern' field's value can be either a regexp string or array of regexp
+-- strings matching the appropriate monster(s). Any values are joined by "|" to
+-- make a new force_more of the form:
+--
+-- ((?!spectral )VALUE1|VALUE2|...)(?! (skeleton|zombie|simularcrum)).*into view".
+--
+-- To allow derived undead forms of a monster to match, include 'spectral ' at
+-- the beginning of and/or ' (skeleton|zombie|simularcrum)' at the end of your
+-- pattern for that monster.
 fm_patterns = {
   -- Fast, early game Dungeon problems for chars with low mhp.
   {name = "30mhp", cond = "maxhp", cutoff = 30,
@@ -25,19 +31,21 @@ fm_patterns = {
   {name = "60mhp", cond = "maxhp", cutoff = 60,
    pattern = "acid dragon|steam dragon|manticore"},
   {name = "70mhp", cond = "maxhp", cutoff = 70,
-   pattern = "centaur|meliai|yaktaur"},
+   pattern = "centaur(?! warrior)|meliai|yaktaur(?! captain)"},
   {name = "80mhp", cond = "maxhp", cutoff = 80,
    pattern = "gargoyle|orc (warlord|knight)"},
   {name = "90mhp", cond = "maxhp", cutoff = 90,
-   pattern = "centaur warrior|efreet|molten gargoyle|tengu conjurer"},
+   pattern = {"centaur warrior", "deep elf archer", "efreet",
+              "molten gargoyle", "tengu conjurer"} },
   {name = "110mhp", cond = "maxhp", cutoff = 110,
-   pattern = {"centaur warrior", "deep elf", "cyclops", "efreet",
+   pattern = {"centaur warrior", "deep elf (mage|knight)", "cyclops", "efreet",
               "molten gargoyle", "tengu conjurer", "yaktaur captain",
               "necromancer", "deep troll earth mage", "hell knight",
               "stone giant"} },
   {name = "160mhp", cond = "maxhp", cutoff = 160,
    pattern = {"(fire|ice|quicksilver|shadow|storm) dragon",
-              "(fire|frost) giant", "war gargoyle"} },
+              "(fire|frost) giant", "war gargoyle",
+              "draconian (knight|stormcaller"} },
 } -- end fm_patterns
 
 active_fm = {}
@@ -77,7 +85,7 @@ function update_force_mores()
     else
       msg = v.pattern
     end
-    msg = "(" .. msg .. ").*into view"
+    msg = "(?<!spectral )(" .. msg .. ")(?! (skeleton|zombie|simulacrum)).*into view"
     local action = nil
     local fm_name = v.pattern
     if v.name then
