@@ -531,13 +531,15 @@ ignore += sound:
 ### Spell/Ability slots ###
 ###########################
 
-# Move off `aa` so we don't miss-trigger it.
-ability_slot += Berserk:k
 ability_slot += Fly|flight:lF
 ability_slot += Stop Flying:L
 ability_slot += Breathe:t
-ability_slot += Blink:IB
 ability_slot += Invisibility:iv
+# Abilities prone to miskeys.
+ability_slot += Blink:IB
+ability_slot += Berserk:k
+ability_slot += Corrupt:C
+ability_slot += Enter the Abyss:E
 
 # Use z for L1 damage/buff spells in starting books.
 
