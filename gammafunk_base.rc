@@ -726,7 +726,9 @@ ai += scrolls? of silence:!r
 
 ai += of faith:!P
 ai += manual of:!d
-ai += staff of (Wucad Mu|energy|wizardry|power|conjuration|summoning):!a
+# Prevent melee with all staves; if we want to melee with one, it's safe to
+# require removing the annotation.
+ai += staff of:!a
 ai += (large rock|throwing net|curare|of dispersal):=f
 
 # Convenient shortcuts
