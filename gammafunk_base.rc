@@ -271,19 +271,20 @@ menu += lightmagenta:scroll.*(enchant|brand weapon)
 # Can be harmful
 menu += blue:wand of.*random effects
 
-# High level damage
-menu += brown:wand of.*lightning
+# Damaging beam.
+menu += brown:wand of.*flame
 menu += yellow:wand of.*acid
 
-menu += lightgrey:wand of.*flame
 menu += white:wand of.*clouds
 
 menu += green:wand of.*digging
 
+# Explosion
 menu += cyan:wand of.*iceblast
 menu += lightcyan:wand of.*scattershot
 
-menu += magenta:wand of.*(disintegration|confusion|polymorph)
+# MR-checking
+menu += magenta:wand of.*(disintegration|polymorph)
 menu += lightmagenta:wand of.*(paralysis|enslavement)
 
 ### General identification ###
@@ -681,15 +682,15 @@ spell_slot += .*:XYZ
 ##################
 
 ## In order of letter used.
-item_slot += amulet of harm : A
+item_slot += amulet of harm : H
 item_slot += amulet of rage : B
 item_slot += ring of (ice|protection from cold) : Cc
-item_slot += amulet of (warding|dismissal) : D
+item_slot += amulet of the acrobat : A
 item_slot += \+[0-9]+ ring of evasion : Ee
 item_slot += ring of .*fire : Ff
 item_slot += amulet of regeneration : g
 item_slot += amulet of guardian spirit : G
-item_slot += amulet of faith : H
+item_slot += amulet of faith : T
 item_slot += \+[0-9]+ ring of intelligence : Ii
 item_slot += ring of flight : L
 item_slot += ring of protection from magic : Mm
@@ -704,7 +705,7 @@ item_slot += ring of teleportation : t
 item_slot += amulet of gourmand : U
 item_slot += ring of see invisible : v
 item_slot += ring of magical power : Ww
-item_slot += \+[0-9]+ ring of dexterity : Xx
+item_slot += \+[0-9]+ ring of dexterity : Dd
 item_slot += \+[0-9]+ ring of slaying : Yy
 item_slot += ring of wizardry : Zz
 
@@ -747,7 +748,7 @@ user_note_prefix = >>
 
 note_items += experience,of resistance, Archmagi
 note_items += crystal plate armour,pearl dragon scales
-note_items += artefact,wand of (heal wounds|hasting|teleportation)
+note_items += artefact
 note_messages += You feel monstrous
 note_messages += You pass through the gate
 note_messages += cast .* Abyss
