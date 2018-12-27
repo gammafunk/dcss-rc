@@ -40,9 +40,17 @@ macros += M 6 ===one_turn_rest
 macros += M 7 ===start_resting
 macros += M ] ===save_char_defaults
 
-# Only make these macros for my username. Needs to be set in lua instead of
-# directly as RC statments for the name condition to work.
+# Only make these macros for my username. If copying this part of my RC
+# directly into your own, remove these lines including the '{' and '}' if you
+# don't want RandomTiles or save_with_message. If you want either of those,
+# replace these lines with normal RC macro lines like:
+#
+# macros += M S ===save_with_message
+# macros += M 8 ===new_random_tile
+# ...
+#
 {
+-- Must use crawl.setopt() for the name condition to work.
 if you.name() == "gammaspeed" then
     crawl.setopt("macros += M 1 zz")
     crawl.setopt("macros += M S ===save_with_message")

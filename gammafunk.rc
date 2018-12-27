@@ -2,34 +2,35 @@
 # See the README for further details:
 # https://github.com/gammafunk/dcss-rc/blob/master/README.md
 
-# NOTE: This RC has things for RandomTiles.rc and gammaspeed.rc enabled only
-# for my username. If you copy gammafunk.rc to your own RC file, it's a good
-# idea to find and remove sections in `if' statments that look like this:
+# NOTE: This RC has things enabled only for my username. If you're just
+# including this RC file in your own with
 #
-# if you.name() == "gammafunk" then
-# ...
-# end
+# include = gammafunk.rc
 #
-# and either remove these sections completely if you don't want
-# RandomTiles.rc/gammaspeed.rc, or, if you do want those files, remove only the
-# containing if statments so that those files are loaded in your RC.
+# then you don't have to worry about these. However if you're copy all or parts
+# of gammafunk.rc directly into your own RC file, look for any sections
+# conditioned on my username and follow notes in the comments for removing or
+# modifying them.
 
 ################
 ### RC files ###
 ################
 
-# Only load RandomTiles.rc and gammaspeed.rc under my username.
+# Only load RandomTiles.rc under my username. If copying this part of my RC
+# directly into your own, remove this section including the beginning and
+# ending lines with '{' and '}'. If you don't want RandomTiles, you don't need
+# to replace it with anything. If you do want RandomTiles, replace this section
+# with the line:
+#
+# include = RandomTiles.rc
+#
+# and see the comments in the ready() function section as well.
 {
 if you.name() == "gammafunk" then
     -- Prevent gammaspeed.rc from trying to load this file twice.
     gammafunk_rc_loaded = true
 
     crawl.read_options("RandomTiles.rc")
-
-    -- Only load gammaspeed.rc if we haven't already.
-    if not gammaspeed_rc_loaded then
-        crawl.read_options("gammaspeed.rc")
-    end
 end
 }
 
@@ -768,9 +769,17 @@ dump_order += vaults,notes,kills,turns_by_place,xp_by_level
 ## Macros ##
 ############
 
-# Only make these macros for my username. Needs to be set in lua instead of
-# directly as RC statments for the name condition to work.
+# Only make these macros for my username. If copying this part of my RC
+# directly into your own, remove these lines including the '{' and '}' if you
+# don't want RandomTiles or save_with_message. If you want either of those,
+# replace these lines with normal RC macro lines like:
+#
+# macros += M S ===save_with_message
+# macros += M 8 ===new_random_tile
+# ...
+#
 {
+-- Must use crawl.setopt() for the name condition to work.
 if you.name() == "gammafunk" then
     crawl.setopt("macros += M 1 zz")
     crawl.setopt("macros += M S ===save_with_message")
@@ -1040,9 +1049,8 @@ end
 {
 function ready()
 
-  -- Open skill screen on turn 0. When using char_defaults, this is handled by
-  -- that function.
-  if you.name() ~= "gammafunk" and not skills_set and you.turns() == 0 then
+  -- Open skill screen on turn 0.
+  if not skills_set and you.turns() == 0 then
       crawl.sendkeys("m")
       skills_set = true
   end
@@ -1050,14 +1058,13 @@ function ready()
   -- force_mores.lua
   force_mores()
 
-  -- Enable these only for my username.
+  -- Enable these only for my username. If copying this portion of my RC into
+  -- your own and you don't want these features, remove everything from the 'if
+  -- you.name() ...' line to the ' end' line corresponding to that 'if'
+  -- statement. If you do want those features, remove only the 'if' line and
+  -- its corresponding ' end' line so that they're not conditioned on my
+  -- username.
   if you.name() == "gammafunk" then
-    -- char_defaults.lua
-    char_defaults()
-
-    -- speedrun rest.lua
-    speedrun_rest()
-
     -- load_message.lua
     load_message()
 
