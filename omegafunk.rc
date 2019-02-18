@@ -10,15 +10,15 @@
 ################
 
 {
--- Prevent gammafunk.rc from attempting to load gammaspeed.rc twice.
-gammaspeed_rc_loaded = true
+-- Prevent gammafunk.rc from attempting to load omegafunk.rc twice.
+omegafunk_rc_loaded = true
 
 -- Only load gammafunk.rc and RandomTiles.rc if we haven't already.
 if not gammafunk_rc_loaded then
     crawl.read_options("gammafunk.rc")
 
     -- Only load RandomTiles for myself.
-    if you.name() == "gammaspeed" then
+    if you.name() == "omegafunk" then
         crawl.read_options("RandomTiles.rc")
     end
 end
@@ -51,7 +51,7 @@ macros += M ] ===save_char_defaults
 #
 {
 -- Must use crawl.setopt() for the name condition to work.
-if you.name() == "gammaspeed" then
+if you.name() == "omegafunk" then
     crawl.setopt("macros += M 1 zz")
     crawl.setopt("macros += M S ===save_with_message")
     crawl.setopt("macros += M 8 ===new_random_tile")
@@ -825,7 +825,7 @@ function ready()
   speedrun_rest()
 
   -- Enable these only for my usernames.
-  if you.name() == "gammaspeed" then
+  if you.name() == "omegafunk" then
       -- load_message.lua
       load_message()
 
