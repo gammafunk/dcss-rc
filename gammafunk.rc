@@ -728,7 +728,7 @@ ai += of faith:!P
 ai += manual of:!d
 # Prevent melee with all staves; if we want to melee with one, it's safe to
 # require removing the annotation.
-ai += staff of:!a
+ai += magical staff:!a
 ai += (large rock|throwing net|curare|of dispersal):=f
 
 # Convenient shortcuts
