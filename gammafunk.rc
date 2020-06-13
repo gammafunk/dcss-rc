@@ -70,19 +70,20 @@ item += useless_item:darkgrey
 ### Potions ###
 
 item += potions? of.*(curing|flight):lightgrey
-: if you.race() == "Vampire" then
-  item += potions? of blood:lightgrey
-: end
-item += potions? of.*berserk:brown
+item += potions? of.*heal wounds:white
+
+item += potions? of.*(stabbing|berserk):brown
 item += potions? of.*might:yellow
+
 item += potions? of.*cancellation:cyan
+item += potions? of.*mutation:lightcyan
 
 item += potions? of.*ambrosia:blue
+
 item += potions? of.*experience:lightred
-item += potions? of.*heal wounds:white
-item += potions? of.*(resistance|agility):green
+
+item += potions? of.*resistance:green
 item += potions? of.*(haste|invisibility):lightgreen
-item += potions? of.*mutation:lightcyan
 item += potions? of.*brilliance:magenta
 item += potions? of.*magic:lightmagenta
 
@@ -97,37 +98,39 @@ item += potions? of.*magic:lightmagenta
   item += scroll.*torment:darkgrey
 : end
 
+item += scroll.*summoning:yellow
+
+item += scroll.*remove curse:lightgrey
 item += scroll.*acquirement:white
-item += scroll.*(summoning):yellow
+
 item += scroll.*identify:cyan
 item += scroll.*magic mapping:lightcyan
 
 item += scroll.*(silence|vulnerability|immolation):blue
-item += scroll.*remove curse:lightgrey
+
 item += scroll.*(fog|teleport):green
 item += scroll.*(fear|blink):lightgreen
-item += scroll.*(recharging):magenta
-item += scroll.*(enchant|brand weapon):lightmagenta
+
+item += scroll.*enchant:magenta
+item += scroll.*brand weapon:lightmagenta
 
 ### Wands ###
 
-# Sometimes dangerous
 item += wand of.*random effects:blue
 
-# Single target piercing.
-item += wand of.*lightning:brown
+# Single target damage.
+item += wand of.*disint:brown
 item += wand of.*acid:yellow
 
-item += wand of.*flame:lightgrey
+item += wand of.*flame:grey
 item += wand of.*clouds:white
 
-item += wand of.*digging:green
+item += wand of.*digging:lightgreen
 
-# Single-turn AOE
-item += wand of.*iceblast:cyan
-item += wand of.*scattershot:lightcyan
+item += wand of.*iceblast:lightcyan
 
-item += wand of.*(disintegration|confusion|polymorph):magenta
+# MR-checking
+item += wand of.*polymorph:magenta
 item += wand of.*(paralysis|enslavement):lightmagenta
 
 ### General Identification ###
@@ -218,28 +221,27 @@ menu += inventory:white:\w \#\s
 ### Food ###
 # Color chunks, put ordinary ones on lightgrey.
 menu += red:evil_eating.*chunk
-menu += blue:mutagenic.*chunk
 menu += lightgrey: +(chunks?$|chunks? +)
-# Other food
-
 menu += green:( ration)
 
 ### Potions ###
 
-: if you.race() == "Vampire" then
-  menu += lightgrey:potions? of blood
-: end
 menu += lightgrey:potions? of.*(curing|flight)
-menu += brown:potions? of.*berserk
+menu += white:potions? of.*heal wounds
+
+menu += brown:potions? of.*(stabbing|berserk)
 menu += yellow:potions? of.*might
+
 menu += cyan:potions? of.*cancellation
+menu += lightcyan:potions? of.*mutation
 
 menu += blue:potions? of.*(lignification|ambrosia)
+
 menu += lightred:potions? of.*experience
-menu += white:potions? of.*heal wounds
+
 menu += green:potions? of.*(resistance|agility)
 menu += lightgreen:potions? of.*(haste|invisibility)
-menu += lightcyan:potions? of.*mutation
+
 menu += magenta:potions? of.*brilliance
 menu += lightmagenta:potions? of.*magic
 
@@ -254,37 +256,39 @@ menu += lightmagenta:potions? of.*magic
   menu += darkgrey:scroll.*torment
 : end
 
-menu += white:scroll.*acquirement
 menu += yellow:scroll.*(summoning)
+
+menu += lightgrey:scroll.*remove curse
+menu += white:scroll.*acquirement
+
 menu += cyan:scroll.*identify
 menu += lightcyan:scroll.*magic mapping
 
 menu += blue:scroll.*(noise|silence|vulnerability|immolation)
-menu += lightgrey:scroll.*remove curse
+
 menu += green:scroll.*(fog|teleport)
 menu += lightgreen:scroll.*(fear|blink)
-menu += magenta:scroll.*(recharging)
-menu += lightmagenta:scroll.*(enchant|brand weapon)
+
+menu += magenta:scroll.*enchant
+menu += lightmagenta:scroll.*brand weapon
 
 ### Wands ###
 
-# Can be harmful
 menu += blue:wand of.*random effects
 
-# Damaging beam.
-menu += brown:wand of.*flame
+# Single target damage.
+menu += brown:wand of.*disint
 menu += yellow:wand of.*acid
 
+menu += grey:wand of.*flame
 menu += white:wand of.*clouds
 
-menu += green:wand of.*digging
+menu += lightgreen:wand of.*digging
 
-# Explosion
-menu += cyan:wand of.*iceblast
-menu += lightcyan:wand of.*scattershot
+menu += lightcyan:wand of.*iceblast
 
 # MR-checking
-menu += magenta:wand of.*(disintegration|polymorph)
+menu += magenta:wand of.*polymorph
 menu += lightmagenta:wand of.*(paralysis|enslavement)
 
 ### General identification ###
@@ -313,7 +317,7 @@ ability_menu = false
 autofight_stop  = 50
 autofight_caught = true
 autofight_wait = false
-auto_butcher = true
+auto_butcher_chunks = 0
 
 bindkey = [~] CMD_LUA_CONSOLE
 
@@ -322,7 +326,6 @@ bindkey = [~] CMD_LUA_CONSOLE
 ############################
 
 rest_wait_both = true
-auto_sacrifice = true
 travel_delay = -1
 explore_delay = -1
 rest_delay = -1
@@ -335,8 +338,8 @@ wall_jump_move = false
 ### Autopickup ###
 ##################
 
-# Add staves, rods, misc; note you can't use += with this option.
-autopickup = $?!:"/%}|\
+# Add staves, misc; note you can't use += with this option.
+autopickup = $?!:"/%}|
 
 ae := autopickup_exceptions
 ae += <throwing net
@@ -347,7 +350,6 @@ ae += <throwing net
 ae += <vulnerability|immolation
 # Tend to not use these.
 ae += >scrolls? of silence
-ae += >(crystal ball of energy|disc of storm)
 # Don't ever need a second stave
 ae += staff of .*
 
@@ -360,7 +362,6 @@ channel.multiturn = mute
 msc := message_colour
 msc += mute:returns to your side
 msc += mute:a demon appears
-msc += lightgrey:The deck of cards disappears
 msc += mute:puff of smoke
 msc += mute:carefully avoids
 msc += mute:is recalled
@@ -494,7 +495,7 @@ ignore += god:
 
 # Bad things
 stop += A huge blade swings out and slices into you
-stop += (starving|devoid of blood)
+stop += starving
 stop += wrath finds you
 stop += lose consciousness
 stop += hell_effect:
@@ -551,6 +552,7 @@ ability_slot += Enter the Abyss:E
 # remaining spells. Use upper-case letters for spells like Blink that are
 # dangerous to miss-key.
 
+spell_slot += Absolute Zero:zbtlr
 spell_slot += Alistair's intoxication:txc
 spell_slot += Apportation:aoi
 spell_slot += Airstrike:ktA
@@ -559,12 +561,9 @@ spell_slot += Agony:yng
 spell_slot += Animate dead:dmn
 spell_slot += Animate skeleton:snk
 spell_slot += Beastly appendage:eau
-spell_slot += Blade hands:aeu
-spell_slot += Blink:IOA
-spell_slot += Bolt of cold:bcd
-spell_slot += Bolt of draining:bdg
-spell_slot += Bolt of fire:bft
-spell_slot += Bolt of magma:bmt
+spell_slot += Blade hands:bhld
+spell_slot += Blink:IOAE
+spell_slot += Bolt of magma:bmtg
 spell_slot += Borgnjor's revivification:OEI
 spell_slot += Borgnjor's vile clutch:vbc
 spell_slot += Call canine familiar:fcn
@@ -574,42 +573,38 @@ spell_slot += Controlled blink:oia
 spell_slot += Corona:zcn
 spell_slot += Chain lightning:cln
 spell_slot += Confusing touch:oui
-spell_slot += Confuse:cfn
 spell_slot += Conjure flame:cfj
 spell_slot += Corpse rot:crt
-spell_slot += Dazzling spray:dyz
+spell_slot += Dazzling Flash:dzlf
 spell_slot += Darkness:aed
-spell_slot += Death channel:eao
-spell_slot += Death's door:EAS
-spell_slot += Deflect missiles:eia
-spell_slot += Discord:DCS
-spell_slot += Disjunction:iuo
+spell_slot += Death channel:dtcl
+spell_slot += Death's door:EAOI
+spell_slot += Discord:DCSR
+spell_slot += Disjunction:iuoe
 spell_slot += Dispel undead:ndp
 spell_slot += Dispersal:iea
-spell_slot += Dragon form:aou
+spell_slot += Dragon form:dgrf
 spell_slot += Dragon's call:dcl
 spell_slot += Ensorcelled hibernation:zxc
 spell_slot += Excruciating wounds:eao
 spell_slot += Fire storm:fmt
 spell_slot += Fireball:fbl
-spell_slot += Flame tongue:zfm
-spell_slot += Force lance:flc
+spell_slot += Foxfire:fxr
 spell_slot += Freezing cloud:fcg
 spell_slot += Freeze:zfr
+spell_slot += Frozen Ramparts:rptzf
 spell_slot += Fulminant prism:fpm
 spell_slot += Gell's Gravitas:gvt
-spell_slot += Glaciate:gct
 spell_slot += Haunt:htn
-spell_slot += Hydra form:aou
-spell_slot += Ice form:ieo
+spell_slot += Hydra form:hydf
+spell_slot += Ice form:crmf
 spell_slot += Ignition:ntg
-spell_slot += Iron shot:stn
+spell_slot += Iron shot:stnr
 spell_slot += Infusion:uoi
 spell_slot += Inner flame:frn
 spell_slot += Invisibility:ieI
 spell_slot += Irradiate:rtd
 spell_slot += Iskenderun's battlesphere:bnk
-spell_slot += Iskenderun's mystic blast:mbt
 spell_slot += Leda's Liquefaction:eai
 spell_slot += Lee's rapid deconstruction:ldr
 spell_slot += Lesser Beckoning:lbg
@@ -629,11 +624,9 @@ spell_slot += Pain:zpn
 spell_slot += Passage of golubria:uoi
 spell_slot += Passwall:aeu
 spell_slot += Petrify:pyt
-spell_slot += Poison arrow:pwr
 spell_slot += Poisonous vapours:pvs
 spell_slot += Portal projectile:oei
 spell_slot += Recall:eau
-spell_slot += Regeneration:eio
 spell_slot += Ring of flames:oia
 spell_slot += Sandblast:zst
 spell_slot += Searing ray:sry
@@ -644,19 +637,19 @@ spell_slot += Shroud of golubria:oua
 spell_slot += Simulacrum:scm
 spell_slot += Silence:SLC
 spell_slot += Slow:swh
-spell_slot += Song of slaying:oai
+spell_slot += Song of slaying:oaie
 spell_slot += Spectral weapon:eao
 spell_slot += Spellforged servitor:svt
-spell_slot += Spider form:ieo
+spell_slot += Spider form:sprf
 spell_slot += Static discharge:tdc
-spell_slot += Statue form:aeo
+spell_slot += Statue form:stmf
 spell_slot += Sticks to snakes:tkc
 spell_slot += Sticky flame:yfk
-spell_slot += Sting:zpt
+spell_slot += Sting:zptg
 spell_slot += Stone arrow:wtn
 spell_slot += Summon butterflies:uei
-spell_slot += Summon demon:dsm
-spell_slot += Summon forest:ftm
+spell_slot += Summon demon:dsmn
+spell_slot += Summon forest:ftms
 spell_slot += Summon greater demon:gds
 spell_slot += Summon guardian golem:gds
 spell_slot += Summon horrible things:hts
@@ -665,15 +658,11 @@ spell_slot += Summon ice beast:bct
 spell_slot += Summon lightning spire:lst
 spell_slot += Summon mana viper:vms
 spell_slot += Summon small mammal:zsm
-spell_slot += Swiftness:iea
-spell_slot += Teleport other:tpT
-spell_slot += Throw frost:ftw
-spell_slot += Throw flame:fmw
-spell_slot += Throw icicle:cwt
+spell_slot += Swiftness:ieao
+spell_slot += Teleport other:tprh
 spell_slot += Tornado:TDN
 spell_slot += Tukima's Dance:dkc
 spell_slot += Vampiric draining:vnd
-spell_slot += Venom bolt:bvm
 spell_slot += Yara's violent unraveling:yvg
 
 # Default letters
@@ -684,7 +673,6 @@ spell_slot += .*:XYZ
 ##################
 
 ## In order of letter used.
-item_slot += amulet of harm : H
 item_slot += amulet of rage : B
 item_slot += ring of (ice|protection from cold) : Cc
 item_slot += amulet of the acrobat : A
@@ -704,7 +692,6 @@ item_slot += ring of resist corrosion : R
 item_slot += amulet of mana regeneration : r
 item_slot += \+[0-9]+ ring of strength : Ss
 item_slot += ring of teleportation : t
-item_slot += amulet of gourmand : U
 item_slot += ring of see invisible : v
 item_slot += ring of magical power : Ww
 item_slot += \+[0-9]+ ring of dexterity : Dd
@@ -719,8 +706,6 @@ show_god_gift = unident
 
 ai := autoinscribe
 
-ai += (bad|dangerous)_item.*potion:!q
-ai += (bad|dangerous)_item.*scroll:!r
 ai += potions? of berserk rage:!q
 ai += scrolls? of silence:!r
 
