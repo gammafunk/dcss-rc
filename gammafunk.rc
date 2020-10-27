@@ -147,16 +147,10 @@ item += identified.*artefact.*(jewellery):white
 item += unidentified.*artefact.*(jewellery).*:lightmagenta
 item += (a )?stones?$:lightgray
 
-### Food ###
-item += chunks?.*flesh:lightgrey
-item += evil_eating.*chunk:red
-
-item += ( ration):green
-
 # Want this to override anything above
 item += useless:darkgrey
 # Only mark these types when forbidden; for other types it looks odd.
-item += forbidden.*(potion|scroll|food):red
+item += forbidden.*(potion|scroll):red
 
 mons := mon_glyph
 # Monsters that can be easy to miss
@@ -217,12 +211,6 @@ menu += pickup:lightred:god gift
 # Highlight (partly) selected items
 menu += inventory:white:\w \+\s
 menu += inventory:white:\w \#\s
-
-### Food ###
-# Color chunks, put ordinary ones on lightgrey.
-menu += red:evil_eating.*chunk
-menu += lightgrey: +(chunks?$|chunks? +)
-menu += green:( ration)
 
 ### Potions ###
 
@@ -309,7 +297,6 @@ menu += lightblue:unidentified.*armour.*(runed|glowing|embroidered|shiny|dyed)
 #################
 
 default_manual_training = true
-easy_eat_chunks = true
 equip_unequip = true
 sort_menus = true:equipped,identified,basename,art,ego,glowing,qualname,curse,charged,slot
 ability_menu = false
@@ -317,7 +304,6 @@ ability_menu = false
 autofight_stop  = 50
 autofight_caught = true
 autofight_wait = false
-auto_butcher_chunks = 0
 
 bindkey = [~] CMD_LUA_CONSOLE
 
@@ -332,14 +318,13 @@ rest_delay = -1
 
 show_travel_trail = false
 explore_stop += greedy_items
-wall_jump_move = false
 
 ##################
 ### Autopickup ###
 ##################
 
 # Add staves, misc; note you can't use += with this option.
-autopickup = $?!:"/%}|
+autopickup = $?!:"/}|
 
 ae := autopickup_exceptions
 ae += <throwing net
@@ -419,7 +404,6 @@ more += dispelling energy hits you
 more += You are blasted by holy energy!
 more += You are (blasted|electrocuted)!
 more += You are.*(confused|poisoned)
-more += flesh rotting
 more += (starving|devoid of blood)
 more += god:(sends|finds|silent|anger)
 more += You feel a surge of divine spite
@@ -724,7 +708,6 @@ ai += scrolls? of teleportation:@r4
 ai += identify:@r1
 ai += remove curse:@r2
 ai += blowgun:@w1
-ai += ( ration):@e1
 
 ##############
 ### Morgue ###
