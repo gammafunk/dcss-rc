@@ -72,7 +72,7 @@ item += useless_item:darkgrey
 item += potions? of.*(curing|flight):lightgrey
 item += potions? of.*heal wounds:white
 
-item += potions? of.*(stabbing|berserk):brown
+item += potions? of.*(attraction|berserk):brown
 item += potions? of.*might:yellow
 
 item += potions? of.*cancellation:cyan
@@ -123,7 +123,6 @@ item += wand of.*disint:brown
 item += wand of.*acid:yellow
 
 item += wand of.*flame:grey
-item += wand of.*clouds:white
 
 item += wand of.*digging:lightgreen
 
@@ -217,7 +216,7 @@ menu += inventory:white:\w \#\s
 menu += lightgrey:potions? of.*(curing|flight)
 menu += white:potions? of.*heal wounds
 
-menu += brown:potions? of.*(stabbing|berserk)
+menu += brown:potions? of.*(attraction|berserk)
 menu += yellow:potions? of.*might
 
 menu += cyan:potions? of.*cancellation
@@ -269,7 +268,6 @@ menu += brown:wand of.*disint
 menu += yellow:wand of.*acid
 
 menu += grey:wand of.*flame
-menu += white:wand of.*clouds
 
 menu += lightgreen:wand of.*digging
 
@@ -551,7 +549,7 @@ spell_slot += Chain lightning:clng
 spell_slot += Confusing touch:ctgh
 spell_slot += Conjure flame:cfej
 spell_slot += Corpse rot:cret
-spell_slot += Dazzling Flash:dfzl
+spell_slot += Dazzling Flash:dfgh
 spell_slot += Darkness:aed
 spell_slot += Death channel:dtcl
 spell_slot += Death's door:EAOI
@@ -561,14 +559,15 @@ spell_slot += Dispel undead:ndp
 spell_slot += Dispersal:iea
 spell_slot += Dragon form:dgrf
 spell_slot += Dragon's call:dcl
-spell_slot += Ensorcelled hibernation:zxc
+spell_slot += Ensorcelled hibernation:ehnd
+spell_slot += Eringya's Toxic Bog:bteg
 spell_slot += Excruciating wounds:eao
 spell_slot += Fire storm:fsmt
 spell_slot += Fireball:fbl
 spell_slot += Foxfire:fxr
 spell_slot += Freezing cloud:fcg
-spell_slot += Freeze:zfr
-spell_slot += Frozen Ramparts:frpt
+spell_slot += Freeze:fezr
+spell_slot += Frozen Ramparts:frns
 spell_slot += Fulminant prism:fpm
 spell_slot += Gell's Gravitas:gvt
 spell_slot += Haunt:htn
@@ -585,7 +584,7 @@ spell_slot += Lee's rapid deconstruction:ldr
 spell_slot += Lesser Beckoning:lbg
 spell_slot += Lehudib's crystal spear:lcs
 spell_slot += Lightning bolt:lbt
-spell_slot += Magic dart:zdt
+spell_slot += Magic dart:mdtc
 spell_slot += Malign gateway:mgy
 spell_slot += Mephitic cloud:mcd
 spell_slot += Metabolic englaciation:mcn
@@ -595,7 +594,7 @@ spell_slot += Olgreb's toxic radiance:oia
 spell_slot += Orb of destruction:dbn
 spell_slot += Ozocubu's armour:oau
 spell_slot += Ozocubu's refrigeration:cbz
-spell_slot += Pain:zpn
+spell_slot += Pain:pnai
 spell_slot += Passage of golubria:uoi
 spell_slot += Passwall:aeu
 spell_slot += Petrify:pyt
