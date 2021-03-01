@@ -140,6 +140,8 @@
   -- begin player_tiles array
   if not player_tiles then
     player_tiles = {
+      {mons = "spectral weapon"},
+      {mons = "animated armour"},
       {mons = "acid blob"},
       {mons = "acid dragon"},
       {mons = "adder"},
@@ -175,7 +177,7 @@
       {mons = "battlesphere"},
       {mons = "basilisk"},
       {mons = "bennu"},
-      {mons = "big kobold"},
+      {mons = "kobold brigand"},
       {mons = "black bear"},
       {mons = "black draconian"},
       {mons = "black mamba"},
