@@ -424,7 +424,6 @@
       {mons = "large bag of meat", tile="mons_large_bag_of_meat"},
       {mons = "lava snake", weapon_offsets = "0,0", shield_offsets = "-10,4"},
       {mons = "lemure"},
-      {mons = "leopard gecko"},
       {mons = "Lernaean Hydra", tile = "mons_lernaean_hydra",
        var_type = "oscillate", num_var = 10},
       {mons = "lich"},
