@@ -53,8 +53,6 @@ monster_list_colour += tough:yellow,nasty:lightred
 ### Console ###
 ###############
 
-# Enable use of darkgrey.
-bold_brightens_foreground=true
 equip_bar = true
 
 ## For item_glyph, subsequent matches override previous ones.
