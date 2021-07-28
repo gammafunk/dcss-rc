@@ -70,20 +70,21 @@ item += useless_item:darkgrey
 item += potions? of.*(curing|flight):lightgrey
 item += potions? of.*heal wounds:white
 
-item += potions? of.*(attraction|berserk):brown
+item += potions? of.*berserk:brown
 item += potions? of.*might:yellow
 
-item += potions? of.*cancellation:cyan
-item += potions? of.*mutation:lightcyan
+item += potions? of.*brilliance:cyan
+item += potions? of.*magic:lightcyan
 
-item += potions? of.*ambrosia:blue
+item += potions? of.*(lignification|ambrosia|attraction):blue
 
 item += potions? of.*experience:lightred
 
 item += potions? of.*resistance:green
 item += potions? of.*(haste|invisibility):lightgreen
-item += potions? of.*brilliance:magenta
-item += potions? of.*magic:lightmagenta
+
+item += potions? of.*cancellation:magenta
+item += potions? of.*mutation:lightmagenta
 
 ### Scrolls ###
 
@@ -116,18 +117,19 @@ item += scroll.*brand weapon:lightmagenta
 item += wand of.*random effects:blue
 
 # Single target damage.
-item += wand of.*disint:brown
-item += wand of.*acid:yellow
+item += wand of.*flame:brown
+item += wand of.*mindburst:yellow
 
-item += wand of.*flame:grey
-
+# "Transmutations"
+item += wand of.*polymorph:green
 item += wand of.*digging:lightgreen
 
+item += wand of.*acid:cyan
 item += wand of.*iceblast:lightcyan
 
-# MR-checking
-item += wand of.*polymorph:magenta
-item += wand of.*(paralysis|charming):lightmagenta
+# Hexes
+item += wand of.*paralysis:magenta
+item += wand of.*charming:lightmagenta
 
 ### General Identification ###
 item += (identified|known).*(jewellery|magical staff):brown
@@ -207,13 +209,13 @@ menu += inventory:white:\w \#\s
 menu += lightgrey:potions? of.*(curing|flight)
 menu += white:potions? of.*heal wounds
 
-menu += brown:potions? of.*(attraction|berserk)
+menu += brown:potions? of.*berserk
 menu += yellow:potions? of.*might
 
 menu += cyan:potions? of.*cancellation
 menu += lightcyan:potions? of.*mutation
 
-menu += blue:potions? of.*(lignification|ambrosia)
+menu += blue:potions? of.*(lignification|ambrosia|attraction)
 
 menu += lightred:potions? of.*experience
 
@@ -254,18 +256,20 @@ menu += lightmagenta:scroll.*brand weapon
 menu += blue:wand of.*random effects
 
 # Single target damage.
-menu += brown:wand of.*disint
-menu += yellow:wand of.*acid
+menu += brown:wand of.*flame
+menu += yellow:wand of.*mindburst
 
-menu += grey:wand of.*flame
-
+# "Transmutations"
+menu += green:wand of.*polymorph
 menu += lightgreen:wand of.*digging
 
+# AOE damage.
+menu += cyan:wand of.*acid
 menu += lightcyan:wand of.*iceblast
 
-# MR-checking
-menu += magenta:wand of.*polymorph
-menu += lightmagenta:wand of.*(paralysis|charming)
+# Hexes
+menu += magenta:wand of.*paralysis
+menu += lightmagenta:wand of.*charming
 
 ### General identification ###
 
