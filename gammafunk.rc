@@ -98,7 +98,6 @@ item += potions? of.*magic:lightmagenta
 
 item += scroll.*summoning:yellow
 
-item += scroll.*remove curse:lightgrey
 item += scroll.*acquirement:white
 
 item += scroll.*identify:cyan
@@ -128,18 +127,14 @@ item += wand of.*iceblast:lightcyan
 
 # MR-checking
 item += wand of.*polymorph:magenta
-item += wand of.*(paralysis|enslavement):lightmagenta
+item += wand of.*(paralysis|charming):lightmagenta
 
 ### General Identification ###
 item += (identified|known).*(jewellery|magical staff):brown
-item += identified.*spellbook:magenta
 item += unidentified.*(potion|scroll|jewellery|wand|magical staff).*:lightblue
-item += unidentified.*book:lightmagenta
 item += manual:lightcyan
-item += manual of:cyan
 
 ### Jewellery ###
-item += known.*(ring of (dexterity|strength|intelligence|slaying|evasion|protection(?! from))|amulet of reflection):magenta
 item += identified.*artefact.*(jewellery):white
 item += unidentified.*artefact.*(jewellery).*:lightmagenta
 item += (a )?stones?$:lightgray
@@ -199,9 +194,7 @@ menu += darkgrey:(melded)
 menu += red:forbidden
 # Useless items, comes here to override artefacts etc.
 menu += darkgrey:.*useless.*
-# Handle cursed and equipped items early to override other colour settings.
-menu += lightred:.*equipped.* cursed
-menu += red: (a|the) cursed
+# Handle equipped items early to override other colour settings.
 menu += inventory:lightgreen:.*equipped.*
 # Colouring of autoinscribed god gifts
 menu += pickup:lightred:god gift
@@ -224,7 +217,7 @@ menu += blue:potions? of.*(lignification|ambrosia)
 
 menu += lightred:potions? of.*experience
 
-menu += green:potions? of.*(resistance|agility)
+menu += green:potions? of.*resistance
 menu += lightgreen:potions? of.*(haste|invisibility)
 
 menu += magenta:potions? of.*brilliance
@@ -243,7 +236,6 @@ menu += lightmagenta:potions? of.*magic
 
 menu += yellow:scroll.*(summoning)
 
-menu += lightgrey:scroll.*remove curse
 menu += white:scroll.*acquirement
 
 menu += cyan:scroll.*identify
@@ -273,17 +265,15 @@ menu += lightcyan:wand of.*iceblast
 
 # MR-checking
 menu += magenta:wand of.*polymorph
-menu += lightmagenta:wand of.*(paralysis|enslavement)
+menu += lightmagenta:wand of.*(paralysis|charming)
 
 ### General identification ###
 
-menu += cyan:manual of
 menu += lightcyan:manual
 menu += lightmagenta:unidentified.*artefact.*
 menu += white:.*artefact.*
 menu += lightblue:unidentified .*(potion|scroll|wand|jewellery|spellbook|rod|magical staff)
-menu += magenta:.*known .*(ring of (dexterity|strength|intelligence|slaying|evasion|protection(?! from))|amulet of reflection)
-menu += inventory:lightgray:.*(book|jewellery|magical staff)
+menu += inventory:lightgray:.*(jewellery|magical staff)
 # Ego items
 menu += lightblue:unidentified.*weapon.*(runed|glowing|enchanted)
 menu += lightblue:unidentified.*armour.*(runed|glowing|embroidered|shiny|dyed)
@@ -294,7 +284,7 @@ menu += lightblue:unidentified.*armour.*(runed|glowing|embroidered|shiny|dyed)
 
 default_manual_training = true
 equip_unequip = true
-sort_menus = true:equipped,identified,basename,art,ego,glowing,qualname,curse,charged,slot
+sort_menus = true:equipped,identified,basename,art,ego,glowing,qualname,charged,slot
 ability_menu = false
 
 autofight_stop  = 50
@@ -399,7 +389,6 @@ more += dispelling energy hits you
 more += You are blasted by holy energy!
 more += You are (blasted|electrocuted)!
 more += You are.*(confused|poisoned)
-more += (starving|devoid of blood)
 more += god:(sends|finds|silent|anger)
 more += You feel a surge of divine spite
 more += disloyal to dabble
@@ -425,7 +414,6 @@ more += You have a feeling this form
 more += You feel yourself come back to life
 more += time is quickly running out
 more += life is in your own hands
-more += Your shroud falls apart
 more += You start to feel a little slower
 more += You feel less protected from missiles
 
@@ -488,11 +476,6 @@ stop += back to life
 stop += time is quickly running out
 stop += life is in your own hands
 stop += is no longer charmed
-
-: if you.race() == "Ghoul" then
-stop += smell.*(rott(ing|en)|decay)
-stop += something tasty in your inventory
-: end
 
 # Annoyances
 ignore += grinding sound
@@ -638,30 +621,23 @@ spell_slot += .*:XYZ
 ### Item slots ###
 ##################
 
-## In order of letter used.
-item_slot += amulet of rage : B
-item_slot += ring of (ice|protection from cold) : Cc
-item_slot += amulet of the acrobat : A
-item_slot += \+[0-9]+ ring of evasion : Ee
+## Rings, in order of letter used.
+item_slot += ring of dexterity : Dd
+item_slot += ring of evasion : Ee
 item_slot += ring of .*fire : Ff
-item_slot += amulet of regeneration : g
-item_slot += amulet of guardian spirit : G
-item_slot += amulet of faith : T
-item_slot += \+[0-9]+ ring of intelligence : Ii
+item_slot += ring of (ice|protection from cold) : Cc
+item_slot += ring of intelligence : Ii
 item_slot += ring of flight : L
-item_slot += ring of protection from magic : Mm
+item_slot += ring of magical power : Mm
 item_slot += ring of positive energy : Nn
-item_slot += \+[0-9]+ ring of protection : Oo
 item_slot += ring of poison resistance : P
-item_slot += ring of stealth : Qq
 item_slot += ring of resist corrosion : R
-item_slot += amulet of mana regeneration : r
-item_slot += \+[0-9]+ ring of strength : Ss
-item_slot += ring of teleportation : t
+item_slot += ring of strength : Ss
 item_slot += ring of see invisible : v
-item_slot += ring of magical power : Ww
-item_slot += \+[0-9]+ ring of dexterity : Dd
-item_slot += \+[0-9]+ ring of slaying : Yy
+item_slot += ring of willpower: Ww
+# Need numeric match to not trigger for rF/rC rings
+item_slot += \+[0-9]+ ring of protection : Tt
+item_slot += ring of slaying : Yy
 item_slot += ring of wizardry : Zz
 
 ########################
@@ -686,10 +662,8 @@ ai += (large rock|throwing net|curare|of dispersal):=f
 ai += curing:@q1
 ai += potions? of heal wounds:@q2
 ai += potions? of haste:@q3
-ai += scrolls? of teleportation:@r4
+ai += scrolls? of teleportation:@r2
 ai += identify:@r1
-ai += remove curse:@r2
-ai += blowgun:@w1
 
 ##############
 ### Morgue ###
