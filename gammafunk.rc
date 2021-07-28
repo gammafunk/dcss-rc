@@ -506,11 +506,10 @@ ability_slot += Berserk:k
 ability_slot += Corrupt:C
 ability_slot += Enter the Abyss:E
 
-# Use letters in a word of the spell name at (1) beginning, (2) end,
+# 4 letters from words of the spell name at (1) beginning, (2) end,
 # of words in the spell, (3) anywhere from the spell name, or (4) from the
-# names of the spell schools, in order preference.
+# names of the spell schools, in order of preference.
 
-spell_slot += Absolute Zero:azeo
 spell_slot += Alistair's intoxication:aisn
 spell_slot += Apportation:anpt
 spell_slot += Airstrike:ae
@@ -535,7 +534,8 @@ spell_slot += Corpse rot:cret
 spell_slot += Dazzling Flash:dfgh
 spell_slot += Darkness:aed
 spell_slot += Death channel:dtcl
-spell_slot += Death's door:EAOI
+# Upper-case to prevent miskeys.
+spell_slot += Death's door:DROT
 spell_slot += Discord:DCSR
 spell_slot += Disjunction:iuoe
 spell_slot += Dispel undead:ndp
@@ -544,32 +544,33 @@ spell_slot += Dragon form:dgrf
 spell_slot += Dragon's call:dcl
 spell_slot += Ensorcelled hibernation:ehnd
 spell_slot += Eringya's Toxic Bog:bteg
-spell_slot += Excruciating wounds:eao
+spell_slot += Excruciating wounds:ewgx
 spell_slot += Fire storm:fsmt
-spell_slot += Fireball:fbl
-spell_slot += Foxfire:fxr
-spell_slot += Freezing cloud:fcg
+spell_slot += Fireball:flbr
+spell_slot += Foxfire:fxro
+spell_slot += Freezing cloud:fcgd
 spell_slot += Freeze:fezr
-spell_slot += Frozen Ramparts:frns
-spell_slot += Fulminant prism:fpm
-spell_slot += Gell's Gravitas:gvt
-spell_slot += Haunt:htn
-spell_slot += Hydra form:hydf
+spell_slot += Frozen Ramparts:frnt
+spell_slot += Fulminant prism:fpmt
+spell_slot += Gell's Gravitas:glvt
+spell_slot += Haunt:htna
 spell_slot += Ice form:crmf
 spell_slot += Ignition:ntg
 spell_slot += Iron shot:stnr
 spell_slot += Inner flame:frn
-spell_slot += Invisibility:ieI
-spell_slot += Irradiate:rtd
-spell_slot += Iskenderun's battlesphere:bnk
-spell_slot += Leda's Liquefaction:eai
+spell_slot += Invisibility:iyvb
+spell_slot += Irradiate:ierd
+spell_slot += Iskenderun's battlesphere:ibne
+spell_slot += Leda's Liquefaction:lanq
 spell_slot += Lee's rapid deconstruction:ldr
 spell_slot += Lesser Beckoning:lbg
-spell_slot += Lehudib's crystal spear:lcs
-spell_slot += Lightning bolt:lbt
+spell_slot += Lehudib's crystal spear:lcsb
+spell_slot += Lightning bolt:lbgt
 spell_slot += Magic dart:mdtc
 spell_slot += Malign gateway:mgy
-spell_slot += Mephitic cloud:mcd
+spell_slot += Manifold Assault:madt
+spell_slot += Maxwell's Capacitive Coupling:mclp
+spell_slot += Mephitic cloud:mcdp
 spell_slot += Metabolic englaciation:mcn
 spell_slot += Monstrous menagerie:mst
 spell_slot += Necromutation:eou
@@ -586,6 +587,7 @@ spell_slot += Portal projectile:oei
 spell_slot += Sandblast:zst
 spell_slot += Searing ray:sry
 spell_slot += Shadow creatures:scw
+# Upper-case to prevent miskeys.
 spell_slot += Shatter:STH
 spell_slot += Shock:zok
 spell_slot += Simulacrum:scm
@@ -598,9 +600,8 @@ spell_slot += Statue form:stmf
 spell_slot += Sticky flame:yfk
 spell_slot += Sting:zptg
 spell_slot += Stone arrow:wtn
-spell_slot += Summon demon:dsmn
+spell_slot += Storm form:somf
 spell_slot += Summon forest:ftms
-spell_slot += Summon greater demon:gds
 spell_slot += Summon guardian golem:gds
 spell_slot += Summon horrible things:hts
 spell_slot += Summon hydra:hsy
