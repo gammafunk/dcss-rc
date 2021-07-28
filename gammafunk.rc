@@ -169,8 +169,6 @@ feature += altar {⚑}
 ### Tiles ###
 #############
 
-tile_window_width = 1300
-tile_window_height = 700
 tile_full_screen = false
 tile_map_pixels = 3
 
