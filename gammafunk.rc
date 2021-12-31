@@ -44,10 +44,9 @@ mp_colour = 100:green, 99:lightgray, 75:yellow, 50:lightred, 25:red
 hp_warning = 50
 
 monster_list_colour =
-monster_list_colour += friendly:green,neutral:brown
-monster_list_colour += good_neutral:brown,strict_neutral:brown
-monster_list_colour += trivial:darkgrey,easy:lightgrey
-monster_list_colour += tough:yellow,nasty:lightred
+monster_list_colour += friendly:green,neutral:brown,good_neutral:brown
+monster_list_colour += trivial:darkgrey,easy:lightgrey,tough:yellow
+monster_list_colour += nasty:lightred
 
 ###############
 ### Console ###
