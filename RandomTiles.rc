@@ -119,14 +119,14 @@
   --
   -- See the entry for Ilsiuw to see a var_type example of "terrain", and the
   -- entry for Bai Suzhen to see an example of "percent_hp". Here is an
-  -- example entry using a var_type of "status" that will use the Purgy tile
+  -- example entry using a var_type of "status" that will use the Pargi tile
   -- normally, the Snorg tile when berserking, and the torpor snail tile when
   -- slowed (but not fast+slow):
   --
-  --   {mons = "Snorgy Snail", tileset = {{"default", "mons_purgy"},
+  --   {mons = "Snorgy Snail", tileset = {{"default", "mons_pargi"},
   --                                      {"berserk", "mons_snorg"},
   --                                -- entry below matches fast and fast+slow
-  --                                      {"fast",    "mons_purgy"},
+  --                                      {"fast",    "mons_pargi"},
   --                                      {"slow",   "mons_torpor_snail"}},
   --    var_type = "status"},
   --
@@ -552,7 +552,7 @@
        shield_offsets = "0,0"},
       {mons = "profane servitor"},
       {mons = "Psyche"},
-      {mons = "Purgy"},
+      {mons = "Pargi"},
       {mons = "purple draconian"},
       {mons = "putrid mouth"},
       {mons = "quasit"},
