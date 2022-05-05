@@ -480,11 +480,9 @@ stop += life is in your own hands
 stop += is no longer charmed
 
 # Annoyances
-ignore += grinding sound
 ignore += contamination has completely
 ignore += your breath back
 
-ignore += pray:
 ignore += talk:
 ignore += talk_visual:
 ignore += friend_spell:
