@@ -140,7 +140,6 @@
   -- begin player_tiles array
   if not player_tiles then
     player_tiles = {
-      {mons = "spectral weapon"},
       {mons = "animated armour"},
       {mons = "acid blob"},
       {mons = "acid dragon"},
