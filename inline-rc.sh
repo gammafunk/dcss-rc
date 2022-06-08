@@ -2,44 +2,49 @@
 
 # Quick bash script to inline .lua files into a DCSS rc.
 
-# Base RC file. Script looks for a line with # LUA_INCLUDE, placing the
-# inlined lua files after that line.
-rc_file="gammafunk_base.rc"
-# Dir with the lua files
-lua_dir=~/Games/dcss/dcss-rc
-# Final RC file
-out_file=~/Games/dcss/dcss-rc/gammafunk.rc
+out_file=
+marker='\# BEGIN LUA'
 
 read -d '' usage_string <<EOF
-$(basename $0) [-b <file> ] [-d <dir>] [-o <file>] <file> [<file>...]
+$(basename $0) [-m MARKER] [-o OUT-FILE] RC-FILE LUA-FILE [LUA-FILE...]
+Replace an instance of the MARKER string in RC-FILE with the contents of the
+LUA-FILE arguments.
+Default marker string: $marker
 EOF
 
-while getopts "h?b:d:o:" opt; do
+while getopts "h?m:o:" opt; do
     case "$opt" in
         h|\?)
-            echo $usage_string
+            echo -e "$usage_string"
             exit 0
             ;;
-        b)  rc_file="$OPTARG"
-            ;;
-        d)  lua_dir="$OPTARG"
-            ;;
         o)  out_file="$OPTARG"
+            ;;
+        m)  marker="$OPTARG"
             ;;
     esac
 done
 shift $(($OPTIND - 1))
 
 if [ -z "$1" ]; then
-     echo $usage_string
-     exit 0
+    echo -e "$usage_string"
+    exit 0
+else
+    rc_file="$1"
+    shift
+fi
+if [ $# -eq 0 ]; then
+    echo -e "$usage_string"
+    exit 0
+fi
+if [ -z "$out_file" ]; then
+    out_file="${rc_file}.new"
 fi
 
 set -e
-cd $lua_dir
-lua_text=$'{\n'$(cat "$@")$'\n}'
+lua_text=$'\n'$(cat "$@")$'\n'
 myrc=$(cat $rc_file)
-printf "%s\n" "${myrc/\# BEGIN LUA/$lua_text}" > "$out_file"
+printf "%s\n" "${myrc/$marker/$lua_text}" > "$out_file"
 rc_nlines=$(cat $rc_file | wc -l)
 lua_nlines=$(echo "$lua_text" | wc -l)
 echo "Added $rc_nlines lines from $rc_file to $out_file"

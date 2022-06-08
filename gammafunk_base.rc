@@ -785,7 +785,9 @@ end
 # Note: My final RC file has code from lua files found at:
 #     https://github.com/gammafunk/dcss-rc/blob/master/README.md
 # starting from the line below.
+{
 # BEGIN LUA
+}
 
 # The ready() function  is needed for code that has to process each turn or UI
 # action.

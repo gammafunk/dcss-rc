@@ -786,6 +786,7 @@ end
 #     https://github.com/gammafunk/dcss-rc/blob/master/README.md
 # starting from the line below.
 {
+
 ---------------------------
 ---- Begin force_mores ----
 ---------------------------
@@ -972,6 +973,7 @@ end
 -----------------------------------
 ---- End leave message on save ----
 -----------------------------------
+
 }
 
 # The ready() function  is needed for code that has to process each turn or UI
