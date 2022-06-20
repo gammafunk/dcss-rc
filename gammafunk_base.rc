@@ -442,7 +442,7 @@ more += (phantasmal warrior|air elemental).*into view
 more += (orc sorcerer|(?<!orc )wizard|ogre mage|great orb of eyes|sphinx).*into view
 more += (vampire knight|basilisk|deep elf (sorcerer|demonologist)).*into view
 # Torment/flay or hellfire
-more += (flayed ghost|greater mummy|mummy priest|fiend|tzitzimitl).*into view
+more += (flayed ghost|royal mummy|mummy priest|fiend|tzitzimitl).*into view
 more += (tormentor|curse toe|curse skull|hell sentinel|hellion).*into view
 more += (deep elf (sorcerer|high priest)|draconian scorcher).*into view
 # Things that can hit for over 90+ damage in a turn that is either ranged or
@@ -684,7 +684,7 @@ note_messages += cast .* Abyss
 
 # Noteable monsters
 # Undead
-note_monsters += ancient lich,curse skull,curse toe,greater mummy
+note_monsters += ancient lich,curse skull,curse toe,royal mummy
 # Depths
 note_monsters += caustic shrike
 # Special hall_of_zot spawns
