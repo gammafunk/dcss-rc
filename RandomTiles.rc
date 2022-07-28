@@ -1,814 +1,835 @@
 <
-  ---------------------------
-  ---- Begin RandomTiles ----
-  ---------------------------
+---------------------------
+---- Begin RandomTiles ----
+---------------------------
 
-  -- See README.md for documentation.
+-- See README.md for documentation.
 
-  -- RandomTile options
-  -- If you set randtile_options elsewhere in your rc,  we don't override it.
-  if not randtile_options then
+-- RandomTile options
+-- If you set randtile_options elsewhere in your rc, we don't override it.
+if not randtile_options then
     randtile_options = {
-      -- Change the tile every N turns
-      turns_change = 100,
+        -- Change the tile every N turns
+        turns_change = 100,
 
-      -- Which setting for tile_player_tile to use when disabling RandomTiles
-      -- with toggle_random_tile(). Can set to e.g. "normal", "playermons",
-      -- or a fixed mons/tile.
-      disabled_setting = "normal",
+        -- Which setting for tile_player_tile to use when disabling RandomTiles
+        -- with toggle_random_tile(). Can set to e.g. "normal", "playermons",
+        -- or a fixed mons/tile.
+        disabled_setting = "normal",
 
-      -- If true, print the what tile we're changing to as if it were a
-      -- god message from our current god or the default_god below when we
-      -- have no god. If false, print a more generic message.
-      god_message = true,
-      default_god = "You",
+        -- If true, print the what tile we're changing to as if it were a
+        -- god message from our current god or the default_god below when we
+        -- have no god. If false, print a more generic message.
+        god_message = true,
+        default_god = "You",
 
-      -- Cute speech string templates. In these %g is replaced with the
-      -- god name, %am with the monster's name with an article, and %m
-      -- with the monster's name without an article.
-      god_speech = {["You"] = "%g become %am!",
-        -- Used when the god has no entry
-        ["default"] = "%g says: Become %am!",
-        ["Sif Muna"] = "%g whispers: Become %am.",
-        ["Trog"] = "%g roars: Now %m!!!",
-        ["Xom"] = "%g titters: I'd like %am!",
-        ["Nemelex Xobeh"] = "%g says: Let's draw a card...%m!"},
-      -- Colour of tile change message.
-      message_colour = "lightblue" }
-  end
+        -- Cute speech string templates. In these %g is replaced with the
+        -- god name, %am with the monster's name with an article, and %m
+        -- with the monster's name without an article.
+        god_speech = {
+            ["You"] = "%g become %am!",
+            -- Used when the god has no entry
+            ["default"] = "%g says: Become %am!",
+            ["Sif Muna"] = "%g whispers: Become %am.",
+            ["Trog"] = "%g roars: Now %m!!!",
+            ["Xom"] = "%g titters: I'd like %am!",
+            ["Nemelex Xobeh"] = "%g says: Let's draw a card...%m!" },
+        -- Colour of tile change message.
+        message_colour = "lightblue" }
+end
 
-  -- player_tiles defines the default array of player tiles from which
-  -- RandomTiles chooses. New tiles entries can be added anywhere in this array,
-  -- and lines can be removed or comment out to disable a tile, but remember that
-  -- a comma must come after each entry. Each entry must have at minimum a `mons'
-  -- field defined with a name for the entry. The actual tile to use can come
-  -- from this `mons' field or either of the optional fields `tile' and
-  -- `tileset', which are described later. If neither `tile' nor `tileset' are
-  -- defined, then `mons' must be the monster name as seen under xv in-game (and
-  -- as defined in the source file mon-data.h). For example, the entry:
-  --
-  --   {mons = "hell sentinel"},
-  --
-  -- is equivalent to the rc option:
-  --
-  --   tile_player_tile = mons:hell sentinel
-  --
-  -- If the `mons' field isn't the monster's name, either because you've renamed
-  -- it or because the corresponding monster doesn't exist, set the `tile' field
-  -- to the tile's full name. The player_name_pairs[] array in the source file
-  -- rltiles/tiledef-player.cc defines these names for all player tiles, and only
-  -- tiles defined in this file can be used. These are the tiles you see in
-  -- crawl's tilesheet file player.png.
-  --
-  -- For example, the following entry:
-  --
-  --   {mons = "a Zot statue", tile = "mons_zot_statue"},
-  --
-  -- is equivalent to the rc option:
-  --
-  --   tile_player_tile = tile:mons_zot_statue
-  --
-  -- For monsters like butterflies that have variant tiles, you can set the field
-  -- `num_var' to the number of variants in order to use them. The array
-  -- _tile_player_count[] in rltiles/tiledef-player.cc defines how many variants
-  -- exist for each tile, but it's easier to look in the folders under
-  -- rltiles/mon where the individual tile images are and see how many variants a
-  -- tile has. Since rltiles/mon/animals has butterfly.png through
-  -- butterfly10.png, which means 11 variants, the entry is:
-  --
-  --   {mons = "butterfly", tile = "mons_butterfly", num_var=11},
-  --
-  -- By default RandomTiles chooses a new variant with each UI action (i.e. any
-  -- keystroke that's not in a menu or prompt), even if the player's turn
-  -- didn't change. Set the field `var_type' to "fixed", "sequence", or
-  -- "oscillate" to change this behavior. With "fixed" a single variant is
-  -- chosen when the entry is chosen, and with "sequence" and "oscillate",
-  -- variants are progressed through in order (sequence) or forward-reverse
-  -- order (oscillate) with each UI action.
-  --
-  -- You can define a custom set of variants for use in an entry using the
-  -- `tileset' field. For example, here's an entry for the Serpent of Hell that
-  -- randomly chooses a Hell variant with every UI action:
-  --
-  --   {mons = "The Serpent of Hell",
-  --    tileset = {"mons_serpent_of_hell_tartarus",
-  --               "mons_serpent_of_hell_cocytus",
-  --               "mons_serpent_of_hell_dis",
-  --               "mons_serpent_of_hell_gehenna"}},
-  --
-  -- Custom tilesets can use any of the `var_type' values described above.
-  --
-  -- When the `tileset' field is used, there are special `var_type' values of
-  -- "terrain", "status", "percent_hp", and "xl" available, which will change
-  -- the tile based on a condition. To use one of these, make the
-  -- tileset field into an an array of arrays, with the first entry in the
-  -- inner array giving the condition value and the second giving the
-  -- corresponding tile applied under that condition. The first entry in
-  -- `tileset' must have an inner array value of "default" for when no other
-  -- entry matches.
-  --
-  -- For numeric `var_type' values like "percent_hp" and "xl", the first
-  -- condition value for each non-default entries must be a number, and the
-  -- tile of an entry is used if the player's current value is in less than or
-  -- equal to the entry's condition value and greater than any other
-  -- non-default entry in the tileset. For string values like "terrain" and
-  -- "status", the first condition value will be a string that is matched
-  -- against the player's current value. For "status", multiple status values
-  -- can be active for the player, so we always use the first matching entry,
-  -- and they should be listed in tileset in order of preference.
-  --
-  -- See the entry for Ilsiuw to see a var_type example of "terrain", and the
-  -- entry for Bai Suzhen to see an example of "percent_hp". Here is an
-  -- example entry using a var_type of "status" that will use the Pargi tile
-  -- normally, the Snorg tile when berserking, and the torpor snail tile when
-  -- slowed (but not fast+slow):
-  --
-  --   {mons = "Snorgy Snail", tileset = {{"default", "mons_pargi"},
-  --                                      {"berserk", "mons_snorg"},
-  --                                -- entry below matches fast and fast+slow
-  --                                      {"fast",    "mons_pargi"},
-  --                                      {"slow",   "mons_torpor_snail"}},
-  --    var_type = "status"},
-  --
-  -- The status names can be seen under the @ listing on the % screen, and
-  -- these are the short_text values from the duration_data[] array defined in
-  -- the source file duration-data.h. String value conditions are matched as
-  -- lua patterns, so substring matches and wildcards will work; see the lua
-  -- reference for details: http://www.lua.org/pil/20.2.html
-  --
+-- player_tiles defines the default array of player tiles from which
+-- RandomTiles chooses. New tiles entries can be added anywhere in this array,
+-- and lines can be removed or comment out to disable a tile, but remember that
+-- a comma must come after each entry. Each entry must have at minimum a `mons'
+-- field defined with a name for the entry. The actual tile to use can come
+-- from this `mons' field or either of the optional fields `tile' and
+-- `tileset', which are described later. If neither `tile' nor `tileset' are
+-- defined, then `mons' must be the monster name as seen under xv in-game (and
+-- as defined in the source file mon-data.h). For example, the entry:
+--
+--     { mons = "hell sentinel" },
+--
+-- is equivalent to the rc option:
+--
+--     tile_player_tile = mons:hell sentinel
+--
+-- If the `mons' field isn't the monster's name, either because you've renamed
+-- it or because the corresponding monster doesn't exist, set the `tile' field
+-- to the tile's full name. The player_name_pairs[] array in the source file
+-- rltiles/tiledef-player.cc defines these names for all player tiles, and only
+-- tiles defined in this file can be used. These are the tiles you see in
+-- crawl's tilesheet file player.png.
+--
+-- For example, the following entry:
+--
+--     { mons = "a Zot statue", tile = "mons_zot_statue" },
+--
+-- is equivalent to the rc option:
+--
+--     tile_player_tile = tile:mons_zot_statue
+--
+-- For monsters like butterflies that have variant tiles, you can set the field
+-- `num_var' to the number of variants in order to use them. The array
+-- _tile_player_count[] in rltiles/tiledef-player.cc defines how many variants
+-- exist for each tile, but it's easier to look in the folders under
+-- rltiles/mon where the individual tile images are and see how many variants a
+-- tile has. Since rltiles/mon/animals has butterfly.png through
+-- butterfly10.png, which means 11 variants, the entry is:
+--
+--     { mons = "butterfly", tile = "mons_butterfly", num_var=11 },
+--
+-- By default RandomTiles chooses a new variant with each UI action (i.e. any
+-- keystroke that's not in a menu or prompt), even if the player's turn
+-- didn't change. Set the field `var_type' to "fixed", "sequence", or
+-- "oscillate" to change this behavior. With "fixed" a single variant is
+-- chosen when the entry is chosen, and with "sequence" and "oscillate",
+-- variants are progressed through in order (sequence) or forward-reverse
+-- order (oscillate) with each UI action.
+--
+-- You can define a custom set of variants for use in an entry using the
+-- `tileset' field. For example, here's an entry for the Serpent of Hell that
+-- randomly chooses a Hell variant with every UI action:
+--
+--     { mons = "The Serpent of Hell",
+--       tileset = { "mons_serpent_of_hell_tartarus",
+--                   "mons_serpent_of_hell_cocytus",
+--                   "mons_serpent_of_hell_dis",
+--                   "mons_serpent_of_hell_gehenna" } },
+--
+-- Custom tilesets can use any of the `var_type' values described above.
+--
+-- When the `tileset' field is used, there are special `var_type' values of
+-- "terrain", "status", "percent_hp", and "xl" available, which will change
+-- the tile based on a condition. To use one of these, make the
+-- tileset field into an an array of arrays, with the first entry in the
+-- inner array giving the condition value and the second giving the
+-- corresponding tile applied under that condition. The first entry in
+-- `tileset' must have an inner array value of "default" for when no other
+-- entry matches.
+--
+-- For numeric `var_type' values like "percent_hp" and "xl", the first
+-- condition value for each non-default entries must be a number, and the
+-- tile of an entry is used if the player's current value is in less than or
+-- equal to the entry's condition value and greater than any other
+-- non-default entry in the tileset. For string values like "terrain" and
+-- "status", the first condition value will be a string that is matched
+-- against the player's current value. For "status", multiple status values
+-- can be active for the player, so we always use the first matching entry,
+-- and they should be listed in tileset in order of preference.
+--
+-- See the entry for Ilsiuw to see a var_type example of "terrain", and the
+-- entry for Bai Suzhen to see an example of "percent_hp". Here is an
+-- example entry using a var_type of "status" that will use the Pargi tile
+-- normally, the Snorg tile when berserking, and the Parghit tile when mighted.
+--
+--     { mons = "Troll",
+--       tileset = { { "default", "mons_pargi" },
+--                   { "berserk", "mons_snorg" },
+--                   { "mighty", "mons_parghit" } },
+--       var_type = "status" },
+--
+-- The status names can be seen under the @ listing on the % screen, and
+-- these are the short_text values from the duration_data[] array defined in
+-- the source file duration-data.h. String value conditions are matched as
+-- lua patterns, so substring matches and wildcards will work; see the lua
+-- reference for details: http://www.lua.org/pil/20.2.html
+--
 
-  -- begin player_tiles array
-  if not player_tiles then
+-- Begin player_tiles array
+if not player_tiles then
     player_tiles = {
-      {mons = "animated armour"},
-      {mons = "acid blob"},
-      {mons = "acid dragon"},
-      {mons = "adder"},
-      {mons = "Agnes"},
-      {mons = "air elemental"},
-      {mons = "Aizul"},
-      {mons = "alligator"},
-      {mons = "alligator snapping turtle"},
-      {mons = "ancient champion"},
-      {mons = "angel"},
-      {mons = "Antaeus"},
-      {mons = "ancient lich"},
-      {mons = "ancient zyme"},
-      {mons = "Amaemon"},
-      {mons = "apis"},
-      {mons = "apocalypse crab"},
-      {mons = "Arachne", tile = "mons_arachne_staveless"},
-      {mons = "Asmodeus"},
-      {mons = "Asterion"},
-      {mons = "Azrael"},
-      {mons = "azure jelly"},
-      {mons = "anaconda", weapon_offsets = "0,0", shield_offsets = "-2,5"},
-      {mons = "bag of meat", tile="mons_bag_of_meat"},
-      {mons = "Bai Suzhen", tileset = {
-         {"default", "mons_bai_suzhen"},
-         {0.5, "mons_bai_suzhen_dragon"}},
-       var_type = "percent_hp"},
-      {mons = "ball lightning"},
-      {mons = "ball python"},
-      {mons = "ballistomycete"},
-      {mons = "ballistomycete spore"},
-      {mons = "balrug"},
-      {mons = "bat"},
-      {mons = "battlemage"},
-      {mons = "battlesphere"},
-      {mons = "basilisk"},
-      {mons = "bennu"},
-      {mons = "kobold brigand"},
-      {mons = "black bear"},
-      {mons = "black draconian"},
-      {mons = "black mamba"},
-      {mons = "blink frog", weapon_offsets = "5,-3", shield_offsets = "0,0"},
-      {mons = "blizzard demon"},
-      {mons = "bloated husk"},
-      {mons = "block of ice", tile = "mons_block_of_ice", num_var = 2,
-       var_type="fixed"},
-      {mons = "Blork the orc"},
-      {mons = "bog body"},
-      {mons = "boggart"},
-      {mons = "bone dragon"},
-      {mons = "gnoll bouda"},
-      {mons = "Boris"},
-      {mons = "briar patch"},
-      {mons = "brimstone fiend"},
-      {mons = "broodmother"},
-      {mons = "bullfrog"},
-      {mons = "bunyip"},
-      {mons = "burning bush"},
-      {mons = "bush", tile = "mons_bush", num_var = 4, var_type = "fixed"},
-      {mons = "butterfly", tile = "mons_butterfly", num_var = 11},
-      {mons = "cacodemon", weapon_offsets = "3,0", shield_offsets = "0,0"},
-      {mons = "catoblepas"},
-      {mons = "caustic shrike", weapon_offsets = "-3,0",
-       shield_offsets = "0,0"},
-      {mons = "centaur"},
-      {mons = "centaur warrior"},
-      {mons = "Cerebov"},
-      {mons = "chaos spawn", tile = "mons_chaos_spawn", num_var = 5},
-      {mons = "cherub"},
-      {mons = "Chuck"},
-      {mons = "Cigotuvi's monster", tile = "mons_cigotuvis_monster"},
-      {mons = "Cloud Mage"},
-      {mons = "Crazy Yiuf"},
-      {mons = "creeping inferno"},
-      {mons = "crystal echidna"},
-      {mons = "crystal guardian"},
-      {mons = "crimson imp"},
-      {mons = "culicivora"},
-      {mons = "curse skull"},
-      {mons = "curse toe"},
-      {mons = "cyclops"},
-      {mons = "daeva"},
-      {mons = "dart slug"},
-      {mons = "death drake"},
-      {mons = "death knight"},
-      {mons = "death scarab", weapon_offsets = "-2,0",
-       shield_offsets = "-12,0"},
-      {mons = "death yak", weapon_offsets = "-4,0", shield_offsets = "-2,0"},
-      {mons = "deep elf archer"},
-      {mons = "deep elf annihilator"},
-      {mons = "deep elf blademaster"},
-      {mons = "deep elf death mage"},
-      {mons = "deep elf demonologist"},
-      {mons = "deep elf elementalist"},
-      {mons = "deep elf high priest"},
-      {mons = "deep elf knight"},
-      {mons = "deep elf master archer"},
-      {mons = "deep elf pyromancer"},
-      {mons = "deep elf sorcerer"},
-      {mons = "deep elf zephyrmancer"},
-      {mons = "deep dwarf"},
-      {mons = "deep troll"},
-      {mons = "deep troll earth mage", weapon_offsets = "-3,6",
-       shield_offsets = "0,0"},
-      {mons = "deep troll monk ghost", tile = "mons_faint_deep_troll_monk"},
-      {mons = "deep troll shaman", weapon_offsets = "-3,6",
-       shield_offsets = "0,0"},
-      {mons = "deathcap"},
-      {mons = "death cob"},
-      {mons = "deformed elf", tile = "mons_deformed_elf"},
-      {mons = "deformed human", tile = "mons_deformed_human"},
-      {mons = "deformed orc", tile = "mons_deformed_orc"},
-      {mons = "demigod"},
-      {mons = "demonic crawler"},
-      {mons = "demonic plant", tile = "mons_demonic_plant"},
-      {mons = "demonspawn"},
-      {mons = "demonspawn monk ghost", tile = "mons_faint_demonspawn_monk"},
-      {mons = "diamond obelisk"},
-      {mons = "dimme", tile = "mons_dimme"},
-      {mons = "dire elephant", weapon_offsets = "-2,3",
-       shield_offsets = "0,0"},
-      {mons = "Dispater"},
-      {mons = "Dissolution"},
-      {mons = "doom hound"},
-      {mons = "Donald"},
-      {mons = "Dowan", tile = "mons_dowan", num_var = 2,
-       var_type = "sequence"},
-      {mons = "draconian", tile = "draco_base"},
-      {mons = "draconian monk ghost", tile = "mons_faint_grey_draconian_monk"},
-      {mons = "dread lich"},
-      {mons = "dream sheep"},
-      {mons = "drowned soul"},
-      {mons = "dryad"},
-      {mons = "Duvessa", tile = "mons_duvessa", num_var = 2,
-       var_type = "sequence"},
-      {mons = "dwarf"},
-      {mons = "Edmund"},
-      {mons = "earth elemental"},
-      {mons = "efreet"},
-      {mons = "electric eel"},
-      {mons = "electric golem"},
-      {mons = "Eustachio"},
-      {mons = "eidolon"},
-      {mons = "eldritch tentacle", tile = "mons_eldritch_tentacle_portal_9"},
-      {mons = "elemental wellspring"},
-      {mons = "elephant", weapon_offsets = "-2,3", shield_offsets = "0,0"},
-      {mons = "elf"},
-      {mons = "eleionoma"},
-      {mons = "emperor scorpion"},
-      {mons = "the Enchantress"},
-      {mons = "entropy weaver"},
-      {mons = "Ereshkigal", weapon_offsets = "0,-20", shield_offsets = "2,-8"},
-      {mons = "Erica"},
-      {mons = "Erolcha"},
-      {mons = "ettin"},
-      {mons = "eye of devastation"},
-      {mons = "executioner"},
-      {mons = "Fannar"},
-      {mons = "faun"},
-      {mons = "felid", tile = "felid", num_var = 10, var_type = "fixed"},
-      {mons = "fenstrider witch"},
-      {mons = "fire bat"},
-      {mons = "fire crab"},
-      {mons = "fire dragon"},
-      {mons = "fire elemental"},
-      {mons = "fire giant"},
-      {mons = "fire vortex", tile = "mons_fire_vortex", num_var = 4,
-       var_type = "sequence"},
-      {mons = "flayed ghost"},
-      {mons = "flesh golem", tile = "mons_flesh_golem"},
-      {mons = "floating eye"},
-      {mons = "flying skull"},
-      {mons = "formicid"},
-      {mons = "Frances"},
-      {mons = "Frederick"},
-      {mons = "freezing wraith"},
-      {mons = "frilled lizard"},
-      {mons = "frost giant"},
-      {mons = "fulminant prism", tile = "mons_fulminant_prism", num_var = 4,
-       var_type = "sequence"},
-      {mons = "fungus", tile = "mons_fungus", num_var = 9, var_type = "fixed"},
-      {mons = "gargoyle"},
-      {mons = "Gastronok"},
-      {mons = "Geryon"},
-      {mons = "ghost", tile = "mons_player_ghost"},
-      {mons = "ghost crab"},
-      {mons = "ghost moth"},
-      {mons = "ghoul"},
-      {mons = "THE GIAGGOSTUONO", tile = "mons_giaggostuono"},
-      {mons = "giant cockroach"},
-      {mons = "gigabat", tile = "mons_gigabat"},
-      {mons = "Gloorx Vloq"},
-      {mons = "glowing orange brain"},
-      {mons = "gnoll"},
-      {mons = "gnoll sergeant"},
-      {mons = "goblin"},
-      {mons = "golden dragon"},
-      {mons = "golden eye"},
-      {mons = "goliath frog"},
-      {mons = "great orb of eyes"},
-      {mons = "Grunn"},
-      {mons = "royal mummy"},
-      {mons = "green death"},
-      {mons = "green draconian"},
-      {mons = "grey draconian"},
-      {mons = "Grinder"},
-      {mons = "Grum"},
-      {mons = "guardian golem"},
-      {mons = "guardian mummy"},
-      {mons = "guardian serpent"},
-      {mons = "halazid warlock"},
-      {mons = "halfling"},
-      {mons = "Harold"},
-      {mons = "harpy"},
-      {mons = "Hellbinder"},
-      {mons = "hellephant"},
-      {mons = "hellion"},
-      {mons = "hellwing"},
-      {mons = "hell beast"},
-      {mons = "hell hog"},
-      {mons = "hell hound"},
-      {mons = "hell knight"},
-      {mons = "hell rat"},
-      {mons = "hell sentinel"},
-      {mons = "hell wizard",
-       tileset = {"mons_hell_wizard_1",
-                  "mons_hell_wizard_2",
-                  "mons_hell_wizard_3"},
-       var_type = "oscillate"},
-      {mons = "hexer"},
-      {mons = "hobgoblin"},
-      {mons = "hog"},
-      {mons = "holy swine"},
-      {mons = "hornet"},
-      {mons = "hound"},
-      {mons = "howler monkey"},
-      {mons = "human"},
-      {mons = "hydra", tile = "mons_hydra", num_var = 5, var_type = "oscillate"},
-      {mons = "ice beast"},
-      {mons = "ice fiend"},
-      {mons = "ice devil"},
-      {mons = "ice dragon"},
-      {mons = "ice statue"},
-      {mons = "iguana"},
-      {mons = "Ignacio"},
-      {mons = "Ijyb"},
-      {mons = "Ilsuiw", tileset = {
-         {"default", "mons_ilsuiw"},
-         {"water", "mons_ilsuiw_water"}},
-       var_type = "terrain"},
-      {mons = "imperial myrmidon"},
-      {mons = "ironbound convoker"},
-      {mons = "ironbound preserver"},
-      {mons = "ironbound frostheart"},
-      {mons = "ironbound thunderhulk"},
-      {mons = "iron dragon"},
-      {mons = "iron elemental"},
-      {mons = "iron giant"},
-      {mons = "iron golem"},
-      {mons = "iron imp"},
-      {mons = "iron troll", weapon_offsets = "-3,6", shield_offsets = "0,0"},
-      {mons = "jackal"},
-      {mons = "jelly"},
-      {mons = "Jessica"},
-      {mons = "jiangshi", weapon_offsets = "1,3", shield_offsets = "2,2"},
-      {mons = "Jorgrun"},
-      {mons = "Jörmungandr", tile = "mons_jormungandr"},
-      {mons = "jorogumo"},
-      {mons = "Jory"},
-      {mons = "Joseph"},
-      {mons = "Josephine"},
-      {mons = "Josephina"},
-      {mons = "juggernaut"},
-      {mons = "jumping spider"},
-      {mons = "Khufu"},
-      {mons = "killer bee"},
-      {mons = "killer klown", tile = "mons_killer_klown", num_var = 5},
-      {mons = "Kirke"},
-      {mons = "knight"},
-      {mons = "kobold"},
-      {mons = "kobold demonologist"},
-      {mons = "komodo dragon"},
-      {mons = "kraken"},
-      {mons = "Lamia", tile = "mons_lamia"},
-      {mons = "large abomination", tile = "mons_abomination_large",
-       num_var = 7, var_type = "fixed"},
-      {mons = "large bag of meat", tile="mons_large_bag_of_meat"},
-      {mons = "lava snake", weapon_offsets = "0,0", shield_offsets = "-10,4"},
-      {mons = "lemure"},
-      {mons = "Lernaean Hydra", tile = "mons_lernaean_hydra",
-       var_type = "oscillate", num_var = 10},
-      {mons = "lich"},
-      {mons = "lightning spire"},
-      {mons = "lindwurm", weapon_offsets = "-3,-2", shield_offsets = "0,0"},
-      {mons = "living spell"},
-      {mons = "Lodul"},
-      {mons = "Lom Lobon"},
-      {mons = "lorocyproca"},
-      {mons = "lost soul"},
-      {mons = "Louise"},
-      {mons = "lurking horror"},
-      {mons = "Maggie"},
-      {mons = "mana viper", weapon_offsets = "8,0", shield_offsets = "-2,2"},
-      {mons = "manticore"},
-      {mons = "Mara"},
-      {mons = "Margery"},
-      {mons = "Maud", tile = "mons_maud"},
-      {mons = "Maurice"},
-      {mons = "meat hydra", tile="mons_meat_hydra"},
-      {mons = "meatlord", tile="mons_meatlord"},
-      {mons = "meatzerker", tile="mons_meatzerker"},
-      {mons = "meliai"},
-      {mons = "Menkaure"},
-      {mons = "Mennas"},
-      {mons = "merfolk", tileset = {
-         {"default", "mons_merfolk"},
-         {"water", "mons_merfolk_water"}},
-       var_type = "terrain"},
-      {mons = "merfolk aquamancer", tileset = {
-         {"default", "mons_merfolk_aquamancer"},
-         {"water", "mons_merfolk_aquamancer_water"}},
-       var_type = "terrain"},
-      {mons = "merfolk avatar", tileset = {
-         {"default", "mons_merfolk_avatar"},
-         {"water", "mons_merfolk_avatar_water"}},
-       var_type = "terrain"},
-      {mons = "merfolk impaler",
-       tileset = {
-         {"default", "mons_merfolk_impaler"},
-         {"water", "mons_merfolk_impaler_water"}},
-       var_type = "terrain"},
-      {mons = "merfolk javelineer",
-       tileset = {
-         {"default", "mons_merfolk_javelineer"},
-         {"water", "mons_merfolk_javelineer_water"}},
-       var_type = "terrain"},
-      {mons = "merfolk siren", tileset = {
-         {"default", "mons_merfolk_siren"},
-         {"water", "mons_merfolk_siren_water"}},
-       var_type = "terrain"},
-      {mons = "minotaur"},
-      {mons = "Mlioglotl"},
-      {mons = "Mnoleg"},
-      {mons = "molten gargoyle"},
-      {mons = "moon troll", weapon_offsets = "-3,6", shield_offsets = "0,0"},
-      {mons = "moth of wrath"},
-      {mons = "mummy"},
-      {mons = "mummy priest"},
-      {mons = "Murray"},
-      {mons = "mutant beast", tile = "mutant_beast_base", num_var = 5,
-       var_type = "oscillate"},
-      {mons = "mutant fire beast", tile = "mutant_beast_fire", num_var = 5,
-       var_type = "oscillate"},
-      {mons = "naga"},
-      {mons = "nagaraja"},
-      {mons = "naga mage"},
-      {mons = "naga ritualist"},
-      {mons = "naga sharpshooter"},
-      {mons = "naga warrior"},
-      {mons = "nameless horror"},
-      {mons = "nargun"},
-      {mons = "Natasha"},
-      {mons = "necromancer"},
-      {mons = "necrophage"},
-      {mons = "Nellie"},
-      {mons = "neqoxec"},
-      {mons = "Nergalle"},
-      {mons = "Nessos"},
-      {mons = "Nikola"},
-      {mons = "obsidian statue"},
-      {mons = "octopode"},
-      {mons = "ogre"},
-      {mons = "ogre mage"},
-      {mons = "oklob plant"},
-      {mons = "oklob sapling"},
-      {mons = "endoplasm"},
-      {mons = "ophan"},
-      {mons = "orange crystal statue"},
-      {mons = "orange demon"},
-      {mons = "orb fetus", tile = "mons_orb_guardian_fetus"},
-      {mons = "orb guardian"},
-      {mons = "orb of destruction", tile = "mons_orb_of_destruction",
-       num_var = 3, var_type = "sequence"},
-      {mons = "orb of electricity", tile = "mons_orb_of_electricity"},
-      {mons = "orb of fire"},
-      {mons = "orb of ice", tile = "mons_orb_of_ice"},
-      {mons = "orb spider"},
-      {mons = "orc"},
-      {mons = "orc high priest"},
-      {mons = "orc knight"},
-      {mons = "orc priest"},
-      {mons = "orc sorcerer"},
-      {mons = "orc warlord"},
-      {mons = "orc warrior"},
-      {mons = "orc wizard"},
-      {mons = "master elementalist", tile = "mons_master_elementalist"},
-      {mons = "pale draconian"},
-      {mons = "pandemonium lord"},
-      {mons = "peacekeeper"},
-      {mons = "pearl dragon"},
-      {mons = "phantasmal warrior"},
-      {mons = "phantom"},
-      {mons = "pharaoh ant"},
-      {mons = "phase bat", tile = "mons_phase_bat"},
-      {mons = "Pikel"},
-      {mons = "pillar of salt", weapon_offsets = "3,0",
-       shield_offsets = "0,0"},
-      {mons = "plant"},
-      {mons = "polar bear"},
-      {mons = "Polyphemus"},
-      {mons = "Prince Ribbit", weapon_offsets = "5,-3",
-       shield_offsets = "0,0"},
-      {mons = "profane servitor"},
-      {mons = "Psyche"},
-      {mons = "Parghit"},
-      {mons = "Pargi"},
-      {mons = "purple draconian"},
-      {mons = "putrid mouth"},
-      {mons = "quasit"},
-      {mons = "queen bee"},
-      {mons = "quicksilver dragon"},
-      {mons = "quicksilver elemental"},
-      {mons = "quicksilver ooze"},
-      {mons = "quokka"},
-      {mons = "radroach"},
-      {mons = "ragged hierophant"},
-      {mons = "raiju"},
-      {mons = "rakshasa"},
-      {mons = "rat"},
-      {mons = "reaper"},
-      {mons = "redback"},
-      {mons = "red devil"},
-      {mons = "red draconian"},
-      {mons = "revenant"},
-      {mons = "rime drake"},
-      {mons = "river rat"},
-      {mons = "Robin"},
-      {mons = "rockslime"},
-      {mons = "Roxanne"},
-      {mons = "the Royal Jelly"},
-      {mons = "Rupert"},
-      {mons = "rust devil"},
-      {mons = "Saint Roka"},
-      {mons = "salamander"},
-      {mons = "salamander mystic"},
-      {mons = "salamander tyrant"},
-      {mons = "saltling"},
-      {mons = "satyr"},
-      {mons = "scorpion"},
-      {mons = "scourge", tile="mons_scourge"},
-      {mons = "sea snake", weapon_offsets = "-4,5", shield_offsets = "-4,4"},
-      {mons = "searing wretch"},
-      {mons = "seraph"},
-      {mons = "The Serpent of Hell", tileset = {
-         "mons_serpent_of_hell_tartarus",
-         "mons_serpent_of_hell_cocytus",
-         "mons_serpent_of_hell_dis",
-         "mons_serpent_of_hell_gehenna"}},
-      {mons = "servant of whispers"},
-      {mons = "shadow"},
-      {mons = "shadow demon"},
-      {mons = "shadow dragon"},
-      {mons = "shadow imp"},
-      {mons = "shadow wraith"},
-      {mons = "shambling mangrove"},
-      {mons = "shapeshifter", tileset = {
-         "mons_glowing_shapeshifter",
-         "mons_shapeshifter"},
-       var_type="sequence"},
-      {mons = "shard shrike", weapon_offsets = "8,0", shield_offsets = "0,0"},
-      {mons = "shining eye"},
-      {mons = "shock serpent", weapon_offsets = "3,0",
-       shield_offsets = "-2,3"},
-      {mons = "Sigmund"},
-      {mons = "silent spectre"},
-      {mons = "sixfirhy"},
-      {mons = "skeletal warrior"},
-      {mons = "sky beast"},
-      {mons = "slime creature", num_var = 5, var_type = "oscillate",
-       tile = "mons_slime_creature"},
-      {mons = "small abomination"},
-      {mons = "smoke demon"},
-      {mons = "snapping turtle", tileset = {
-         "mons_snapping_turtle",
-         "mons_alligator_snapping_turtle"},
-       var_type="sequence"},
-      {mons = "Snorg"},
-      {mons = "Sojobo"},
-      {mons = "Sonja"},
-      {mons = "soul eater"},
-      {mons = "spark wasp"},
-      {mons = "spatial maelstrom", tile = "mons_spatial_maelstrom",
-       num_var = 4, var_type = "sequence"},
-      {mons = "spatial vortex", tile = "mons_spatial_vortex", num_var = 4,
-       var_type = "sequence"},
-      {mons = "spellforged servitor"},
-      {mons = "sphinx"},
-      {mons = "cane toad", weapon_offsets = "5,-3", shield_offsets = "0,0"},
-      {mons = "spooky ghost", tile = "mons_ghost"},
-      {mons = "spriggan"},
-      {mons = "spriggan air mage"},
-      {mons = "spriggan berserker"},
-      {mons = "spriggan defender"},
-      {mons = "spriggan druid"},
-      {mons = "spriggan rider"},
-      {mons = "steam dragon"},
-      {mons = "steelbarb worm"},
-      {mons = "stoker"},
-      {mons = "stone giant"},
-      {mons = "storm dragon"},
-      {mons = "sun demon"},
-      {mons = "starcursed mass"},
-      {mons = "swamp dragon"},
-      {mons = "swamp drake"},
-      {mons = "swamp worm"},
-      {mons = "sun moth"},
-      {mons = "tainted leviathan"},
-      {mons = "tarantella"},
-      {mons = "tengu"},
-      {mons = "tengu conjurer"},
-      {mons = "tengu reaver"},
-      {mons = "tengu warrior"},
-      {mons = "tentacled monstrosity"},
-      {mons = "tentacled starspawn"},
-      {mons = "Terence"},
-      {mons = "test spawner"},
-      {mons = "thorn hunter"},
-      {mons = "thrashing horror"},
-      {mons = "Tiamat", tile = "mons_tiamat", num_var = 9},
-      {mons = "titan"},
-      {mons = "toadstool", tile = "mons_toadstool", num_var = 2,
-       var_type = "fixed"},
-      {mons = "toenail golem"},
-      {mons = "tormentor"},
-      {mons = "torpor snail", weapon_offsets = "9,-2", shield_offsets = "0,0"},
-      {mons = "training dummy"},
-      {mons = "tree", tile = "tran_tree"},
-      {mons = "troll"},
-      {mons = "twister", tile = "mons_twister", num_var = 4,
-       var_type = "sequence"},
-      {mons = "two-headed ogre"},
-      {mons = "tyrant leech"},
-      {mons = "tzitzimitl"},
-      {mons = "ufetubus"},
-      {mons = "ugly thing", tile = "mons_ugly_thing", num_var = 6},
-      {mons = "unseen horror"},
-      {mons = "the Unspeakable", tile = "mons_unspeakable"},
-      {mons = "Urug"},
-      {mons = "ushabti"},
-      {mons = "vampire"},
-      {mons = "vampire bat"},
-      {mons = "vampire knight"},
-      {mons = "vampire mage"},
-      {mons = "vampire mosquito"},
-      {mons = "Vashnia"},
-      {mons = "vault guard"},
-      {mons = "vault sentinel"},
-      {mons = "vault warden"},
-      {mons = "very ugly thing", tile = "mons_very_ugly_thing", num_var = 6},
-      {mons = "vine stalker"},
-      {mons = "Vv"},
-      {mons = "walking crystal tome"},
-      {mons = "walking divine tome"},
-      {mons = "walking earthen tome"},
-      {mons = "walking frostbound tome"},
-      {mons = "wandering mushroom"},
-      {mons = "war gargoyle"},
-      {mons = "water elemental"},
-      {mons = "water moccasin"},
-      {mons = "water nymph"},
-      {mons = "warg"},
-      {mons = "wendigo"},
-      {mons = "white draconian"},
-      {mons = "white imp"},
-      {mons = "will-o-the-wisp"},
-      {mons = "wind drake"},
-      {mons = "wight"},
-      {mons = "Wiglaf", tile = "mons_wiglaf"},
-      {mons = "withered plant", tile = "mons_withered_plant"},
-      {mons = "wizard"},
-      {mons = "wolf"},
-      {mons = "wolf spider"},
-      {mons = "worldbinder"},
-      {mons = "worm"},
-      {mons = "wretched star"},
-      {mons = "wraith"},
-      {mons = "wyvern"},
-      {mons = "XTAHUA"},
-      {mons = "yak", weapon_offsets = "-4,0", shield_offsets = "-2,0"},
-      {mons = "yaktaur"},
-      {mons = "yaktaur captain"},
-      {mons = "yellow draconian"},
-      {mons = "ynoxinul"},
-      {mons = "Zenata"},
-      {mons = "Zonguldrok", tile = "mons_zonguldrok_lich"},
-      {mons = "a Zot statue", tile = "mons_zot_statue"},
+        { mons = "acid blob" },
+        { mons = "acid dragon" },
+        { mons = "adder" },
+        { mons = "Agnes" },
+        { mons = "air elemental" },
+        { mons = "Aizul" },
+        { mons = "alligator" },
+        { mons = "alligator snapping turtle" },
+        { mons = "ancient champion" },
+        { mons = "angel" },
+        { mons = "animate armour" },
+        { mons = "Antaeus" },
+        { mons = "ancient lich" },
+        { mons = "ancient zyme" },
+        { mons = "Amaemon" },
+        { mons = "apis" },
+        { mons = "apocalypse crab" },
+        { mons = "Arachne", tile = "mons_arachne_staveless" },
+        { mons = "Asmodeus" },
+        { mons = "Asterion" },
+        { mons = "Azrael" },
+        { mons = "azure jelly" },
+        { mons = "anaconda", weapon_offsets = "0,0", shield_offsets = "-2,5" },
+        { mons = "bag of meat", tile="mons_bag_of_meat" },
+        { mons = "Bai Suzhen", tileset = {
+             { "default", "mons_bai_suzhen" },
+             { 0.5, "mons_bai_suzhen_dragon" }},
+         var_type = "percent_hp" },
+        { mons = "ball lightning" },
+        { mons = "ball python" },
+        { mons = "ballistomycete" },
+        { mons = "ballistomycete spore" },
+        { mons = "balrug" },
+        { mons = "bat" },
+        { mons = "battlemage" },
+        { mons = "battlesphere" },
+        { mons = "basilisk" },
+        { mons = "bennu" },
+        { mons = "kobold brigand" },
+        { mons = "black bear" },
+        { mons = "black draconian" },
+        { mons = "black mamba" },
+        { mons = "blink frog", weapon_offsets = "5,-3",
+          shield_offsets = "0,0" },
+        { mons = "blizzard demon" },
+        { mons = "bloated husk" },
+        { mons = "block of ice", tile = "mons_block_of_ice", num_var = 2,
+         var_type="fixed" },
+        { mons = "Blork the orc" },
+        { mons = "bog body" },
+        { mons = "boggart" },
+        { mons = "bone dragon" },
+        { mons = "gnoll bouda" },
+        { mons = "Boris" },
+        { mons = "briar patch" },
+        { mons = "brimstone fiend" },
+        { mons = "broodmother" },
+        { mons = "bullfrog" },
+        { mons = "bunyip" },
+        { mons = "burning bush" },
+        { mons = "bush", tile = "mons_bush", num_var = 4, var_type = "fixed" },
+        { mons = "butterfly", tile = "mons_butterfly", num_var = 11 },
+        { mons = "cacodemon", weapon_offsets = "3,0", shield_offsets = "0,0" },
+        { mons = "catoblepas" },
+        { mons = "caustic shrike", weapon_offsets = "-3,0",
+         shield_offsets = "0,0" },
+        { mons = "centaur" },
+        { mons = "centaur warrior" },
+        { mons = "Cerebov" },
+        { mons = "chaos spawn", tile = "mons_chaos_spawn", num_var = 5 },
+        { mons = "cherub" },
+        { mons = "Chuck" },
+        { mons = "Cigotuvi's monster", tile = "mons_cigotuvis_monster" },
+        { mons = "Cloud Mage" },
+        { mons = "Crazy Yiuf" },
+        { mons = "creeping inferno" },
+        { mons = "crystal echidna" },
+        { mons = "crystal guardian" },
+        { mons = "crimson imp" },
+        { mons = "culicivora" },
+        { mons = "curse skull" },
+        { mons = "curse toe" },
+        { mons = "cyclops" },
+        { mons = "daeva" },
+        { mons = "dart slug" },
+        { mons = "death drake" },
+        { mons = "death knight" },
+        { mons = "death scarab", weapon_offsets = "-2,0",
+         shield_offsets = "-12,0" },
+        { mons = "death yak", weapon_offsets = "-4,0",
+          shield_offsets = "-2,0" },
+        { mons = "deep elf archer" },
+        { mons = "deep elf annihilator" },
+        { mons = "deep elf blademaster" },
+        { mons = "deep elf death mage" },
+        { mons = "deep elf demonologist" },
+        { mons = "deep elf elementalist" },
+        { mons = "deep elf high priest" },
+        { mons = "deep elf knight" },
+        { mons = "deep elf master archer" },
+        { mons = "deep elf pyromancer" },
+        { mons = "deep elf sorcerer" },
+        { mons = "deep elf zephyrmancer" },
+        { mons = "deep dwarf" },
+        { mons = "deep troll" },
+        { mons = "deep troll earth mage", weapon_offsets = "-3,6",
+         shield_offsets = "0,0" },
+        { mons = "deep troll monk ghost",
+          tile = "mons_faint_deep_troll_monk" },
+        { mons = "deep troll shaman", weapon_offsets = "-3,6",
+         shield_offsets = "0,0" },
+        { mons = "deathcap" },
+        { mons = "death cob" },
+        { mons = "deformed elf", tile = "mons_deformed_elf" },
+        { mons = "deformed human", tile = "mons_deformed_human" },
+        { mons = "deformed orc", tile = "mons_deformed_orc" },
+        { mons = "demigod" },
+        { mons = "demonic crawler" },
+        { mons = "demonic plant", tile = "mons_demonic_plant" },
+        { mons = "demonspawn" },
+        { mons = "demonspawn monk ghost",
+          tile = "mons_faint_demonspawn_monk" },
+        { mons = "diamond obelisk" },
+        { mons = "dimme", tile = "mons_dimme" },
+        { mons = "dire elephant", weapon_offsets = "-2,3",
+         shield_offsets = "0,0" },
+        { mons = "Dispater" },
+        { mons = "Dissolution" },
+        { mons = "doom hound" },
+        { mons = "Donald" },
+        { mons = "Dowan", tile = "mons_dowan", num_var = 2,
+         var_type = "sequence" },
+        { mons = "draconian", tile = "draco_base" },
+        { mons = "draconian monk ghost",
+          tile = "mons_faint_grey_draconian_monk" },
+        { mons = "dread lich" },
+        { mons = "dream sheep" },
+        { mons = "drowned soul" },
+        { mons = "dryad" },
+        { mons = "Duvessa", tile = "mons_duvessa", num_var = 2,
+         var_type = "sequence" },
+        { mons = "dwarf" },
+        { mons = "Edmund" },
+        { mons = "earth elemental" },
+        { mons = "efreet" },
+        { mons = "electric eel" },
+        { mons = "electric golem" },
+        { mons = "Eustachio" },
+        { mons = "eidolon" },
+        { mons = "eldritch tentacle",
+          tile = "mons_eldritch_tentacle_portal_9" },
+        { mons = "elemental wellspring" },
+        { mons = "elephant", weapon_offsets = "-2,3", shield_offsets = "0,0" },
+        { mons = "elf" },
+        { mons = "eleionoma" },
+        { mons = "emperor scorpion" },
+        { mons = "the Enchantress" },
+        { mons = "entropy weaver" },
+        { mons = "Ereshkigal", weapon_offsets = "0,-20",
+          shield_offsets = "2,-8" },
+        { mons = "Erica" },
+        { mons = "Erolcha" },
+        { mons = "ettin" },
+        { mons = "eye of devastation" },
+        { mons = "executioner" },
+        { mons = "Fannar" },
+        { mons = "faun" },
+        { mons = "felid", tile = "felid", num_var = 10, var_type = "fixed" },
+        { mons = "fenstrider witch" },
+        { mons = "fire bat" },
+        { mons = "fire crab" },
+        { mons = "fire dragon" },
+        { mons = "fire elemental" },
+        { mons = "fire giant" },
+        { mons = "fire vortex", tile = "mons_fire_vortex", num_var = 4,
+         var_type = "sequence" },
+        { mons = "flayed ghost" },
+        { mons = "flesh golem", tile = "mons_flesh_golem" },
+        { mons = "floating eye" },
+        { mons = "flying skull" },
+        { mons = "formicid" },
+        { mons = "Frances" },
+        { mons = "Frederick" },
+        { mons = "freezing wraith" },
+        { mons = "frilled lizard" },
+        { mons = "frost giant" },
+        { mons = "fulminant prism", tile = "mons_fulminant_prism", num_var = 4,
+          var_type = "sequence" },
+        { mons = "fungus", tile = "mons_fungus", num_var = 9,
+          var_type = "fixed" },
+        { mons = "gargoyle" },
+        { mons = "Gastronok" },
+        { mons = "Geryon" },
+        { mons = "ghost", tile = "mons_player_ghost" },
+        { mons = "ghost crab" },
+        { mons = "ghost moth" },
+        { mons = "ghoul" },
+        { mons = "THE GIAGGOSTUONO", tile = "mons_giaggostuono" },
+        { mons = "giant cockroach" },
+        { mons = "gigabat", tile = "mons_gigabat" },
+        { mons = "Gloorx Vloq" },
+        { mons = "glowing orange brain" },
+        { mons = "gnoll" },
+        { mons = "gnoll sergeant" },
+        { mons = "goblin" },
+        { mons = "golden dragon" },
+        { mons = "golden eye" },
+        { mons = "goliath frog" },
+        { mons = "great orb of eyes" },
+        { mons = "Grunn" },
+        { mons = "royal mummy" },
+        { mons = "green death" },
+        { mons = "green draconian" },
+        { mons = "grey draconian" },
+        { mons = "Grinder" },
+        { mons = "Grum" },
+        { mons = "guardian golem" },
+        { mons = "guardian mummy" },
+        { mons = "guardian serpent" },
+        { mons = "halazid warlock" },
+        { mons = "halfling" },
+        { mons = "Harold" },
+        { mons = "harpy" },
+        { mons = "Hellbinder" },
+        { mons = "hellephant" },
+        { mons = "hellion" },
+        { mons = "hellwing" },
+        { mons = "hell beast" },
+        { mons = "hell hog" },
+        { mons = "hell hound" },
+        { mons = "hell knight" },
+        { mons = "hell rat" },
+        { mons = "hell sentinel" },
+        { mons = "hexer" },
+        { mons = "hobgoblin" },
+        { mons = "hog" },
+        { mons = "holy swine" },
+        { mons = "hornet" },
+        { mons = "hound" },
+        { mons = "howler monkey" },
+        { mons = "human" },
+        { mons = "hydra", tile = "mons_hydra", num_var = 5,
+          var_type = "oscillate" },
+        { mons = "ice beast" },
+        { mons = "ice fiend" },
+        { mons = "ice devil" },
+        { mons = "ice dragon" },
+        { mons = "ice statue" },
+        { mons = "iguana" },
+        { mons = "Ignacio" },
+        { mons = "Ijyb" },
+        { mons = "Ilsuiw",
+          tileset = {
+              { "default", "mons_ilsuiw" },
+              { "water", "mons_ilsuiw_water" }
+          },
+          var_type = "terrain" },
+        { mons = "imperial myrmidon" },
+        { mons = "ironbound convoker" },
+        { mons = "ironbound preserver" },
+        { mons = "ironbound frostheart" },
+        { mons = "ironbound thunderhulk" },
+        { mons = "iron dragon" },
+        { mons = "iron elemental" },
+        { mons = "iron giant" },
+        { mons = "iron golem" },
+        { mons = "iron imp" },
+        { mons = "iron troll", weapon_offsets = "-3,6", shield_offsets = "0,0" },
+        { mons = "jackal" },
+        { mons = "jelly" },
+        { mons = "Jessica" },
+        { mons = "jiangshi", weapon_offsets = "1,3", shield_offsets = "2,2" },
+        { mons = "Jorgrun" },
+        { mons = "Jörmungandr", tile = "mons_jormungandr" },
+        { mons = "jorogumo" },
+        { mons = "Jory" },
+        { mons = "Joseph" },
+        { mons = "Josephine" },
+        { mons = "Josephina" },
+        { mons = "juggernaut" },
+        { mons = "jumping spider" },
+        { mons = "Khufu" },
+        { mons = "killer bee" },
+        { mons = "killer klown", tile = "mons_killer_klown", num_var = 5 },
+        { mons = "Kirke" },
+        { mons = "knight" },
+        { mons = "kobold" },
+        { mons = "kobold demonologist" },
+        { mons = "komodo dragon" },
+        { mons = "kraken" },
+        { mons = "Lamia", tile = "mons_lamia" },
+        { mons = "large abomination", tile = "mons_abomination_large",
+          num_var = 7, var_type = "fixed" },
+        { mons = "large bag of meat", tile="mons_large_bag_of_meat" },
+        { mons = "lava snake", weapon_offsets = "0,0",
+          shield_offsets = "-10,4" },
+        { mons = "lemure" },
+        { mons = "Lernaean Hydra", tile = "mons_lernaean_hydra",
+          var_type = "oscillate", num_var = 10 },
+        { mons = "lich" },
+        { mons = "lightning spire" },
+        { mons = "lindwurm", weapon_offsets = "-3,-2",
+          shield_offsets = "0,0" },
+        { mons = "living spell" },
+        { mons = "Lodul" },
+        { mons = "Lom Lobon" },
+        { mons = "lorocyproca" },
+        { mons = "lost soul" },
+        { mons = "Louise" },
+        { mons = "lurking horror" },
+        { mons = "Maggie" },
+        { mons = "mana viper", weapon_offsets = "8,0",
+          shield_offsets = "-2,2" },
+        { mons = "manticore" },
+        { mons = "Mara" },
+        { mons = "Margery" },
+        { mons = "Maud", tile = "mons_maud" },
+        { mons = "Maurice" },
+        { mons = "meat hydra", tile="mons_meat_hydra" },
+        { mons = "meatlord", tile="mons_meatlord" },
+        { mons = "meatzerker", tile="mons_meatzerker" },
+        { mons = "meliai" },
+        { mons = "Menkaure" },
+        { mons = "Mennas" },
+        { mons = "merfolk",
+          tileset = {
+             { "default", "mons_merfolk" },
+             { "water", "mons_merfolk_water" }
+          },
+          var_type = "terrain" },
+        { mons = "merfolk aquamancer",
+          tileset = {
+             { "default", "mons_merfolk_aquamancer" },
+             { "water", "mons_merfolk_aquamancer_water" }
+          },
+          var_type = "terrain" },
+        { mons = "merfolk avatar",
+          tileset = {
+             { "default", "mons_merfolk_avatar" },
+             { "water", "mons_merfolk_avatar_water" }
+          },
+          var_type = "terrain" },
+        { mons = "merfolk impaler",
+          tileset = {
+             { "default", "mons_merfolk_impaler" },
+             { "water", "mons_merfolk_impaler_water" }
+          },
+          var_type = "terrain" },
+        { mons = "merfolk javelineer",
+          tileset = {
+             { "default", "mons_merfolk_javelineer" },
+             { "water", "mons_merfolk_javelineer_water" } },
+          var_type = "terrain" },
+        { mons = "merfolk siren", tileset = {
+             { "default", "mons_merfolk_siren" },
+             { "water", "mons_merfolk_siren_water" }},
+          var_type = "terrain" },
+        { mons = "minotaur" },
+        { mons = "Mlioglotl" },
+        { mons = "Mnoleg" },
+        { mons = "molten gargoyle" },
+        { mons = "moon troll", weapon_offsets = "-3,6",
+          shield_offsets = "0,0" },
+        { mons = "moth of wrath" },
+        { mons = "mummy" },
+        { mons = "mummy priest" },
+        { mons = "Murray" },
+        { mons = "mutant beast", tile = "mutant_beast_base", num_var = 5,
+          var_type = "oscillate" },
+        { mons = "mutant fire beast", tile = "mutant_beast_fire", num_var = 5,
+          var_type = "oscillate" },
+        { mons = "naga" },
+        { mons = "nagaraja" },
+        { mons = "naga mage" },
+        { mons = "naga ritualist" },
+        { mons = "naga sharpshooter" },
+        { mons = "naga warrior" },
+        { mons = "nameless horror" },
+        { mons = "nargun" },
+        { mons = "Natasha" },
+        { mons = "necromancer" },
+        { mons = "necrophage" },
+        { mons = "Nellie" },
+        { mons = "neqoxec" },
+        { mons = "Nergalle" },
+        { mons = "Nessos" },
+        { mons = "Nikola" },
+        { mons = "obsidian statue" },
+        { mons = "octopode" },
+        { mons = "ogre" },
+        { mons = "ogre mage" },
+        { mons = "oklob plant" },
+        { mons = "oklob sapling" },
+        { mons = "endoplasm" },
+        { mons = "ophan" },
+        { mons = "orange crystal statue" },
+        { mons = "orange demon" },
+        { mons = "orb fetus", tile = "mons_orb_guardian_fetus" },
+        { mons = "orb guardian" },
+        { mons = "orb of destruction", tile = "mons_orb_of_destruction",
+          num_var = 3, var_type = "sequence" },
+        { mons = "orb of electricity", tile = "mons_orb_of_electricity" },
+        { mons = "orb of fire" },
+        { mons = "orb of ice", tile = "mons_orb_of_ice" },
+        { mons = "orb spider" },
+        { mons = "orc" },
+        { mons = "orc high priest" },
+        { mons = "orc knight" },
+        { mons = "orc priest" },
+        { mons = "orc sorcerer" },
+        { mons = "orc warlord" },
+        { mons = "orc warrior" },
+        { mons = "orc wizard" },
+        { mons = "master elementalist", tile = "mons_master_elementalist" },
+        { mons = "pale draconian" },
+        { mons = "pandemonium lord" },
+        { mons = "peacekeeper" },
+        { mons = "pearl dragon" },
+        { mons = "phantasmal warrior" },
+        { mons = "phantom" },
+        { mons = "pharaoh ant" },
+        { mons = "phase bat", tile = "mons_phase_bat" },
+        { mons = "Pikel" },
+        { mons = "pillar of salt", weapon_offsets = "3,0",
+          shield_offsets = "0,0" },
+        { mons = "plant" },
+        { mons = "polar bear" },
+        { mons = "Polyphemus" },
+        { mons = "Prince Ribbit", weapon_offsets = "5,-3",
+          shield_offsets = "0,0" },
+        { mons = "profane servitor" },
+        { mons = "Psyche" },
+        { mons = "Parghit" },
+        { mons = "Pargi" },
+        { mons = "purple draconian" },
+        { mons = "putrid mouth" },
+        { mons = "quasit" },
+        { mons = "queen bee" },
+        { mons = "quicksilver dragon" },
+        { mons = "quicksilver elemental" },
+        { mons = "quicksilver ooze" },
+        { mons = "quokka" },
+        { mons = "radroach" },
+        { mons = "ragged hierophant" },
+        { mons = "raiju" },
+        { mons = "rakshasa" },
+        { mons = "rat" },
+        { mons = "reaper" },
+        { mons = "redback" },
+        { mons = "red devil" },
+        { mons = "red draconian" },
+        { mons = "revenant" },
+        { mons = "rime drake" },
+        { mons = "river rat" },
+        { mons = "Robin" },
+        { mons = "rockslime" },
+        { mons = "Roxanne" },
+        { mons = "the Royal Jelly" },
+        { mons = "Rupert" },
+        { mons = "rust devil" },
+        { mons = "Saint Roka" },
+        { mons = "salamander" },
+        { mons = "salamander mystic" },
+        { mons = "salamander tyrant" },
+        { mons = "saltling" },
+        { mons = "satyr" },
+        { mons = "scorpion" },
+        { mons = "scourge", tile="mons_scourge" },
+        { mons = "sea snake", weapon_offsets = "-4,5",
+          shield_offsets = "-4,4" },
+        { mons = "searing wretch" },
+        { mons = "seraph" },
+        { mons = "The Serpent of Hell",
+          tileset = {
+             "mons_serpent_of_hell_tartarus",
+             "mons_serpent_of_hell_cocytus",
+             "mons_serpent_of_hell_dis",
+             "mons_serpent_of_hell_gehenna"
+          } },
+        { mons = "servant of whispers" },
+        { mons = "shadow" },
+        { mons = "shadow demon" },
+        { mons = "shadow dragon" },
+        { mons = "shadow imp" },
+        { mons = "shadow wraith" },
+        { mons = "shambling mangrove" },
+        { mons = "shapeshifter",
+          tileset = { "mons_glowing_shapeshifter", "mons_shapeshifter" },
+          var_type="sequence" },
+        { mons = "shard shrike", weapon_offsets = "8,0",
+          shield_offsets = "0,0" },
+        { mons = "shining eye" },
+        { mons = "shock serpent", weapon_offsets = "3,0",
+         shield_offsets = "-2,3" },
+        { mons = "Sigmund" },
+        { mons = "silent spectre" },
+        { mons = "sixfirhy" },
+        { mons = "skeletal warrior" },
+        { mons = "sky beast" },
+        { mons = "slime creature", num_var = 5, var_type = "oscillate",
+         tile = "mons_slime_creature" },
+        { mons = "small abomination" },
+        { mons = "smoke demon" },
+        { mons = "snapping turtle",
+          tileset = {"mons_snapping_turtle",
+          "mons_alligator_snapping_turtle" },
+          var_type="sequence" },
+        { mons = "Snorg" },
+        { mons = "Sojobo" },
+        { mons = "Sonja" },
+        { mons = "soul eater" },
+        { mons = "spark wasp" },
+        { mons = "spatial maelstrom", tile = "mons_spatial_maelstrom",
+          num_var = 4, var_type = "sequence" },
+        { mons = "spatial vortex", tile = "mons_spatial_vortex", num_var = 4,
+          var_type = "sequence" },
+        { mons = "spellforged servitor" },
+        { mons = "sphinx" },
+        { mons = "cane toad", weapon_offsets = "5,-3",
+          shield_offsets = "0,0" },
+        { mons = "spooky ghost", tile = "mons_ghost" },
+        { mons = "spriggan" },
+        { mons = "spriggan air mage" },
+        { mons = "spriggan berserker" },
+        { mons = "spriggan defender" },
+        { mons = "spriggan druid" },
+        { mons = "spriggan rider" },
+        { mons = "steam dragon" },
+        { mons = "steelbarb worm" },
+        { mons = "stoker" },
+        { mons = "stone giant" },
+        { mons = "storm dragon" },
+        { mons = "sun demon" },
+        { mons = "starcursed mass" },
+        { mons = "swamp dragon" },
+        { mons = "swamp drake" },
+        { mons = "swamp worm" },
+        { mons = "sun moth" },
+        { mons = "tainted leviathan" },
+        { mons = "tarantella" },
+        { mons = "tengu" },
+        { mons = "tengu conjurer" },
+        { mons = "tengu reaver" },
+        { mons = "tengu warrior" },
+        { mons = "tentacled monstrosity" },
+        { mons = "tentacled starspawn" },
+        { mons = "Terence" },
+        { mons = "test spawner" },
+        { mons = "thorn hunter" },
+        { mons = "thrashing horror" },
+        { mons = "Tiamat", tile = "mons_tiamat", num_var = 9 },
+        { mons = "titan" },
+        { mons = "toadstool", tile = "mons_toadstool", num_var = 2,
+          var_type = "fixed" },
+        { mons = "toenail golem" },
+        { mons = "tormentor" },
+        { mons = "torpor snail", weapon_offsets = "9,-2",
+          shield_offsets = "0,0" },
+        { mons = "training dummy" },
+        { mons = "tree", tile = "tran_tree" },
+        { mons = "troll" },
+        { mons = "twister", tile = "mons_twister", num_var = 4,
+          var_type = "sequence" },
+        { mons = "two-headed ogre" },
+        { mons = "tyrant leech" },
+        { mons = "tzitzimitl" },
+        { mons = "ufetubus" },
+        { mons = "ugly thing", tile = "mons_ugly_thing", num_var = 6 },
+        { mons = "unseen horror" },
+        { mons = "the Unspeakable", tile = "mons_unspeakable" },
+        { mons = "Urug" },
+        { mons = "ushabti" },
+        { mons = "vampire" },
+        { mons = "vampire bat" },
+        { mons = "vampire knight" },
+        { mons = "vampire mage" },
+        { mons = "vampire mosquito" },
+        { mons = "Vashnia" },
+        { mons = "vault guard" },
+        { mons = "vault sentinel" },
+        { mons = "vault warden" },
+        { mons = "very ugly thing", tile = "mons_very_ugly_thing", num_var = 6 },
+        { mons = "vine stalker" },
+        { mons = "Vv" },
+        { mons = "walking crystal tome" },
+        { mons = "walking divine tome" },
+        { mons = "walking earthen tome" },
+        { mons = "walking frostbound tome" },
+        { mons = "wandering mushroom" },
+        { mons = "war gargoyle" },
+        { mons = "water elemental" },
+        { mons = "water moccasin" },
+        { mons = "water nymph" },
+        { mons = "warg" },
+        { mons = "wendigo" },
+        { mons = "white draconian" },
+        { mons = "white imp" },
+        { mons = "will-o-the-wisp" },
+        { mons = "wind drake" },
+        { mons = "wight" },
+        { mons = "Wiglaf", tile = "mons_wiglaf" },
+        { mons = "withered plant", tile = "mons_withered_plant" },
+        { mons = "wizard" },
+        { mons = "wolf" },
+        { mons = "wolf spider" },
+        { mons = "worldbinder" },
+        { mons = "worm" },
+        { mons = "wretched star" },
+        { mons = "wraith" },
+        { mons = "wyvern" },
+        { mons = "XTAHUA" },
+        { mons = "yak", weapon_offsets = "-4,0", shield_offsets = "-2,0" },
+        { mons = "yaktaur" },
+        { mons = "yaktaur captain" },
+        { mons = "yellow draconian" },
+        { mons = "ynoxinul" },
+        { mons = "Zenata" },
+        { mons = "Zonguldrok", tile = "mons_zonguldrok_lich" },
+        { mons = "a Zot statue", tile = "mons_zot_statue" },
     } -- end player_tiles array
-  end
+end
 
-  -- Note: No further configuration past this point.
+-- Note: No further configuration past this point.
 
-  -- A list of tiles that are valid and compatible with our version.
-  valid_tiles = {}
-  rtdat = nil
+-- A list of tiles that are valid and compatible with our version.
+valid_tiles = {}
+rtdat = nil
 
-  -- Wrapper of crawl.mpr() that prints text in white by default.
-  if not mpr then
+-- Wrapper of crawl.mpr() that prints text in white by default.
+if not mpr then
     mpr = function (msg, color)
-      if not color then
-        color = "white"
-      end
-      crawl.mpr("<" .. color .. ">" .. msg .. "</" .. color .. ">")
+        if not color then
+            color = "white"
+        end
+        crawl.mpr("<" .. color .. ">" .. msg .. "</" .. color .. ">")
     end
-  end
+end
 
-  -- Populate valid_tiles
-  function init_random_tiles(tiles)
+-- Populate valid_tiles
+function init_random_tiles(tiles)
     local version = tonumber(crawl.version("major"))
 
     for i,v in ipairs(player_tiles) do
-      if v.mons
-        and (not v.min_version or version >= tonumber(v.min_version))
-      and (not v.max_version or version <= tonumber(v.max_version)) then
-        valid_tiles[#valid_tiles + 1] = v
-      end
+        if v.mons
+            and (not v.min_version or version >= tonumber(v.min_version))
+        and (not v.max_version or version <= tonumber(v.max_version)) then
+            valid_tiles[#valid_tiles + 1] = v
+        end
     end
 
     -- state data
-    local default_state = {index = 1 + crawl.random2(#valid_tiles),
-                           last_index_change = you.turns(),
-                           last_variant = -1,
-                           forward_direction = true,
-                           last_xl = tonumber(you.xl()),
-                           enabled = true,
-                           timer_enabled = true}
+    local default_state = { index = 1 + crawl.random2(#valid_tiles),
+                            last_index_change = you.turns(),
+                            last_variant = -1,
+                            forward_direction = true,
+                            last_xl = tonumber(you.xl()),
+                            enabled = true,
+                            timer_enabled = true }
 
     if not c_persist.randomtile_state then
-      c_persist.randomtile_state = {}
+        c_persist.randomtile_state = {}
     end
 
     rtdat = c_persist.randomtile_state
     for key,val in pairs(default_state) do
-      if rtdat[key] == nil then
-        rtdat[key] = val
-      end
+        if rtdat[key] == nil then
+            rtdat[key] = val
+        end
     end
 
     if rtdat.enabled then
-      enable_random_tile(true)
+        enable_random_tile(true)
     else
-      disable_random_tile(true)
+        disable_random_tile(true)
     end
-  end
+end
 
-  -- Print a message about a tile set change
-  function tile_change_message()
+-- Print a message about a tile set change
+function tile_change_message()
     if not randtile_options.god_message then
-      return
+        return
     end
 
     local god = you.god()
     if god == "No God" then
-      god = randtile_options.default_god
+        god = randtile_options.default_god
     end
     if randtile_options.god_speech[god] then
-      msg_template = randtile_options.god_speech[god]
+        msg_template = randtile_options.god_speech[god]
     else
-      msg_template = randtile_options.god_speech["default"]
+        msg_template = randtile_options.god_speech["default"]
     end
 
     local msg = msg_template:gsub("%%g", god)
@@ -819,255 +840,255 @@
     mons = mons:gsub("^[aA][nN]? ", "")
     msg = msg:gsub("%%m", mons)
     mpr(msg, randtile_options.message_colour)
-  end
+end
 
-  function get_terrain()
+function get_terrain()
     local feat = view.feature_at(0,0)
     -- Set to "air" when flying so water and lava features under the
     -- player don't cause spurious matches.
     if you.status():find("flying") then
-      feat = "air"
+        feat = "air"
     end
     return feat
-  end
+end
 
-  function get_percent_hp()
+function get_percent_hp()
     local hp, mhp = you.hp()
     return hp / mhp
-  end
+end
 
-  if not var_functions then
+if not var_functions then
     var_functions = {
-      ["percent_hp"] = get_percent_hp,
-      ["status"] = you.status,
-      ["terrain"] = get_terrain,
-      ["xl"] = you.xl,
+        ["percent_hp"] = get_percent_hp,
+        ["status"] = you.status,
+        ["terrain"] = get_terrain,
+        ["xl"] = you.xl,
     }
-  end
+end
 
-  -- Change the current tile using the tileset entry with the given index in
-  -- valid_tiles. This will update the randtile state as necessary.
-  function change_tile(index, force)
+-- Change the current tile using the tileset entry with the given index in
+-- valid_tiles. This will update the randtile state as necessary.
+function change_tile(index, force)
     local tileopt = nil
     local change_index = force or index ~= rtdat.index
     local entry = valid_tiles[index]
     local num_var = entry.num_var
     if not num_var and entry.tileset then
-      num_var = table.getn(entry.tileset)
+        num_var = table.getn(entry.tileset)
     end
     if num_var then
-      local var_type = entry.var_type
-      if not var_type then
-        var_type = "random"
-      end
-      local variant = 1
-      if var_type == "random" or var_type == "fixed" then
-        variant = crawl.random2(num_var) + 1
-        -- Iterate the sequence variant if we have valid state for it.
-      elseif var_type == "sequence"
-        and not change_index
-        and rtdat.last_variant >= 1
-      and rtdat.last_variant < num_var then
-        variant = rtdat.last_variant + 1
-      elseif var_type == "oscillate"
-        and not change_index
-        and rtdat.last_variant >= 1 then
-        if rtdat.forward_direction and rtdat.last_variant == num_var then
-          rtdat.forward_direction = false
-        elseif not rtdat.forward_direction and rtdat.last_variant == 1 then
-          rtdat.forward_direction = true
+        local var_type = entry.var_type
+        if not var_type then
+            var_type = "random"
         end
-        variant = rtdat.last_variant + (rtdat.forward_direction and 1 or -1)
-      elseif var_functions[var_type] ~= nil then
-        local comp_value = var_functions[var_type]()
-        local comp_string = true
-        if type(comp_value) == "number" then
-          comp_string = false
+        local variant = 1
+        if var_type == "random" or var_type == "fixed" then
+            variant = crawl.random2(num_var) + 1
+            -- Iterate the sequence variant if we have valid state for it.
+        elseif var_type == "sequence"
+            and not change_index
+            and rtdat.last_variant >= 1
+        and rtdat.last_variant < num_var then
+            variant = rtdat.last_variant + 1
+        elseif var_type == "oscillate"
+            and not change_index
+            and rtdat.last_variant >= 1 then
+            if rtdat.forward_direction and rtdat.last_variant == num_var then
+                rtdat.forward_direction = false
+            elseif not rtdat.forward_direction and rtdat.last_variant == 1 then
+                rtdat.forward_direction = true
+            end
+            variant = rtdat.last_variant + (rtdat.forward_direction and 1 or -1)
+        elseif var_functions[var_type] ~= nil then
+            local comp_value = var_functions[var_type]()
+            local comp_string = true
+            if type(comp_value) == "number" then
+                comp_string = false
+            end
+            for i, v in pairs(entry.tileset) do
+                if i > 1
+                    and (comp_string and comp_value:find(v[1])
+                             or not comp_string and comp_value <= v[1]) then
+                        variant = i
+                        -- For string values, take the first match
+                        if comp_string then
+                            break
+                        end
+                end
+            end
         end
-        for i, v in pairs(entry.tileset) do
-          if i > 1
-            and (comp_string and comp_value:find(v[1])
-                 or not comp_string and comp_value <= v[1]) then
-              variant = i
-              -- For string values, take the first match
-              if comp_string then
-                break
-              end
-          end
+        rtdat.last_variant = variant
+        -- custom-defined tilesets or an variant set defined by crawl itself.
+        if entry.tileset then
+            -- For var_type values that use var_functions
+            if type(entry.tileset[variant]) == "table" then
+                tileopt = entry.tileset[variant][2]
+            else
+                tileopt = entry.tileset[variant]
+            end
+        elseif entry.tile then
+            local var_suf
+            if variant == 1 then
+                var_suf = ""
+            else
+                var_suf = "_" .. variant - 1
+            end
+            tileopt = entry.tile .. var_suf
         end
-      end
-      rtdat.last_variant = variant
-      -- custom-defined tilesets or an variant set defined by crawl itself.
-      if entry.tileset then
-        -- For var_type values that use var_functions
-        if type(entry.tileset[variant]) == "table" then
-          tileopt = entry.tileset[variant][2]
-        else
-          tileopt = entry.tileset[variant]
-        end
-      elseif entry.tile then
-        local var_suf
-        if variant == 1 then
-          var_suf = ""
-        else
-          var_suf = "_" .. variant - 1
-        end
-        tileopt = entry.tile .. var_suf
-      end
-      tileopt = "tile:" .. tileopt
+        tileopt = "tile:" .. tileopt
     elseif entry.tile then
-      tileopt = "tile:" .. entry.tile
+        tileopt = "tile:" .. entry.tile
     elseif entry.mons then
-      tileopt = "mons:" .. entry.mons
+        tileopt = "mons:" .. entry.mons
     end
 
     if not tileopt then
-      return
+        return
     end
 
     if change_index then
-      rtdat.index = index
-      rtdat.last_index_change = you.turns()
+        rtdat.index = index
+        rtdat.last_index_change = you.turns()
     end
 
     crawl.setopt("tile_player_tile = " .. tileopt)
     if valid_tiles[index].weapon_offsets then
-      crawl.setopt("tile_weapon_offsets = "
-                     .. valid_tiles[index].weapon_offsets)
+        crawl.setopt("tile_weapon_offsets = "
+                                     .. valid_tiles[index].weapon_offsets)
     else
-      crawl.setopt("tile_weapon_offsets = reset")
+        crawl.setopt("tile_weapon_offsets = reset")
     end
     if valid_tiles[index].shield_offsets then
-      crawl.setopt("tile_shield_offsets = "
-                     .. valid_tiles[index].shield_offsets)
+        crawl.setopt("tile_shield_offsets = "
+            .. valid_tiles[index].shield_offsets)
     else
-      crawl.setopt("tile_shield_offsets = reset")
+        crawl.setopt("tile_shield_offsets = reset")
     end
 
     if change_index then
-      tile_change_message()
+        tile_change_message()
     end
-  end
+end
 
-  -- Change the tile by partial match of name to the mons entries in
-  -- valid_tiles. Reads name from input if it's not given as an argument.
-  function set_tile_by_name(name)
+-- Change the tile by partial match of name to the mons entries in
+-- valid_tiles. Reads name from input if it's not given as an argument.
+function set_tile_by_name(name)
     if name == nil then
-      crawl.formatted_mpr("Enter a tile name search string: ", "prompt")
-      name = crawl.c_input_line()
-      if not name then
-        return
-      end
+        crawl.formatted_mpr("Enter a tile name search string: ", "prompt")
+        name = crawl.c_input_line()
+        if not name then
+            return
+        end
     end
     local first_match = nil
     name = name:lower()
     for i,v in ipairs(valid_tiles) do
-      local mname = v.mons:lower()
-      if mname == name then
-        first_match = i
-        break
-      elseif mname:find(name) and not first_match then
-        first_match = i
-      end
+        local mname = v.mons:lower()
+        if mname == name then
+            first_match = i
+            break
+        elseif mname:find(name) and not first_match then
+            first_match = i
+        end
     end
     if first_match then
-      change_tile(first_match, true)
+        change_tile(first_match, true)
     else
-      mpr("Unable to match a player_tile mons value with " .. name, "lightred")
+        mpr("Unable to match a player_tile mons value with " .. name, "lightred")
     end
-  end
+end
 
-  -- Checks the randtile state, changing the tile when necessary. A change of the
-  -- tile index will cause a tile change message to be displayed. The tile may be
-  -- changed to a new tileset variant even if the index is unchanged, depending
-  -- on the definition of the current tileset. If force_change is true, the tile
-  -- index will always be changed.
-  function random_tile(force_change)
+-- Checks the randtile state, changing the tile when necessary. A change of the
+-- tile index will cause a tile change message to be displayed. The tile may be
+-- changed to a new tileset variant even if the index is unchanged, depending
+-- on the definition of the current tileset. If force_change is true, the tile
+-- index will always be changed.
+function random_tile(force_change)
     if not valid_tiles or not rtdat.enabled then
-      return
+        return
     end
 
     local num_tiles = #valid_tiles
     local xl_changed = tonumber(you.xl()) ~= rtdat.last_xl
     if xl_changed then
-      rtdat.last_xl = tonumber(you.xl())
+        rtdat.last_xl = tonumber(you.xl())
     end
 
     local turns_passed = tonumber(you.turns()) - randtile_options.turns_change
     local change_index = force_change or rtdat.timer_enabled
-      and (xl_changed or turns_passed >= rtdat.last_index_change)
+        and (xl_changed or turns_passed >= rtdat.last_index_change)
     local index
     if change_index then
-      index = 1 + crawl.random2(num_tiles)
+        index = 1 + crawl.random2(num_tiles)
     else
-      index = rtdat.index
+        index = rtdat.index
     end
 
     local entry = valid_tiles[index]
     local var_type = "random"
     if (entry.num_var or entry.tileset) and entry.var_type then
-      var_type = entry.var_type
+        var_type = entry.var_type
     end
     if not change_index and var_type == "fixed" then
-      return
+        return
     end
 
     -- We're changing the player tile because of an index change or because we
     -- are using a variant tileset that changes with every UI input.
     change_tile(index)
-  end
+end
 
-  -- Force a tile change
-  function new_random_tile()
+-- Force a tile change
+function new_random_tile()
     random_tile(true)
-  end
+end
 
-  -- Toggle the turn/xl timer to disable/enable index changing.
-  function toggle_tile_timer()
+-- Toggle the turn/xl timer to disable/enable index changing.
+function toggle_tile_timer()
     if rtdat.timer_enabled then
-      mpr("Disabling tile changes by turn or XL.")
+        mpr("Disabling tile changes by turn or XL.")
     else
-      mpr("Enabling tile changes by turn and XL.")
+        mpr("Enabling tile changes by turn and XL.")
     end
     rtdat.timer_enabled = not rtdat.timer_enabled
-  end
+end
 
-  function enable_random_tile(quiet)
+function enable_random_tile(quiet)
     if not quiet then
-      mpr("Enabling RandomTiles.")
+        mpr("Enabling RandomTiles.")
     end
     rtdat.enabled = true
     -- Don't attempt to load an invalid index
     if rtdat.index == nil or rtdat.index > #valid_tiles then
-      rtdat.index = 1 + crawl.random2(#valid_tiles)
+        rtdat.index = 1 + crawl.random2(#valid_tiles)
     end
     change_tile(rtdat.index, true)
-  end
+end
 
-  function disable_random_tile(quiet)
+function disable_random_tile(quiet)
     rtdat.enabled = false
     crawl.setopt("tile_player_tile = " .. randtile_options.disabled_setting)
     crawl.setopt("tile_weapon_offsets = reset")
     crawl.setopt("tile_shield_offsets = reset")
     if not quiet then
-      mpr("Disabling RandomTiles.")
+        mpr("Disabling RandomTiles.")
     end
-  end
+end
 
-  -- Toggle RandomTiles, setting it tile_player_tile to default setting if we're
-  -- disabling.
-  function toggle_random_tile()
+-- Toggle RandomTiles, setting it tile_player_tile to default setting if we're
+-- disabling.
+function toggle_random_tile()
     if rtdat.enabled then
-      disable_random_tile()
+        disable_random_tile()
     else
-      enable_random_tile()
+        enable_random_tile()
     end
-  end
+end
 
-  -- Initialize the tileset, removing any invalid tile entries.
-  init_random_tiles(player_tiles)
+-- Initialize the tileset, removing any invalid tile entries.
+init_random_tiles(player_tiles)
 
-  -------------------------
-  ---- End RandomTiles ----
-  -------------------------
+-------------------------
+---- End RandomTiles ----
+-------------------------
 >
