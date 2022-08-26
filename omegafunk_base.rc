@@ -70,7 +70,9 @@ end
 
 # starting from the line below. Some lua is in gammafunk.rc instead, which is
 # sourced by this RC.
+{
 # BEGIN LUA
+}
 
 # The ready() function  is needed for code that has to process each turn or UI
 # action.

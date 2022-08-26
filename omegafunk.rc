@@ -71,6 +71,7 @@ end
 # starting from the line below. Some lua is in gammafunk.rc instead, which is
 # sourced by this RC.
 {
+
 -----------------------------
 ---- Begin char_defaults ----
 -----------------------------
@@ -808,6 +809,7 @@ reset_rest()
 ---------------------------
 ---- End speedrun_rest ----
 ---------------------------
+
 }
 
 # The ready() function  is needed for code that has to process each turn or UI
