@@ -641,6 +641,7 @@ if not player_tiles then
         { mons = "sky beast" },
         { mons = "slime creature", num_var = 5, var_type = "oscillate",
             tile = "mons_slime_creature" },
+        { mons = "skyshark" },
         { mons = "small abomination" },
         { mons = "smoke demon" },
         { mons = "snapping turtle",
