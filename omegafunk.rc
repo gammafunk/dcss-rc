@@ -78,14 +78,14 @@ end
 
 -- See README.md for documentation.
 
-weapon_skills = {"Unarmed Combat", "Short Blades", "Long Blades", "Axes",
-                 "Maces & Flails", "Polearms", "Staves"}
-ranged_skills = {"Throwing", "Bows", "Crossbows", "Slings"}
-other_skills = {"Fighting", "Armour", "Dodging",
-                "Shields", "Spellcasting", "Conjurations", "Hexes", "Charms",
-                "Summonings", "Necromancy", "Translocations", "Transmutations",
-                "Fire Magic", "Ice Magic", "Air Magic", "Earth Magic",
-                "Poison Magic", "Invocations", "Evocations","Stealth"}
+weapon_skills = { "Maces & Flails", "Axes", "Polearms", "Staves",
+                  "Unarmed Combat", "Short Blades", "Long Blades" }
+ranged_skills = { "Throwing", "Ranged Weapons" }
+other_skills = { "Fighting", "Armour", "Dodging", "Shields", "Stealth",
+                 "Spellcasting", "Conjurations", "Hexes", "Summonings",
+                 "Necromancy", "Translocations", "Alchemy", "Fire Magic",
+                 "Ice Magic", "Air Magic", "Earth Magic", "Invocations",
+                 "Evocations", "Shapeshifting" }
 skill_glyphs = { [1] = "+", [2] = "*" }
 chdat = nil
 char_combo = you.race() .. you.class()
