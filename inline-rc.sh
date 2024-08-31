@@ -44,7 +44,9 @@ fi
 set -e
 lua_text=$'\n'$(cat "$@")$'\n'
 myrc=$(cat $rc_file)
-printf "%s\n" "${myrc/$marker/$lua_text}" > "$out_file"
+# Quotes needed around $lua_text to prevent expansion of & characters for
+# bash 5.2 and later.
+printf "%s\n" "${myrc/$marker/"$lua_text"}" > "$out_file"
 rc_nlines=$(cat $rc_file | wc -l)
 lua_nlines=$(echo "$lua_text" | wc -l)
 echo "Added $rc_nlines lines from $rc_file to $out_file"
