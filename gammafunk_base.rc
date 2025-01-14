@@ -717,8 +717,8 @@ local function pickup_equipment(it, name)
 
   local class = it.class(true)
   if class == "armour" then
-    local good_slots = {cloak="Cloak", helmet="Helmet",
-                        gloves="Gloves", boots="Boots"}
+    local good_slots = {Cloak="Cloak", Helmet="Helmet",
+                        Gloves="Gloves", Boots="Boots"}
     st, _ = it.subtype()
 
     -- Autopickup found aux armour if 1) we don't have any or 2) it's artefact,
