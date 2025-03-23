@@ -9,9 +9,9 @@ weapon_skills = { "Maces & Flails", "Axes", "Polearms", "Staves",
 ranged_skills = { "Throwing", "Ranged Weapons" }
 other_skills = { "Fighting", "Armour", "Dodging", "Shields", "Stealth",
                  "Spellcasting", "Conjurations", "Hexes", "Summonings",
-                 "Necromancy", "Translocations", "Alchemy", "Fire Magic",
-                 "Ice Magic", "Air Magic", "Earth Magic", "Invocations",
-                 "Evocations", "Shapeshifting" }
+                 "Necromancy", "Forgecraft", "Translocations", "Alchemy",
+                 "Fire Magic", "Ice Magic", "Air Magic", "Earth Magic",
+                 "Invocations", "Evocations", "Shapeshifting" }
 skill_glyphs = { [1] = "+", [2] = "*" }
 chdat = nil
 char_combo = you.race() .. you.class()
@@ -27,7 +27,7 @@ if not mpr then
   end
 end
 
-function skill_message(prefix, skill, skill_type, value)
+function skill_message(prefix, skill, skill_type, value, target)
   local msg = ""
   if prefix then
     msg = prefix .. ";"
@@ -36,6 +36,9 @@ function skill_message(prefix, skill, skill_type, value)
     msg = msg .. skill_type .. "(" .. skill .. "):" .. value
   else
     msg = msg .. skill .. ":" .. value
+  end
+  if target and target>0 then
+    msg = msg .. target
   end
   return msg
 end
@@ -54,8 +57,9 @@ function save_char_defaults(quiet)
   for _,sk in ipairs(weapon_skills) do
     if you.train_skill(sk) > 0 then
       chdat["Weapon"] = you.train_skill(sk)
-      msg = skill_message(nil, sk, "Weapon",
-                          skill_glyphs[chdat["Weapon"]])
+      chdat["WeaponTarget"] = you.get_training_target(sk) 
+      msg = skill_message(nil, sk, "Weapon", skill_glyphs[chdat["Weapon"]],
+                          chdat["WeaponTarget"])
       have_weapon = true
       break
     end
@@ -67,8 +71,9 @@ function save_char_defaults(quiet)
   for _,sk in ipairs(ranged_skills) do
     if you.train_skill(sk) > 0 then
       chdat["Ranged"] = you.train_skill(sk)
-      msg = skill_message(msg, sk, "Ranged",
-                          skill_glyphs[chdat["Ranged"]])
+      chdat["RangedTarget"] = you.get_training_target(sk)
+      msg = skill_message(msg, sk, "Ranged", skill_glyphs[chdat["Ranged"]],
+                          chdat["RangedTarget"])
       have_ranged = true
       break
     end
@@ -79,7 +84,9 @@ function save_char_defaults(quiet)
   for _,sk in ipairs(other_skills) do
     if you.train_skill(sk) > 0 then
       chdat[sk] = you.train_skill(sk)
-      msg = skill_message(msg, sk, nil, skill_glyphs[chdat[sk]])
+      chdat[sk .. "Target"] = you.get_training_target(sk)
+      msg = skill_message(msg, sk, nil, skill_glyphs[chdat[sk]],
+                          chdat[sk .. "Target"])
     else
       chdat[sk] = nil
     end
@@ -105,8 +112,9 @@ function load_char_defaults(quiet)
   for _,sk in ipairs(weapon_skills) do
     if you.base_skill(sk) > 0 and chdat["Weapon"] then
       you.train_skill(sk, chdat["Weapon"])
-      msg = skill_message(msg, sk, "Weapon",
-                          skill_glyphs[chdat["Weapon"]])
+      you.set_training_target(sk, chdat["WeaponTarget"])
+      msg = skill_message(msg, sk, "Weapon", skill_glyphs[chdat["Weapon"]],
+                          chdat["WeaponTarget"])
       found_weapon = true
     else
       you.train_skill(sk, 0)
@@ -114,15 +122,17 @@ function load_char_defaults(quiet)
   end
   if chdat["Weapon"] and not found_weapon then
     you.train_skill("Unarmed Combat", chdat["Weapon"])
-    msg = skill_message(msg, "Unarmed Combat", "Weapon",
-                        skill_glyphs[chdat["Weapon"]])
+    you.set_training_target("Unarmed Combat", chdat["WeaponTarget"])
+    msg = skill_message(msg, "Unarmed Combat", "Weapon", skill_glyphs[chdat["Weapon"]],
+                        chdat["WeaponTarget"])
   end
   local found_ranged = false
   for _,sk in ipairs(ranged_skills) do
     if you.base_skill(sk) > 0 and chdat["Ranged"] then
       you.train_skill(sk, chdat["Ranged"])
-      msg = skill_message(msg, sk, "Ranged",
-                          skill_glyphs[chdat["Ranged"]])
+      you.set_training_target(sk, chdat["RangedTarget"])
+      msg = skill_message(msg, sk, "Ranged", skill_glyphs[chdat["Ranged"]],
+                          chdat["RangedTarget"])
       found_ranged = true
     else
       you.train_skill(sk, 0)
@@ -130,13 +140,16 @@ function load_char_defaults(quiet)
   end
   if chdat["Ranged"] and not found_ranged then
     you.train_skill("Throwing", chdat["Ranged"])
-    msg = skill_message(msg, "Throwing", "Ranged",
-                        skill_glyphs[chdat["Ranged"]])
+    you.set_training_target("Throwing", chdat["RangedTarget"])
+    msg = skill_message(msg, "Throwing", "Ranged", skill_glyphs[chdat["Ranged"]],
+                        chdat["RangedTarget"])
   end
   for _,sk in ipairs(other_skills) do
     if chdat[sk] then
       you.train_skill(sk, chdat[sk])
-      msg = skill_message(msg, sk, nil, skill_glyphs[chdat[sk]])
+      you.set_training_target(sk, chdat[sk .. "Target"])
+      msg = skill_message(msg, sk, nil, skill_glyphs[chdat[sk]],
+                          chdat[sk .. "Target"])
     else
       you.train_skill(sk, 0)
     end
