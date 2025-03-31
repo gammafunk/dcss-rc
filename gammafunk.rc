@@ -311,7 +311,7 @@ explore_stop += greedy_items
 ##################
 
 # Add staves, misc; note you can't use += with this option.
-autopickup = $?!:"/}|
+autopickup = $?!+=/}|♦
 
 ae := autopickup_exceptions
 ae += <throwing net
@@ -715,7 +715,7 @@ end
 -- Equipment autopickup
 local function pickup_equipment(it, name)
     if it.is_useless then
-        return false
+        return
     end
 
     local class = it.class(true)
@@ -729,7 +729,7 @@ local function pickup_equipment(it, name)
         -- found armour is ego.
         if good_slots[st] ~= nil then
             if good_slots[st] == "gloves" and you.has_claws() > 0 then
-                return false
+                return
             end
 
             if it.artefact then
@@ -744,15 +744,15 @@ local function pickup_equipment(it, name)
         elseif st == "body" then
             local cur = items.equipped_at("armour")
             if not cur or cur.name("qual") ~= it.name("qual") then
-                return false
+                return
             end
 
-            return it.artefact
-                or not cur.branded and not cur.artefact and it.branded
+            if it.artefact
+                    or not cur.branded and not cur.artefact and it.branded then
+                return true
+            end
         end
     end
-
-    return false
 end
 
 add_autopickup_func(pickup_equipment)
